@@ -1,0 +1,6 @@
+node_modules
+dist
+.firebase
+.idea
+.DS_store
+.env.removed
