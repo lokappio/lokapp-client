@@ -2,7 +2,8 @@ node_modules
 dist
 .firebase
 firebase.json
-firebaserc
+.firebaserc
+firebase-*
 .idea
 .DS_store
 .env
