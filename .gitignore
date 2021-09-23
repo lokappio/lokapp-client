@@ -3,4 +3,4 @@ dist
 .firebase
 .idea
 .DS_store
-.env.removed
+.env
