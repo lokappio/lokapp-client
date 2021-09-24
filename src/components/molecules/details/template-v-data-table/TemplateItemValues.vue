@@ -4,7 +4,8 @@
       v-if="$store.getters.actualRole.canWriteValue"
       v-model="item[header.value]"
       @blur="saveValue(item.keyId, item.quantity, header.value, item[header.value])"
-      @keydown.enter.tab="blurInput"
+      @keydown.enter="blurInput"
+      @keydown.tab.stop="blurInput"
       single-line
   >
   </v-text-field>
@@ -19,7 +20,12 @@ export default Vue.extend({
   name: "template-item-values",
   props: ["header", "item", "projectId", "refreshEverything", "items", "getActualLineIndex"],
   computed: {
-    inputId(): string { return this.item.keyId.toString() + this.item.quantity.toString()},
+    inputId(): string {
+      let id: string = this.item.keyId.toString() + this.header.value.toString();
+      if(this.item.quantity) id += this.item.quantity;
+
+      return id;
+    },
   },
   methods: {
     changeValueFromTable(keyId, quantity, value, languageId) {
