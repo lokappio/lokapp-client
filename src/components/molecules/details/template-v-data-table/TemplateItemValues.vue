@@ -1,8 +1,10 @@
 <template>
   <v-text-field
+      :id="inputId"
       v-if="$store.getters.actualRole.canWriteValue"
       v-model="item[header.value]"
-      @keydown.enter="saveValue(item.keyId, item.quantity, header.value, item[header.value])"
+      @blur="saveValue(item.keyId, item.quantity, header.value, item[header.value])"
+      @keydown.enter.tab="blurInput"
       single-line
   >
   </v-text-field>
@@ -16,6 +18,9 @@ import Vue from "vue";
 export default Vue.extend({
   name: "template-item-values",
   props: ["header", "item", "projectId", "refreshEverything", "items", "getActualLineIndex"],
+  computed: {
+    inputId(): string { return this.item.keyId.toString() + this.item.quantity.toString()},
+  },
   methods: {
     changeValueFromTable(keyId, quantity, value, languageId) {
       const indexToChange = this.getActualLineIndex(keyId, quantity);
@@ -50,7 +55,12 @@ export default Vue.extend({
         this.reportError(this.$t("errors.unknown_error"));
       });
     },
+    blurInput(): void {
+      document.getElementById(this.inputId).blur();
+    },
     saveValue(keyId, quantity, languageId, newValue): Promise {
+      console.log("save");
+
       this.$service.values.getSpecificValue(this.projectId, {keyId: keyId, languageId: languageId})
           .then((values) => {
             const indexValue = values.findIndex((element) => element.quantity === quantity);
@@ -75,7 +85,6 @@ export default Vue.extend({
             }
           })
           .catch(() => {
-            print("error");
             this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
           });
     }
