@@ -4,6 +4,12 @@ import ProjectList from "../models/api/ProjectList";
 import ProjectUser from "../models/api/ProjectUser";
 import { Role } from "../models/roles/role.enum";
 import ApiService from "./ApiService";
+import Project from "@/data/models/api/Project";
+import GroupsService from "@/data/services/GroupsService";
+import NewGroup from "@/data/models/api/NewGroup";
+import KeysService from "@/data/services/KeysService";
+import NewKey from "@/data/models/api/NewKey";
+import ValuesService from "@/data/services/ValuesService";
 
 class ProjectsService {
     static projectsUrl: string = config.baseUrl + "/projects";
@@ -30,12 +36,44 @@ class ProjectsService {
         return ApiService.postAPI(ProjectsService.projectsUrl, bodyParameters);
     }
 
-    public static getSpecificProject(projectID: number): Promise<ProjectList> {
-        return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectID) 
+    /***
+     * @deprecated
+     * @param projectId
+     */
+    public static getProjectById(projectId: number): Promise<ProjectList> {
+        return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
         .then((response) => {
             return ProjectList.map(response.data);
         })
     }
+
+    public static getEntireProjectById(projectId: number): Promise<Project> {
+        return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
+          .then((response) => {
+              const currProject: Project = Project.map(response.data);
+
+              return GroupsService.getGroups(projectId).then((groups) => {
+                  const currGroups: NewGroup[] = groups.map((group) => NewGroup.map(group));
+
+                  return KeysService.getKeys(projectId).then((keys) => {
+                      const currKeys = keys.map((key) => NewKey.map(key));
+
+                      return Promise.all(currKeys.map((key) => {
+                        ValuesService.getValuesByKeyId(projectId, key.id)
+                          .then((values) => {
+                            key.values = values;
+                        });
+                      })).then(() => {
+                          currGroups.forEach((group) => group.keys = currKeys.filter((key) => key.groupId = group.id));
+                          currProject.groups = currGroups;
+
+                          return currProject;
+                      });
+                  });
+              });
+          });
+    }
+
 
     public static changeProjectSettings(projectID: number, projectName: string, projectColor: string, projectDescription: string): Promise<ProjectList> {
         const bodyParameters = {

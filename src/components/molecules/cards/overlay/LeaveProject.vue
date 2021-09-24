@@ -50,7 +50,7 @@ export default Vue.extend({
         ActionButton
     },
     created() {
-        this.$service.projects.getSpecificProject(this.$store.getters.actualProjectId)
+        this.$service.projects.getProjectById(this.$store.getters.actualProjectId)
         .then(project => {
             this.projectName = project.name;
         }).catch(() => {

@@ -147,7 +147,7 @@ export default class ProjectManagement extends Vue {
         this.modificationActivated = !this.modificationActivated;
     }
     refreshProject() {
-        this.$service.projects.getSpecificProject(this.projectId)
+        this.$service.projects.getProjectById(this.projectId)
         .then(project => {
             this.project = project;
             this.projectName = this.project.name;

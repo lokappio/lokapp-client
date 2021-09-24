@@ -1,11 +1,12 @@
 <template>
+  <!-- SAVE VALUE WHEN INPUT IS UNFOCUSED (Blur) -->
   <v-text-field
       :id="inputId"
       v-if="$store.getters.actualRole.canWriteValue"
       v-model="item[header.value]"
-      @blur="saveValue(item.keyId, item.quantity, header.value, item[header.value])"
+      @blur="saveValue()"
       @keydown.enter="blurInput"
-      @keydown.tab.stop="blurInput"
+      @keydown.tab="blurInput"
       single-line
   >
   </v-text-field>
@@ -13,75 +14,54 @@
 
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
-import SpecificValue from "@/data/models/api/SpecificValue";
 import Vue from "vue";
 
 export default Vue.extend({
   name: "template-item-values",
-  props: ["header", "item", "projectId", "refreshEverything", "items", "getActualLineIndex"],
+  props: ["header", "item", "projectId", "refreshEverything"],
   computed: {
     inputId(): string {
       let id: string = this.item.keyId.toString() + this.header.value.toString();
-      if(this.item.quantity) id += this.item.quantity;
+      if (this.item.quantity) {
+        id += this.item.quantity;
+      }
 
       return id;
-    },
+    }
   },
   methods: {
-    changeValueFromTable(keyId, quantity, value, languageId) {
-      const indexToChange = this.getActualLineIndex(keyId, quantity);
-      this.items[indexToChange][value.languageId.toString()] = value.valueName;
-      this.$set(this.items[indexToChange], languageId.toString(), value.valueName);
-    },
-    reportError(error) {
+    reportError(error: string): void {
       this.$notify(error);
       this.$eventBus.$emit(EventEnum.ERROR_ACTION);
     },
-    deleteValue(value) {
-      this.$service.values.deleteValue(this.projectId, value)
+    /*createValue(keyId, newValue, languageId, quantity) {
+      this.$service.values.createValue(this.projectId, keyId, {valueName: newValue, languageId: languageId, quantity: quantity})
+          .catch(() => {
+            this.reportError(this.$t("errors.unknown_error"));
+          });
+    },*/
+    updateValue(newValueObject) {
+      this.$service.values.updateValue(this.projectId, newValueObject)
           .catch(() => {
             this.reportError(this.$t("errors.unknown_error"));
           });
     },
-    createValue(keyId, newValue, languageId, quantity) {
-      this.$service.values.createValue(this.projectId, keyId, {valueName: newValue, languageId: languageId, quantity: quantity})
-          .then((response) => {
-            const value = SpecificValue.map(response.data);
-            this.changeValueFromTable(keyId, quantity, value, languageId);
-          }).catch(() => {
-        this.reportError(this.$t("errors.unknown_error"));
-      });
-    },
-    updateValue(newValueObject) {
-      this.$service.values.updateValue(this.projectId, newValueObject)
-          .then((response) => {
-            const value = SpecificValue.map(response.data);
-            this.changeValueFromTable(value.keyId, value.quantity, value, value.languageId);
-          }).catch(() => {
-        this.reportError(this.$t("errors.unknown_error"));
-      });
-    },
     blurInput(): void {
       document.getElementById(this.inputId).blur();
     },
-    saveValue(keyId, quantity, languageId, newValue): Promise {
-      console.log("save");
-
-      this.$service.values.getSpecificValue(this.projectId, {keyId: keyId, languageId: languageId})
+    saveValue(): Promise<void> {
+      this.updateValue(this.item[this.header.value]);
+    }
+    /*saveValue(): Promise<void> {
+      this.$service.values.getSpecificValue(this.projectId, {keyId: this.item.keyId, languageId: this.item.languageId})
           .then((values) => {
-            const indexValue = values.findIndex((element) => element.quantity === quantity);
+            const indexValue = values.findIndex((element) => element.quantity === this.item.quantity);
+            if (indexValue === -1) {
+              this.reportError(this.$t("errors.unknown_error"));
+              return;
+            }
 
-            if (newValue === "") {
-              if (values.length <= 0) {
-                return;
-              }
-              if (indexValue === -1) {
-                this.reportError(this.$t("errors.unknown_error"));
-                return;
-              }
-              this.deleteValue({keyId: keyId, valueId: values[indexValue].valueId});
-
-            } else if (newValue != null) {
+            if (this.item[this.header.value] != null) {
               if (indexValue === -1) {
                 this.createValue(keyId, newValue, languageId, quantity);
               } else {
@@ -93,7 +73,7 @@ export default Vue.extend({
           .catch(() => {
             this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
           });
-    }
+    }*/
   }
 });
 </script>

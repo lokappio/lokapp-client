@@ -46,7 +46,7 @@ export default (
     },
     created() {
         this.projectId = this.$store.getters.actualProjectId;
-        this.$service.projects.getSpecificProject(this.projectId)
+        this.$service.projects.getProjectById(this.projectId)
         .then(project => {
             this.projectName = project.name;
             this.projectDescription = project.description;

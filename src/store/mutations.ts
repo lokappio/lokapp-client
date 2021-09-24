@@ -4,6 +4,7 @@ import ProjectUser from "@/data/models/api/ProjectUser";
 import CardEnum from "@/data/models/Card.enum";
 import RoleProtection from "@/data/models/roles/RoleProtection";
 import {State} from "@/store/states";
+import Project from "@/data/models/api/Project";
 
 export default {
     SET_USER(state: State, user: any): void {
@@ -14,6 +15,9 @@ export default {
     },
     SET_ACTUAL_PROJECT_ID(state: State, projectId: number): void {
         state.actualProjectId = projectId;
+    },
+    SET_CURRENT_PROJECT(state: State, project: Project): void {
+        state.currentProject = project;
     },
     SET_OPEN_CARD(state: State, card: CardEnum): void {
         state.openCard = card;

@@ -1,70 +1,64 @@
-
 <template>
-    <v-container class="full-contain my-table">
+  <v-container class="full-contain my-table">
+    <v-row v-if="items.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
+      <v-col cols="4">
+        <action-button v-if="canUpdateKey" block :handler="openKeyCreationWithName" :text="''" addIcon/>
+      </v-col>
+    </v-row>
 
-        <v-row v-if="items.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
-            <v-col cols="4">
-                <action-button v-if="canUpdateKey()" block :handler="openKeyCreationWithName" :text="''" addIcon/>
-            </v-col>
-        </v-row>
-
-        <v-data-table v-show="items.length > 0"
+    <v-data-table
+        v-show="items.length > 0"
         hide-default-footer
         :headers="headers"
-        :items="items"
+        :items="getItems"
         :loading="loading"
         :search="searchValue"
         :item-class="setupCreateKeyClass"
-        item-key="id"
         disable-pagination
         group-by="group"
         elevation="0"
         class="my-custom-table">
 
-            <!-- Change keys -->
-            <template v-if="canUpdateKey()" v-slot:[`item.keys`]="{ item }">
-                <template-item-keys 
-                    :item="item"
-                    :projectId="projectId"
-                    :refreshEverything="refreshEverything"
-                    :items="items"
-                    :resetKeys="resetKeys"/>
-            </template>
+      <!-- Change keys -->
+      <template v-if="canUpdateKey" v-slot:[`item.keys`]="{ item }">
+        <template-item-keys
+            :item="item"
+            :projectId="projectId"
+            :items="items"
+            :resetKeys="resetKeys"/>
+      </template>
 
-            <!-- Change values -->
-            <template v-for="header in getLanguagesHeaders()" v-slot:[customValueSlotName(header.value)]="{ item }">
-               <template-item-values
-                    :key="header.value" 
-                    :item="item" 
-                    :header="header" 
-                    :projectId="projectId"
-                    :items="items"
-                    :getActualLineIndex="getActualLineIndex"
-                    :refreshEverything="refreshEverything"/>
-            </template>
+      <!-- Change values -->
+      <template v-for="header in languagesHeaders" v-slot:[customValueSlotName(header.value)]="{ item }">
+        <template-item-values
+            :key="header.value"
+            :item="item"
+            :header="header"
+            :projectId="projectId"
+        />
+      </template>
 
-            <!-- Custom header for groups -->
-            <template v-slot:[`group.header`]="{group, items, isOpen, toggle}">
-                <template-group-header 
-                    :headers="headers"
-                    :group="group"
-                    :items="items"
-                    :isOpen="isOpen"
-                    :toggle="toggle"
-                    :groups="groups"
-                    :projectId="projectId"/>
-            </template>
+      <!-- Custom header for groups -->
+      <template v-slot:[`getItems.groups`]="{group, items, isOpen, toggle}">
+        <template-group-header
+            :headers="headers"
+            :group="group"
+            :items="items"
+            :isOpen="isOpen"
+            :toggle="toggle"
+            :groups="groups"
+            :projectId="projectId"/>
+      </template>
 
-            <!-- Custom footer on groups -->
-            <template v-if="canUpdateKey()" v-slot:[`group.summary`]="{ isOpen, group }">
-                <template-group-footer :isOpen="isOpen" :group="group" :openKeyCreationWithName="openKeyCreationWithName"/>
-            </template>
-
-        </v-data-table>
-    </v-container>
+      <!-- Custom footer on groups -->
+      <template v-if="canUpdateKey" v-slot:[`group.summary`]="{ isOpen, group }">
+        <template-group-footer :isOpen="isOpen" :group="group" :openKeyCreationWithName="openKeyCreationWithName"/>
+      </template>
+    </v-data-table>
+  </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from "vue";
 import TemplateItemValues from "@/components/molecules/details/template-v-data-table/TemplateItemValues";
 import TemplateItemKeys from "@/components/molecules/details/template-v-data-table/TemplateItemKeys";
@@ -74,9 +68,10 @@ import {PluralTemplate, PLURAL_DEFAULT} from "@/data/models/PluralTemplate";
 import EventEnum from "@/data/enum/event-bus.enum";
 import CardEnum from "@/data/models/Card.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
+import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
-  name: 'content-details',
+  name: "content-details",
   components: {
     TemplateItemValues,
     TemplateGroupHeader,
@@ -86,29 +81,28 @@ export default Vue.extend({
   },
   created() {
     this.projectId = this.$store.getters.actualProjectId;
-    this.refreshEverything();
   },
   data() {
     return {
       basicHeaders: [
         {
-          text: 'Groupe',
-          value: 'group',
-          align: 'start',
-          width: '400px',
+          text: "Groupe",
+          value: "group",
+          align: "start",
+          width: "400px",
           sortable: false,
           filterable: false,
-          groupable: true,
+          groupable: true
         },
         {
-          text: this.$t("project_detail.keys"),
-          align: 'start',
-          value: 'keys',
-          width: '400px',
+          text: this.$t("project_detail.keys").toString(),
+          align: "start",
+          value: "keys",
+          width: "400px",
           sortable: false,
-          groupable: false,
+          groupable: false
         }
-      ],
+      ] as any[],
       headers: [],
       items: [],
       groups: [],
@@ -116,62 +110,59 @@ export default Vue.extend({
       loading: true,
       searchValue: "",
       projectId: -1
+    };
+  },
+  computed: {
+    languagesHeaders(): any[] {
+      return this.headers.filter((item) => item != "group" && item != "keys");
+    },
+    canUpdateKey(): boolean {
+      return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
+    },
+    getItems() {
+      return this.$store.state.currentProject;
     }
   },
   methods: {
-    canUpdateKey() {
-      return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false
-    },
     errorGetSomething() {
       this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
     },
-    filterDataWithLanguage(languageId) {
+    filterDataWithLanguage(languageId: number): Promise<void> {
       this.loading = true;
 
-      if (languageId === -1) {
-        //Tab ALl languages
-        this.$service.languages.getLanguages(this.projectId)
-            .then((languages) => {
-              this.headers = this.basicHeaders.concat();
-              for (const language of Object.values(languages)) {
-                this.headers.push({
+      return this.$service.languages.getLanguages(this.projectId)
+          .then((languages) => {
+            this.headers = this.basicHeaders;
+
+            if (languageId != -1) {
+              this.headers.push(languages.map((language) => {
+                return {
                   text: language.name,
-                  align: 'start',
+                  align: "start",
                   value: language.id.toString(),
-                  width: '400px',
+                  width: "400px",
                   sortable: false,
                   filterable: true,
                   groupable: false
-                });
-              }
-            }).catch(() => {
-          this.errorGetSomething();
-        }).finally(() => {
-          this.loading = false;
-        });
-      } else {
-        //Tab specific language
-        this.$service.languages.getLanguage(this.projectId, languageId)
-            .then((language) => {
-              this.headers = this.basicHeaders.concat();
+                };
+              }));
+            } else {
+              const language: Language = languages.find((item) => item.id === languageId);
               this.headers.push({
                 text: language.name,
-                align: 'start',
-                value: languageId.toString(),
-                width: '400px',
+                align: "start",
+                value: language.id.toString(),
+                width: "400px",
                 sortable: false,
                 filterable: true,
                 groupable: false
               });
-            }).catch(() => {
-          this.notify(this.$t("errors.not_existing_language"));
-          this.$eventBus.$emit(EventEnum.REFRESH_LANGUAGES_LIST);
-        }).finally(() => {
-          this.loading = false;
-        });
-      }
+            }
+          })
+          .catch(() => this.errorGetSomething())
+          .finally(() => this.loading = false);
     },
-    refreshEverything() {
+    /*refreshEverything() {
       this.loading = true;
       this.$service.languages.getLanguages(this.projectId)
           .then((languages) => {
@@ -179,12 +170,12 @@ export default Vue.extend({
             for (const language of Object.values(languages)) {
               this.headers.push({
                 text: language.name,
-                align: 'start',
+                align: "start",
                 value: language.id.toString(),
-                width: '400px',
+                width: "400px",
                 sortable: false,
                 filterable: true,
-                groupable: false,
+                groupable: false
               });
             }
             this.$service.values.getEveryValues(this.projectId)
@@ -255,14 +246,15 @@ export default Vue.extend({
           }).catch(() => {
         this.errorGetSomething();
       });
-    },
+    },*/
     resetKeys() {
       this.items = [];
     },
     getActualLineIndex(keyId, quantity) {
       return (this.items.findIndex((element) => {
-        if (element.keyId === keyId && element.quantity === quantity)
+        if (element.keyId === keyId && element.quantity === quantity) {
           return true;
+        }
         return false;
       }));
     },
@@ -282,60 +274,58 @@ export default Vue.extend({
       this.searchValue = value;
     },
     setupCreateKeyClass() {
-      return 'text-3 data-table-key-style';
+      return "text-3 data-table-key-style";
     },
     customValueSlotName(name) {
       return "item." + name;
     },
-    getLanguagesHeaders() {
-      const languages = [];
-      for (let index = 0; index < this.headers.length; index++) {
-        const element = this.headers[index];
-        if (element.value != 'group' && element.value != 'keys') {
-          languages.push(element);
-        }
-      }
-      return languages;
-    },
     downloadProject(platform) {
       this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.items, this.groups));
     }
-  },
-  mounted() {
+  }
+  /*mounted() {
     this.$eventBus.$on(EventEnum.FILTER_DATA_WITH_LANGUAGE, this.filterDataWithLanguage);
     this.$eventBus.$on(EventEnum.FILTER_KEYS, this.filterKeys);
     this.$eventBus.$on(EventEnum.REFRESH_KEYS_LIST, this.refreshEverything);
     this.$eventBus.$on(EventEnum.DOWNLOAD_PROJECT, this.downloadProject);
-  }
-})
+  }*/
+});
 </script>
 
 <style lang="scss">
 @import '~vuetify/src/styles/styles.sass';
-    .no-data-button {
-        margin-left: 45%;
-    }
-    .my-table {
-        max-width: 100%;
-        overflow-y: scroll;
-    }
-    .my-custom-table {
-        background-color: transparent !important;
-    }
-    .my-custom-table > .v-data-table__wrapper > table {
-        border-spacing: 0px 16px !important;
-    }
-    .data-table-key-style {
-        background-color: transparent;
-    }
-    .data-table-key-style > td {
-        background-color: white;
-        max-width: 50vw;
-    }
-    .v-row-group__summary {
-        background-color: transparent !important;
-    }
-    .icon-style-big {
-        font-size: 32px !important;
-    }
+
+.no-data-button {
+  margin-left: 45%;
+}
+
+.my-table {
+  max-width: 100%;
+  overflow-y: scroll;
+}
+
+.my-custom-table {
+  background-color: transparent !important;
+}
+
+.my-custom-table > .v-data-table__wrapper > table {
+  border-spacing: 0px 16px !important;
+}
+
+.data-table-key-style {
+  background-color: transparent;
+}
+
+.data-table-key-style > td {
+  background-color: white;
+  max-width: 50vw;
+}
+
+.v-row-group__summary {
+  background-color: transparent !important;
+}
+
+.icon-style-big {
+  font-size: 32px !important;
+}
 </style>

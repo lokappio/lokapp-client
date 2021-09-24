@@ -3,6 +3,7 @@ import Language from "@/data/models/api/Language";
 import ProjectUser from "@/data/models/api/ProjectUser";
 import CardEnum from "@/data/models/Card.enum";
 import RoleProtection from "@/data/models/roles/RoleProtection";
+import Project from "@/data/models/api/Project";
 
 export interface State {
   applicationReady: boolean;
@@ -14,6 +15,7 @@ export interface State {
   targetUser: ProjectUser;
   invitations: Invitation[];
   actualRole: RoleProtection;
+  currentProject: Project;
 }
 
 
@@ -26,5 +28,6 @@ export default {
   actualGroupId: -1,
   targetUser: null,
   invitations: [],
-  actualRole: null
+  actualRole: null,
+  currentProject: null,
 }

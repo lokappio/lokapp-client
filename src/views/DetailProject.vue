@@ -78,8 +78,10 @@ import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "@/components/molecules/KeyboardEvents.vue";
 import { MetaInfo } from 'vue-meta';
 import { getRoleClass, getRoleEnum } from "@/data/models/roles/role.enum";
+import Project from "@/data/models/api/Project";
 
 export default Vue.extend ({
+    name: 'DetailProject',
     metaInfo(): MetaInfo {
         return {
             title: `${this.projectName ? this.projectName : ''}`,
@@ -106,28 +108,30 @@ export default Vue.extend ({
         InvitationCreation,
         KeyboardEvents
     },
+    data() {
+      return {
+        loading: true as boolean,
+        CardEnum,
+      }
+    },
     created() {
         this.$store.commit("SET_ACTUAL_PROJECT_ID", parseInt(this.$route.params.project_id));
         this.projectId = this.$store.getters.actualProjectId;
         this.reloadProject();
     },
-    data() {
-        return {
-            loading: true as boolean,
-            projectId: -1 as number,
-            CardEnum,
-            projectName: null as string | null
-        }
+    computed: {
+      currentProject() { return this.$store.state.currentProject;}
     },
     methods: {
         reloadProject() {
             this.loading = true;
             this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            this.$service.projects.getSpecificProject(parseInt(this.$route.params.project_id))
-            .then((res) => {
-                this.$eventBus.$emit(EventEnum.RELOAD_YOURSELF);
+            this.$service.projects.getEntireProjectById(parseInt(this.$route.params.project_id))
+            .then((project: Project) => {
+              console.log(project);
+
                 this.loading = false;
-                this.projectName = res.name;
+                this.$store.commit("SET_CURRENT_PROJECT", project);
                 this.updateMyRole();
             }).catch(() => {
                 this.errorGetSomething();
@@ -155,18 +159,19 @@ export default Vue.extend ({
            }
         }
     },
-    mounted() {
+    /*mounted() {
+
         this.$eventBus.$on(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
         this.$eventBus.$on(EventEnum.RELOAD_PROJECT, this.reloadProject);
         this.$eventBus.$on(EventEnum.BACK_TO_DASHBOARD, this.backToDashboard);
         this.$eventBus.$on(EventEnum.ERROR_ACTION, this.reloadProject);
     },
-    beforeDestroy() {
+    /*beforeDestroy() {
         this.$eventBus.$off(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
         this.$eventBus.$off(EventEnum.RELOAD_PROJECT, this.reloadProject);
         this.$eventBus.$off(EventEnum.BACK_TO_DASHBOARD, this.backToDashboard);
         this.$eventBus.$off(EventEnum.ERROR_ACTION, this.reloadProject);
-    }
+    }*/
 })
 </script>
 

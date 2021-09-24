@@ -3,6 +3,8 @@ import { AxiosResponse } from "axios";
 import SpecificValue from "../models/api/SpecificValue";
 import Value from "../models/api/Value";
 import ApiService from "./ApiService";
+import NewKey from "@/data/models/api/NewKey";
+import NewValue from "@/data/models/api/NewValue";
 
 class ValuesService {
     static valuesUrl: string = config.baseUrl + "/projects/";
@@ -45,11 +47,11 @@ class ValuesService {
         return ApiService.delAPI(ValuesService.valuesUrl + projectId + "/translations/" + valueTarget.keyId + "/values/" + valueTarget.valueId);
     }
 
-    public static getValuesForKey(projectId: number, keyId: number): Promise<Array<SpecificValue>> {
+    public static getValuesByKeyId(projectId: number, keyId: number): Promise<NewValue[]> {
         return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
         .then((response) => {
             return response.data.map((item: any) => {
-                return SpecificValue.map(item);
+                return NewValue.map(item);
             });
         })
     }
