@@ -10,7 +10,7 @@
                 v-model="item.keys"
                 single-line
                 :rules="keyNameRules">
-                
+
                 <template v-slot:append-outer>
                     <v-container>
                         <v-row>
@@ -47,8 +47,10 @@
 <script>
 import EventEnum from "@/data/enum/event-bus.enum";
 import { keyNameRules } from "@/data/rules/KeyRules";
+import Vue from "vue";
 
-export default ('template-item-keys', {
+export default Vue.extend({
+    name: 'template-item-keys',
     props: [
         'item',
         'projectId',

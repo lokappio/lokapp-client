@@ -48,8 +48,10 @@
 <script>
 import EventEnum from "@/data/enum/event-bus.enum";
 import { groupNameRules } from "@/data/rules/GroupRules";
+import Vue from "vue";
 
-export default ('template-group-header', {
+export default Vue.extend({
+    name: 'template-group-header',
     props: [
         'headers',
         'group',

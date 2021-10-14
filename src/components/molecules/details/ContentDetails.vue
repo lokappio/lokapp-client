@@ -79,9 +79,6 @@ export default Vue.extend({
     TemplateItemKeys,
     ActionButton
   },
-  created() {
-    this.projectId = this.$store.getters.actualProjectId;
-  },
   data() {
     return {
       basicHeaders: [
@@ -112,9 +109,12 @@ export default Vue.extend({
       projectId: -1
     };
   },
+  created() {
+    this.projectId = this.$store.getters.actualProjectId;
+  },
   computed: {
     languagesHeaders(): any[] {
-      return this.headers.filter((item) => item != "group" && item != "keys");
+      return this.headers.filter((item: {}) => item != "group" && item != "keys");
     },
     canUpdateKey(): boolean {
       return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
