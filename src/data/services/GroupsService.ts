@@ -2,15 +2,16 @@ import config from "@/config";
 import { AxiosResponse } from "axios";
 import Group from "../models/api/Group";
 import ApiService from "./ApiService";
+import NewGroup from "@/data/models/api/NewGroup";
 
 class GroupsService {
     static groupsUrl: string = config.baseUrl + "/projects/";
 
-    public static getGroups(projectId: number): Promise<Array<Group>> {
+    public static getGroups(projectId: number): Promise<Array<NewGroup>> {
         return ApiService.getAPI(GroupsService.groupsUrl + projectId + "/groups")
         .then((response) => {
             return response.data.map((item: any) => {
-                return Group.map(item);
+                return NewGroup.map(item);
             })
         })
     }

@@ -10,6 +10,7 @@ import NewGroup from "@/data/models/api/NewGroup";
 import KeysService from "@/data/services/KeysService";
 import NewKey from "@/data/models/api/NewKey";
 import ValuesService from "@/data/services/ValuesService";
+import NewValue from "@/data/models/api/NewValue";
 
 class ProjectsService {
     static projectsUrl: string = config.baseUrl + "/projects";
@@ -49,28 +50,25 @@ class ProjectsService {
 
     public static getEntireProjectById(projectId: number): Promise<Project> {
         return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
-          .then((response) => {
+          .then(async (response) => {
               const currProject: Project = Project.map(response.data);
 
-              return GroupsService.getGroups(projectId).then((groups) => {
-                  const currGroups: NewGroup[] = groups.map((group) => NewGroup.map(group));
+              const keys: NewKey[] = await KeysService.getKeys(projectId);
 
-                  return KeysService.getKeys(projectId).then((keys) => {
-                      const currKeys = keys.map((key) => NewKey.map(key));
+              //Set values for each keys
+              await Promise.all(
+                keys.map(async (key) => {
+                  const values: NewValue[] = await ValuesService.getValuesByKeyId(projectId, key.id);
+                  key.values = values;
+                })
+              );
 
-                      return Promise.all(currKeys.map((key) => {
-                        ValuesService.getValuesByKeyId(projectId, key.id)
-                          .then((values) => {
-                            key.values = values;
-                        });
-                      })).then(() => {
-                          currGroups.forEach((group) => group.keys = currKeys.filter((key) => key.groupId = group.id));
-                          currProject.groups = currGroups;
 
-                          return currProject;
-                      });
-                  });
-              });
+              const groups: NewGroup[] = await GroupsService.getGroups(projectId);
+              groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
+              currProject.groups = groups;
+
+              return currProject;
           });
     }
 

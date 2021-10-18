@@ -1,16 +1,16 @@
 import config from "@/config";
 import { AxiosResponse } from "axios";
-import Key from "../models/api/Key";
 import ApiService from "./ApiService";
+import NewKey from "@/data/models/api/NewKey";
 
 class KeysService {
     static keysUrl: string = config.baseUrl + "/projects/";
 
-    public static getKeys(projectId: number): Promise<Array<Key>> {
+    public static getKeys(projectId: number): Promise<Array<NewKey>> {
         return ApiService.getAPI(KeysService.keysUrl + projectId + "/translations")
         .then((response) => {
             return response.data.map((item: any) => {
-                return Key.map(item);
+                return NewKey.map(item);
             })
         })
     }

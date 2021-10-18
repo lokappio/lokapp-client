@@ -112,6 +112,8 @@ export default Vue.extend ({
       return {
         loading: true as boolean,
         CardEnum,
+        projectId: -1 as number,
+        projectName: null as string | null
       }
     },
     created() {

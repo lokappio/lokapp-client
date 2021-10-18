@@ -1,9 +1,9 @@
-import Key from "@/data/models/api/Key";
+import NewKey from "@/data/models/api/NewKey";
 
 export default class NewGroup {
   id: number;
   name: string;
-  keys: Key[];
+  keys: NewKey[];
 
   public static map(data: Partial<NewGroup>): NewGroup {
     const group: NewGroup = new NewGroup();

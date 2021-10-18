@@ -1,13 +1,13 @@
 <template>
   <v-container class="full-contain my-table">
-    <v-row v-if="items.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
+    <v-row v-if="getItems.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
       <v-col cols="4">
         <action-button v-if="canUpdateKey" block :handler="openKeyCreationWithName" :text="''" addIcon/>
       </v-col>
     </v-row>
 
     <v-data-table
-        v-show="items.length > 0"
+        v-show="getItems.length > 0"
         hide-default-footer
         :headers="headers"
         :items="getItems"
@@ -20,26 +20,21 @@
         class="my-custom-table">
 
       <!-- Change keys -->
-      <template v-if="canUpdateKey" v-slot:[`item.keys`]="{ item }">
-        <template-item-keys
-            :item="item"
-            :projectId="projectId"
-            :items="items"
-            :resetKeys="resetKeys"/>
-      </template>
+
 
       <!-- Change values -->
-      <template v-for="header in languagesHeaders" v-slot:[customValueSlotName(header.value)]="{ item }">
-        <template-item-values
+      <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
+        <p :key="header.value">{{ item[header.value] }}</p>
+        <!--<template-item-values
             :key="header.value"
             :item="item"
             :header="header"
             :projectId="projectId"
-        />
+        />-->
       </template>
 
       <!-- Custom header for groups -->
-      <template v-slot:[`getItems.groups`]="{group, items, isOpen, toggle}">
+      <!--<template v-slot:[`getItems.groups`]="{group, items, isOpen, toggle}">
         <template-group-header
             :headers="headers"
             :group="group"
@@ -48,7 +43,7 @@
             :toggle="toggle"
             :groups="groups"
             :projectId="projectId"/>
-      </template>
+      </template>-->
 
       <!-- Custom footer on groups -->
       <template v-if="canUpdateKey" v-slot:[`group.summary`]="{ isOpen, group }">
@@ -69,14 +64,16 @@ import EventEnum from "@/data/enum/event-bus.enum";
 import CardEnum from "@/data/models/Card.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
+import Project from "@/data/models/api/Project";
+import NewKey from '@/data/models/api/NewKey';
 
 export default Vue.extend({
   name: "content-details",
   components: {
-    TemplateItemValues,
-    TemplateGroupHeader,
+   //TemplateItemValues,
+    //TemplateGroupHeader,
     TemplateGroupFooter,
-    TemplateItemKeys,
+    //TemplateItemKeys,
     ActionButton
   },
   data() {
@@ -101,7 +98,6 @@ export default Vue.extend({
         }
       ] as any[],
       headers: [],
-      items: [],
       groups: [],
       id: 0,
       loading: true,
@@ -113,14 +109,29 @@ export default Vue.extend({
     this.projectId = this.$store.getters.actualProjectId;
   },
   computed: {
-    languagesHeaders(): any[] {
-      return this.headers.filter((item: {}) => item != "group" && item != "keys");
-    },
     canUpdateKey(): boolean {
       return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
     },
     getItems() {
-      return this.$store.state.currentProject;
+      const currProject: Project = this.$store.state.currentProject;
+      const items: any[] = [];
+
+      currProject.groups?.forEach((group) => {
+        group.keys?.forEach((key) => {
+          const item: {[key: string]: any} = {
+            "key": key.name,
+            "group": group.name
+          };
+
+          key.values?.forEach((value) => {
+            item[value.languageId] = value.name;
+          });
+
+          items.push(item);
+        });
+      });
+
+      return items;
     }
   },
   methods: {
@@ -135,8 +146,8 @@ export default Vue.extend({
             this.headers = this.basicHeaders;
 
             if (languageId != -1) {
-              this.headers.push(languages.map((language) => {
-                return {
+              languages.forEach((language) => {
+                this.headers.push({
                   text: language.name,
                   align: "start",
                   value: language.id.toString(),
@@ -144,10 +155,11 @@ export default Vue.extend({
                   sortable: false,
                   filterable: true,
                   groupable: false
-                };
-              }));
+                });
+              });
             } else {
               const language: Language = languages.find((item) => item.id === languageId);
+
               this.headers.push({
                 text: language.name,
                 align: "start",
@@ -159,7 +171,10 @@ export default Vue.extend({
               });
             }
           })
-          .catch(() => this.errorGetSomething())
+          .catch((e) => {
+            console.log(e);
+            this.errorGetSomething();
+          })
           .finally(() => this.loading = false);
     },
     /*refreshEverything() {
@@ -270,18 +285,18 @@ export default Vue.extend({
       this.$store.commit("SET_ACTUAL_GROUP_ID", groupId);
       this.$store.commit("SET_OPEN_CARD", CardEnum.CREATE_KEY);
     },
-    filterKeys(value) {
+    filterKeys(value ) {
       this.searchValue = value;
     },
     setupCreateKeyClass() {
       return "text-3 data-table-key-style";
     },
-    customValueSlotName(name) {
-      return "item." + name;
-    },
     downloadProject(platform) {
       this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.items, this.groups));
     }
+  },
+  mounted() {
+    this.filterDataWithLanguage(1);
   }
   /*mounted() {
     this.$eventBus.$on(EventEnum.FILTER_DATA_WITH_LANGUAGE, this.filterDataWithLanguage);
