@@ -25,7 +25,8 @@
             :key="header.value"
             :item="item"
             :projectId="projectId"
-            v-on:saveKey="(value) => keySaved(value, item)"
+            v-on:saveKey="(value) => keySaved(value)"
+            v-on:deleteKey="(value) => keyDeleted(value)"
         />
 
         <template-item-values
