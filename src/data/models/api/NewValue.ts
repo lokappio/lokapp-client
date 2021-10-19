@@ -1,7 +1,11 @@
+export enum ValueQuantity {
+  zero = "zero", one = "one", other = "other"
+}
+
 export default class NewValue {
   id: number
   name: string
-  quantityString: string;
+  quantityString: ValueQuantity;
   languageId: number;
   keyId: number;
 
@@ -10,10 +14,11 @@ export default class NewValue {
 
     value.id = data.id;
     value.name = data.name;
-    value.quantityString = data['quantity_string'];
+    value.quantityString = data['quantity_string'] != null ? ValueQuantity[data['quantity_string']] : null ;
     value.languageId = data['language_id'];
     value.keyId = data['key_id'];
 
     return value;
   }
 }
+

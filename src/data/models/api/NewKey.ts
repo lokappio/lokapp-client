@@ -12,7 +12,7 @@ export default class NewKey {
 
     key.id = data.id;
     key.name = data.name;
-    key.isPlural = data.isPlural;
+    key.isPlural = data['is_plural'];
     key.groupId = data['group_id'];
 
     return key;

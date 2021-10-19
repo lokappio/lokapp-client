@@ -28,8 +28,7 @@
             :key="header.value"
             :item="item"
             :projectId="projectId"
-            :items="getItems"
-            :resetKeys="resetKeys"/>
+        />
 
         <template-item-values
             v-else
@@ -74,7 +73,7 @@ import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import NewKey from '@/data/models/api/NewKey';
 import NewGroup from "@/data/models/api/NewGroup";
-import NewValue from "@/data/models/api/NewValue";
+import NewValue, {ValueQuantity} from "@/data/models/api/NewValue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 
 export default Vue.extend({
@@ -128,18 +127,36 @@ export default Vue.extend({
 
       currProject.groups?.forEach((group) => {
         group.keys?.forEach((key) => {
-          const item: translationItem = {
-            "key": key,
-            "group": group
-          };
+          if(key.isPlural) {
+            Object.values(ValueQuantity).forEach((quantity) => {
+              const item: translationItem = {
+                "key": key,
+                "group": group,
+                "quantity": quantity
+              };
 
-          key.values?.forEach((value) => {
-            item[value.languageId] = value;
-          });
+              key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
+                item[value.languageId] = value;
+              });
 
-          items.push(item);
+              items.push(item);
+            });
+          } else {
+            const item: translationItem = {
+              "key": key,
+              "group": group,
+            };
+
+            key.values?.forEach((value) => {
+              item[value.languageId] = value;
+            });
+
+            items.push(item);
+          }
         });
       });
+ 
+      console.log(items);
 
       return items;
     }

@@ -3,7 +3,7 @@
   <v-text-field
       :id="inputId"
       v-if="$store.getters.actualRole.canWriteValue"
-      v-model="item[header.value]"
+      v-model="item[header.value].name"
       @blur="saveValue()"
       @keydown.enter="blurInput"
       @keydown.tab="blurInput"
@@ -15,13 +15,22 @@
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
+import {translationItem} from "@/data/models/types/TranslationTypes";
 
 export default Vue.extend({
   name: "template-item-values",
-  props: ["header", "item", "projectId", "refreshEverything"],
+  props: {
+    header: {},
+    item: translationItem,
+    projectId: Number,
+    //"refreshEverything"
+  },
+  created() {
+    console.log(this.item);
+  },
   computed: {
     inputId(): string {
-      let id: string = this.item.keyId.toString() + this.header.value.toString();
+      let id: string = this.item.key.id + this.header.value.toString();
       if (this.item.quantity) {
         id += this.item.quantity;
       }
