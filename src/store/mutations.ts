@@ -5,6 +5,8 @@ import CardEnum from "@/data/models/Card.enum";
 import RoleProtection from "@/data/models/roles/RoleProtection";
 import {State} from "@/store/states";
 import Project from "@/data/models/api/Project";
+import NewKey from "@/data/models/api/NewKey";
+import NewGroup from "@/data/models/api/NewGroup";
 
 export default {
     SET_USER(state: State, user: any): void {
@@ -18,6 +20,21 @@ export default {
     },
     SET_CURRENT_PROJECT(state: State, project: Project): void {
         state.currentProject = project;
+    },
+    UPDATE_PROJECT_KEY(state: State, key: NewKey): void {
+        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === key.groupId);
+        const currKeyIndex: number = state.currentProject.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
+
+        state.currentProject.groups[currGroupIndex].keys[currKeyIndex] = Object.assign({}, key);
+
+        state.currentProject = Object.assign({}, state.currentProject);
+    },
+    DELETE_PROJECT_KEY(state: State, key: NewKey): void {
+        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === key.groupId);
+        const currKeyIndex: number = state.currentProject.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
+
+        state.currentProject.groups[currGroupIndex].keys.splice(currKeyIndex, 1);
+        state.currentProject = Object.assign({}, state.currentProject);
     },
     SET_OPEN_CARD(state: State, card: CardEnum): void {
         state.openCard = card;

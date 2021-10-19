@@ -28,18 +28,12 @@ class KeysService {
         return ApiService.delAPI(KeysService.keysUrl + projectId + "/translations/" + keyId);
     }
 
-    public static updateKey(projectId: number, keyId: number, newName: string): Promise<AxiosResponse<any>> {
+    public static updateKey(projectId: number, key: NewKey/*keyId: number, newName: string*/): Promise<AxiosResponse> {
         const bodyParameters = {
-            name: newName
+            name: key.name,
+            "is_plural": key.isPlural
         };
-        return ApiService.patchAPI(KeysService.keysUrl + projectId + "/translations/" + keyId, bodyParameters);
-    }
-
-    public static updateKeyPlural(projectId: number, keyId: number, isPlural: boolean): Promise<AxiosResponse<any>> {
-        const bodyParameters = {
-            "is_plural": isPlural
-        };
-        return ApiService.patchAPI(KeysService.keysUrl + projectId + "/translations/" + keyId, bodyParameters);
+        return ApiService.patchAPI(KeysService.keysUrl + projectId + "/translations/" + key.id, bodyParameters);
     }
 }
 

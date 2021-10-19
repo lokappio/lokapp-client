@@ -25,6 +25,7 @@
             :key="header.value"
             :item="item"
             :projectId="projectId"
+            v-on:saveKey="(value) => keySaved(value, item)"
         />
 
         <template-item-values
@@ -49,8 +50,8 @@
       </template>
 
       <!-- Custom footer on groups -->
-      <template v-if="canUpdateKey" v-slot:[`group.summary`]="{ isOpen, group }">
-        <template-group-footer :isOpen="isOpen" :group="group" :openKeyCreationWithName="openKeyCreationWithName"/>
+      <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group }">
+        <template-group-footer :isOpen="isOpen" :group="group" :openKeyCreationWithName="() => openKeyCreationWithName(group)"/>
       </template>
     </v-data-table>
   </v-container>
@@ -156,6 +157,14 @@ export default Vue.extend({
     }
   },
   methods: {
+    keySaved(value: NewKey): void{
+      //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
+      this.$store.commit("UPDATE_PROJECT_KEY", value);
+    },
+    keyDeleted(value: NewKey): void {
+      //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
+      this.$store.commit("DELETE_PROJECT_KEY", value);
+    },
     errorGetSomething() {
       this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
     },
@@ -282,9 +291,6 @@ export default Vue.extend({
         this.errorGetSomething();
       });
     },*/
-    resetKeys() {
-      this.items = [];
-    },
     getActualLineIndex(keyId, quantity) {
       return (this.items.findIndex((element) => {
         if (element.keyId === keyId && element.quantity === quantity) {
@@ -293,19 +299,18 @@ export default Vue.extend({
         return false;
       }));
     },
-    openKeyCreationWithName(groupName) {
-      const actualGroup = this.groups.findIndex((group) => group.groupName === groupName);
-      if (actualGroup === -1) {
+    openKeyCreationWithName(group) {
+      if (!group) {
         this.openKeyCreation(-1);
       } else {
-        this.openKeyCreation(this.groups[actualGroup].groupId);
+        this.openKeyCreation(group.id);
       }
     },
     openKeyCreation(groupId) {
       this.$store.commit("SET_ACTUAL_GROUP_ID", groupId);
       this.$store.commit("SET_OPEN_CARD", CardEnum.CREATE_KEY);
     },
-    filterKeys(value ) {
+    filterKeys(value) {
       this.searchValue = value;
     },
     setupCreateKeyClass() {

@@ -1,26 +1,27 @@
 <template>
-  <v-edit-dialog
-      :return-value.sync="item.key"
-      @save="saveKey(item.keyId, item.keys)"
-      @close="item.hasPluralChanged = false">
-    <p class="pa-0 ma-0 span-keys-with-overflow"> {{ customKeyName }}</p>
-    <template v-slot:input>
-      <v-text-field
-          v-model="item.key.name"
-          single-line
-          :rules="keyNameRules">
+  <v-menu offset-y :close-on-content-click="false" :value="isOpen">
+    <template v-slot:activator="{ on }">
+      <p v-on="on" @click="isOpen = true" class="pa-0 ma-0 span-keys-with-overflow"> {{ keyQuantityName }}</p>
+    </template>
 
+    <v-card class="pa-2">
+      <v-text-field
+          v-model="updateKey.name"
+          single-line
+          :rules="keyNameRules"
+          @keydown.enter="saveKey"
+      >
         <template v-slot:append-outer>
           <v-container>
             <v-row>
               <v-col cols="12" class="pa-0">
                 <!-- Button plural -->
-                <v-btn color="maincolor" @click="item.hasPluralChanged = !item.hasPluralChanged" class="mb-2 white--text">
-                  {{ (item.key.isPlural + item.hasPluralChanged) % 2 === 1 ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
+                <v-btn color="maincolor" @click="updateKey.isPlural = !updateKey.isPlural" class="mb-2 white--text">
+                  {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
                 </v-btn>
 
                 <!-- ButtonValid -->
-                <v-btn v-show="item.hasPluralChanged === true" @click="updatePluralKey(item)" color="maincolor" class="mb-2 ml-1">
+                <v-btn v-if="updateKey.isPlural !== item.key.isPlural" @click="() => saveKey()" color="maincolor" class="mb-2 ml-1">
                   <v-icon color="white">
                     mdi-check
                   </v-icon>
@@ -29,17 +30,17 @@
 
               <v-col cols="12" class="pa-0">
                 <!-- ButtonDelete -->
-                <v-btn color="maincolor" @click="deleteKey(item.key.id)" class="mb-2 white--text">
+                <v-btn color="maincolor" @click="deleteKey()" class="mb-2 white--text">
                   {{ $t("project_detail.delete_key_button") }}
                 </v-btn>
               </v-col>
             </v-row>
           </v-container>
         </template>
-
       </v-text-field>
-    </template>
-  </v-edit-dialog>
+    </v-card>
+
+  </v-menu>
 </template>
 
 <script>
@@ -52,59 +53,36 @@ export default Vue.extend({
   name: "template-item-keys",
   props: {
     item: translationItem,
-    projectId: Number
-    //'items',
-    //'resetKeys',
-    //'refreshEverything'
+    projectId: Number,
   },
   data() {
     return {
+      updateKey: Object.assign({}, this.item.key),
+      isOpen: false,
       keyNameRules: keyNameRules(this.$t("rules.required"), this.$t("rules.key_name_length"), this.$t("rules.snake_case_only"))
     };
   },
+
   computed: {
-    customKeyName() {
+    keyQuantityName() {
       return this.item?.quantity ? (this.item.key.name + "[" + this.item.quantity + "]") : this.item.key.name;
     }
   },
   methods: {
-    saveKey(keyId, newName) {
-      this.$service.keys.updateKey(this.projectId, keyId, newName)
-          .then((response) => {
-            this.items.forEach((item) => {
-              if (item.keyId === keyId) {
-                item.keys = response.data.name;
-              }
-            });
-          }).catch((error) => {
-        this.hasPluralChanged = false;
-        if (!error.response) {
-          return;
-        }
-        switch (error.response.status) {
-          case 422:
-            this.notify(this.$t("errors.key_name_already_exists"));
-            break;
-          case 403:
-            this.$notify(this.$t("errors.unauthorized"));
-            break;
-          case 404:
-            this.notify(this.$t("errors.not_existing_key"));
-            break;
-          default:
-            this.notify(this.$t("errors.unknown_error"));
-            break;
-        }
-        this.$eventBus.$emit(EventEnum.ERROR_ACTION);
-      });
-    },
-    updatePluralKey(item) {
-      this.$service.keys.updateKeyPlural(this.projectId, item.keyId, !item.isPlural)
+    saveKey() {
+      this.$service.keys.updateKey(this.projectId, this.updateKey)
+          .then(() => {
+            this.isOpen = false
+            this.$emit("saveKey", this.updateKey);
+          })
           .catch((error) => {
             if (!error.response) {
               return;
             }
             switch (error.response.status) {
+              case 422:
+                this.notify(this.$t("errors.key_name_already_exists"));
+                break;
               case 403:
                 this.$notify(this.$t("errors.unauthorized"));
                 break;
@@ -115,19 +93,14 @@ export default Vue.extend({
                 this.notify(this.$t("errors.unknown_error"));
                 break;
             }
-          }).finally(() => {
-        this.hasPluralChanged = false;
-        this.resetKeys();
-        this.refreshEverything();
-      });
+            this.$eventBus.$emit(EventEnum.ERROR_ACTION);
+          });
     },
-    deleteKey(keyId) {
-      this.$service.keys.deleteKey(this.projectId, keyId)
+    deleteKey() {
+      this.$service.keys.deleteKey(this.projectId, this.item.key.id)
           .then(() => {
-            let actualKey;
-            while ((actualKey = this.items.findIndex((element) => element.keyId === keyId)) != -1) {
-              this.items.splice(actualKey, 1);
-            }
+            this.isOpen = false
+            this.$emit("deleteKey", this.updateKey);
           }).catch((error) => {
         if (error.response) {
           switch (error.response.status) {
@@ -142,7 +115,6 @@ export default Vue.extend({
               break;
           }
         }
-        this.refreshEverything();
       });
     }
   }
