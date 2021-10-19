@@ -21,9 +21,6 @@ export default Vue.extend({
   props: ["header", "item", "projectId", "refreshEverything"],
   computed: {
     inputId(): string {
-      console.log(this.item[this.header.value]);
-      console.log(this.header);
-
       let id: string = this.item.keyId.toString() + this.header.value.toString();
       if (this.item.quantity) {
         id += this.item.quantity;

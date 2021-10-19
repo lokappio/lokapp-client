@@ -7,7 +7,7 @@
         <p v-else class="pa-0 ma-0 span-keys-with-overflow"> {{ customKeyName(item) }}</p>
         <template v-slot:input>
             <v-text-field
-                v-model="item.keys"
+                v-model="item.key"
                 single-line
                 :rules="keyNameRules">
 
@@ -48,24 +48,28 @@
 import EventEnum from "@/data/enum/event-bus.enum";
 import { keyNameRules } from "@/data/rules/KeyRules";
 import Vue from "vue";
+import {translationItem} from "@/data/models/types/TranslationTypes";
 
 export default Vue.extend({
     name: 'template-item-keys',
-    props: [
-        'item',
-        'projectId',
-        'items',
-        'resetKeys',
-        'refreshEverything'
-    ],
-    data() {
+    props: {
+      item: translationItem,
+      projectId: String
+      //'items',
+      //'resetKeys',
+      //'refreshEverything'
+    },
+    created() {
+      console.log(this.item);
+    },
+  data() {
         return {
             keyNameRules: keyNameRules(this.$t("rules.required"), this.$t("rules.key_name_length"), this.$t("rules.snake_case_only"))
         }
     },
     methods: {
         customKeyName(item) {
-            return (item.keys + " [" + item.quantity + "]");
+            return (item.key.name + "[" + item.quantity + "]");
         },
         saveKey(keyId, newName) {
             this.$service.keys.updateKey(this.projectId, keyId, newName)

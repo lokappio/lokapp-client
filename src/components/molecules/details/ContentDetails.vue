@@ -19,22 +19,29 @@
         elevation="0"
         class="my-custom-table">
 
-      <!-- Change keys -->
-
-
-      <!-- Change values -->
       <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
-        <p :key="header.value">{{ item[header.value] }}</p>
-        <!--<template-item-values
+        <!--<p :key="header.value" v-if="header.value == 'keys'">{{ item.key }}</p>
+        <p :key="header.value" v-else>{{ item[header.value] }}</p>-->
+
+        <template-item-keys
+            v-if="header.value === 'keys'"
+            :key="header.value"
+            :item="item"
+            :projectId="projectId"
+            :items="getItems"
+            :resetKeys="resetKeys"/>
+
+        <template-item-values
+            v-else
             :key="header.value"
             :item="item"
             :header="header"
             :projectId="projectId"
-        />-->
+        />
       </template>
 
       <!-- Custom header for groups -->
-      <!--<template v-slot:[`getItems.groups`]="{group, items, isOpen, toggle}">
+      <template v-slot:group.header="{group, items, isOpen, toggle}">
         <template-group-header
             :headers="headers"
             :group="group"
@@ -43,7 +50,7 @@
             :toggle="toggle"
             :groups="groups"
             :projectId="projectId"/>
-      </template>-->
+      </template>
 
       <!-- Custom footer on groups -->
       <template v-if="canUpdateKey" v-slot:[`group.summary`]="{ isOpen, group }">
@@ -66,14 +73,17 @@ import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import NewKey from '@/data/models/api/NewKey';
+import NewGroup from "@/data/models/api/NewGroup";
+import NewValue from "@/data/models/api/NewValue";
+import {translationItem} from "@/data/models/types/TranslationTypes";
 
 export default Vue.extend({
   name: "content-details",
   components: {
-   //TemplateItemValues,
-    //TemplateGroupHeader,
+   TemplateItemValues,
+    TemplateGroupHeader,
     TemplateGroupFooter,
-    //TemplateItemKeys,
+    TemplateItemKeys,
     ActionButton
   },
   data() {
@@ -112,19 +122,19 @@ export default Vue.extend({
     canUpdateKey(): boolean {
       return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
     },
-    getItems() {
+    getItems(): translationItem[] {
       const currProject: Project = this.$store.state.currentProject;
       const items: any[] = [];
 
       currProject.groups?.forEach((group) => {
         group.keys?.forEach((key) => {
-          const item: {[key: string]: any} = {
-            "key": key.name,
-            "group": group.name
+          const item: translationItem = {
+            "key": key,
+            "group": group
           };
 
           key.values?.forEach((value) => {
-            item[value.languageId] = value.name;
+            item[value.languageId] = value;
           });
 
           items.push(item);
@@ -172,7 +182,6 @@ export default Vue.extend({
             }
           })
           .catch((e) => {
-            console.log(e);
             this.errorGetSomething();
           })
           .finally(() => this.loading = false);
