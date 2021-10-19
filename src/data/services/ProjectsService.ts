@@ -11,6 +11,7 @@ import KeysService from "@/data/services/KeysService";
 import NewKey from "@/data/models/api/NewKey";
 import ValuesService from "@/data/services/ValuesService";
 import NewValue from "@/data/models/api/NewValue";
+import LanguagesService from "@/data/services/LanguagesService";
 
 class ProjectsService {
     static projectsUrl: string = config.baseUrl + "/projects";
@@ -52,6 +53,7 @@ class ProjectsService {
         return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
           .then(async (response) => {
               const currProject: Project = Project.map(response.data);
+              currProject.languages = await LanguagesService.getLanguages(projectId);
 
               const keys: NewKey[] = await KeysService.getKeys(projectId);
 

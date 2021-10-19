@@ -4,8 +4,15 @@
     </tr>
 </template>
 
-<script>
-export default ('template-group-footer', {
-    props: ['isOpen', 'group', 'openKeyCreationWithName']
+<script lang="ts">
+import Vue from "vue";
+
+export default Vue.extend({
+    name: 'template-group-footer',
+    props: {
+      isOpen: Boolean,
+      group: {},
+      openKeyCreationWithName: Function
+    }
 });
 </script>

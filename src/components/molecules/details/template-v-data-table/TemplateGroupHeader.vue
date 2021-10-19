@@ -35,7 +35,7 @@
     </td>
 </template>
 
-<script>
+<script lang="ts">
 import { groupNameRules } from "@/data/rules/GroupRules";
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";

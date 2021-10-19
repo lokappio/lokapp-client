@@ -43,7 +43,7 @@
   </v-menu>
 </template>
 
-<script>
+<script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
 import {keyNameRules} from "@/data/rules/KeyRules";
 import Vue from "vue";

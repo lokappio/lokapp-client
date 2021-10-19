@@ -1,10 +1,12 @@
 import NewGroup from "@/data/models/api/NewGroup";
+import Language from "@/data/models/api/Language";
 
 export default class Project {
   id: number;
   name: string;
   color: string;
   description: string;
+  languages: Language[];
   groups: NewGroup[];
 
   static map(data: Partial<Project>): Project {

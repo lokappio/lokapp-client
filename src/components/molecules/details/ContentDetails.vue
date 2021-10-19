@@ -64,15 +64,13 @@ import TemplateItemValues from "@/components/molecules/details/template-v-data-t
 import TemplateItemKeys from "@/components/molecules/details/template-v-data-table/TemplateItemKeys";
 import TemplateGroupHeader from "@/components/molecules/details/template-v-data-table/TemplateGroupHeader";
 import TemplateGroupFooter from "@/components/molecules/details/template-v-data-table/TemplateGroupFooter";
-import {PluralTemplate, PLURAL_DEFAULT} from "@/data/models/PluralTemplate";
 import EventEnum from "@/data/enum/event-bus.enum";
 import CardEnum from "@/data/models/Card.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import NewKey from '@/data/models/api/NewKey';
-import NewGroup from "@/data/models/api/NewGroup";
-import NewValue, {ValueQuantity} from "@/data/models/api/NewValue";
+import {ValueQuantity} from "@/data/models/api/NewValue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 
 export default Vue.extend({
@@ -207,99 +205,6 @@ export default Vue.extend({
           })
           .finally(() => this.loading = false);
     },
-    /*refreshEverything() {
-      this.loading = true;
-      this.$service.languages.getLanguages(this.projectId)
-          .then((languages) => {
-            this.headers = this.basicHeaders.concat();
-            for (const language of Object.values(languages)) {
-              this.headers.push({
-                text: language.name,
-                align: "start",
-                value: language.id.toString(),
-                width: "400px",
-                sortable: false,
-                filterable: true,
-                groupable: false
-              });
-            }
-            this.$service.values.getEveryValues(this.projectId)
-                .then((values) => {
-                  values.forEach((value) => {
-
-                    //STEP 1 : Create the line where to stock value
-                    if (this.getActualLineIndex(value.keyId, value.quantity) === -1) {
-                      if (value.isPlural === false) {
-                        //Create one line if key is single
-                        this.items.push({
-                          group: value.groupName,
-                          groupId: value.groupId,
-                          keys: value.keyName,
-                          keyId: value.keyId,
-                          id: this.id,
-                          isPlural: value.isPlural,
-                          hasPluralChanged: false,
-                          quantity: null
-                        });
-                        this.id += 1;
-                      } else if (this.getActualLineIndex(value.keyId, PLURAL_DEFAULT) === -1) {
-                        //Check if lines are not already created
-                        //Create several lines for every quantities if key is plural
-                        Object.values(PluralTemplate).forEach(quantity => {
-                          this.items.push({
-                            group: value.groupName,
-                            groupId: value.groupId,
-                            keys: value.keyName,
-                            keyId: value.keyId,
-                            id: this.id,
-                            isPlural: value.isPlural,
-                            hasPluralChanged: false,
-                            quantity: quantity
-                          });
-                          this.id += 1;
-                        });
-                      }
-                    }
-
-                    //STEP 2 : Get the line where to stock actual value
-                    const actualLine = this.getActualLineIndex(value.keyId, value.quantity);
-                    if (actualLine === -1) {
-                      return;
-                    }
-
-                    //STEP 3 : Stock value inside line
-                    if (value.languageId != null) {
-                      this.$set(this.items[actualLine], value.languageId.toString(), value.valueName);
-                    }
-
-                    //STEP 4 : Add group to group list
-                    const actualGroup = this.groups.findIndex((group) => group.groupId === value.groupId);
-                    if (actualGroup === -1) {
-                      this.groups.push({
-                        groupId: value.groupId,
-                        groupName: value.groupName,
-                        groupActivated: false,
-                        groupUpdatedName: value.groupName
-                      });
-                    }
-                  });
-                }).catch(() => {
-              this.errorGetSomething();
-            }).finally(() => {
-              this.loading = false;
-            });
-          }).catch(() => {
-        this.errorGetSomething();
-      });
-    },*/
-    getActualLineIndex(keyId, quantity) {
-      return (this.items.findIndex((element) => {
-        if (element.keyId === keyId && element.quantity === quantity) {
-          return true;
-        }
-        return false;
-      }));
-    },
     openKeyCreationWithName(group) {
       if (!group) {
         this.openKeyCreation(-1);
@@ -321,12 +226,6 @@ export default Vue.extend({
   mounted() {
     this.filterDataWithLanguage(1);
   }
-  /*mounted() {
-    this.$eventBus.$on(EventEnum.FILTER_DATA_WITH_LANGUAGE, this.filterDataWithLanguage);
-    this.$eventBus.$on(EventEnum.FILTER_KEYS, this.filterKeys);
-    this.$eventBus.$on(EventEnum.REFRESH_KEYS_LIST, this.refreshEverything);
-    this.$eventBus.$on(EventEnum.DOWNLOAD_PROJECT, this.downloadProject);
-  }*/
 });
 </script>
 

@@ -1,9 +1,6 @@
-
 <template>
     <v-card color="white" class="pa-4 pa-md-7 card-style-key-creation">
-
         <v-container>
-
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11" class="px-0">
@@ -77,18 +74,18 @@
                 </v-row>
 
                 <!-- Language Traduction -->
-                <v-row v-if="languages.length > 0" class="mt-0 pb-0 mb-0">
+                <!--<v-row v-if="currentProject.languages.length > 0" class="mt-0 pb-0 mb-0">
                     <v-col cols="12" class="pb-0 px-0">
                         <p class="title-h2">{{ $t('key_creation.traductions_title') }}</p>
                     </v-col>
                 </v-row>
-                <v-container v-if="languages.length > 0" class="pt-4 mt-0 ml-1 overflow-container-languages">
-                    <v-row class="pb-2" v-for="language in languages" :key="language.id">
+                <v-container v-if="currentProject.languages.length > 0" class="pt-4 mt-0 ml-1 overflow-container-languages">
+                    <v-row class="pb-2" v-for="language in currentProject.languages" :key="language.id">
                         <v-col cols="12" class="pa-0">
                             <v-text-field class="black-caret" background-color="#F2F3F7" v-model="language.tradValue" :label="language.name" filled flat hide-details="true"></v-text-field>
                         </v-col>
                     </v-row>
-                </v-container>
+                </v-container>-->
 
                 <!-- ValidateButton -->
                 <v-row class="mt-2 pb-0">
@@ -99,10 +96,9 @@
             </v-form>
         </v-container>
     </v-card>
-  
 </template>
 
-<script>
+<script lang="ts">
 import ActionButton from "@/components/molecules/buttons/ActionButton";
 import Key from "@/data/models/api/Key";
 import {keyNameRules} from "@/data/rules/KeyRules";
@@ -112,9 +108,13 @@ import { groupNameRules } from "@/data/rules/GroupRules";
 import CardEnum from "@/data/models/Card.enum";
 import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "../../KeyboardEvents.vue";
+import Vue from "vue";
+import NewKey from "@/data/models/api/NewKey";
+import Project from "@/data/models/api/Project";
+import Language from "@/data/models/api/Language";
 
-export default (
-    'key-creation', {
+export default Vue.extend({
+    name: 'key-creation',
     components: {
         ActionButton,
         KeyboardEvents
@@ -122,17 +122,22 @@ export default (
     created() {
         this.projectId = this.$store.getters.actualProjectId;
         this.groupId = this.$store.getters.actualGroupId;
-        this.refreshKeyCreation();
+        this.loadData();
     },
     data: function() {
         return {
             loading: false,
+            groups: [
+              {
+                id: -1,
+                name: this.$t("key_creation.new_group")
+              },
+            ],
             groupName: "",
             keyName: "",
             keyNameRules: keyNameRules(this.$t("rules.required"), this.$t("rules.key_name_length"), this.$t("rules.snake_case_only")),
             groupNameRules: groupNameRules(this.$t("rules.required"), this.$t("rules.group_name_length"), this.$t("rules.snake_case_only")),
             isBlockButton: true,
-            languages: [],
             activeGroupId: -1,
             snackbarError: false,
             errorText: "",
@@ -140,6 +145,11 @@ export default (
             projectId: -1,
             groupId: -1
         }
+    },
+    computed: {
+      currentProject(): Project {
+        return this.$store.state.currentProject;
+      },
     },
     methods: {
         refreshKeysList() {
@@ -154,47 +164,13 @@ export default (
         errorAction() {
             this.$eventBus.$emit(EventEnum.ERROR_ACTION);
         },
-        refreshKeyCreation() {
+        loadData(): Promise<void> {
             this.loading = true;
-            this.languages = [];
-            this.groups = [
-                {
-                    id: -1,
-                    name: this.$t("key_creation.new_group")
-                },
-            ];
-            this.$service.languages.getLanguages(this.projectId)
-            .then((languages) => {
-                for (const language of Object.values(languages)) {
-                    this.languages.push({
-                        name: language.name,
-                        id: language.id.toString(),
-                        tradValue: ""
-                    });
-                }
-            }).catch(() => {
-                this.errorGetSomething();
-            }).finally(() => {
-                this.loading = false;
-            });
-
-            this.$service.groups.getGroups(this.projectId)
-            .then((groups) => {
-                for (const group of Object.values(groups)) {
-                    this.groups.push({
-                        id: group.id,
-                        name: group.name
-                    });
-                }
-                if (this.groupId >= 0) {
-                    this.activeGroupId = this.groupId;
-                } else {
-                    this.activeGroupId = this.groups[this.groups.length - 1].id;
-                }
-            }).catch(() => {
-                this.errorGetSomething();
-            }).finally(() => {
-                this.loading = false;
+            this.groups = this.currentProject.groups.map((group) => {
+              return {
+                id: group.id,
+                name: group.name
+              }
             });
         },
         createNewKey() {
@@ -225,7 +201,6 @@ export default (
                                     this.$notify(this.$t("errors.unknown_error"));
                                     break;
                             }
-                            this.refreshKeyCreation();
                         }
                     });
                 } else {
@@ -277,7 +252,6 @@ export default (
                             this.errorAction();
                             break;
                     }
-                    this.refreshKeyCreation();
                 }
             }).finally(() => {
                 this.closeKeyCreation();
