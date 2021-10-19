@@ -23,7 +23,6 @@ export default Vue.extend({
     header: {},
     item: translationItem,
     projectId: Number,
-    //"refreshEverything"
   },
   computed: {
     inputId(): string {
@@ -40,46 +39,15 @@ export default Vue.extend({
       this.$notify(error);
       this.$eventBus.$emit(EventEnum.ERROR_ACTION);
     },
-    /*createValue(keyId, newValue, languageId, quantity) {
-      this.$service.values.createValue(this.projectId, keyId, {valueName: newValue, languageId: languageId, quantity: quantity})
-          .catch(() => {
-            this.reportError(this.$t("errors.unknown_error"));
-          });
-    },*/
-    updateValue(newValueObject) {
-      this.$service.values.updateValue(this.projectId, newValueObject)
-          .catch(() => {
-            this.reportError(this.$t("errors.unknown_error"));
-          });
-    },
     blurInput(): void {
       document.getElementById(this.inputId).blur();
     },
     saveValue(): Promise<void> {
-      this.updateValue(this.item[this.header.value]);
-    }
-    /*saveValue(): Promise<void> {
-      this.$service.values.getSpecificValue(this.projectId, {keyId: this.item.keyId, languageId: this.item.languageId})
-          .then((values) => {
-            const indexValue = values.findIndex((element) => element.quantity === this.item.quantity);
-            if (indexValue === -1) {
-              this.reportError(this.$t("errors.unknown_error"));
-              return;
-            }
-
-            if (this.item[this.header.value] != null) {
-              if (indexValue === -1) {
-                this.createValue(keyId, newValue, languageId, quantity);
-              } else {
-                values[indexValue].valueName = newValue;
-                this.updateValue(values[indexValue]);
-              }
-            }
-          })
+      return this.$service.values.updateValue(this.projectId, this.item[this.header.value])
           .catch(() => {
-            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
+            this.reportError(this.$t("errors.unknown_error"));
           });
-    }*/
+    }
   }
 });
 </script>

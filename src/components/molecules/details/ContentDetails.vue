@@ -13,7 +13,7 @@
         :items="getItems"
         :loading="loading"
         :search="searchValue"
-        :item-class="setupCreateKeyClass"
+        item-class="text-3 data-table-key-style"
         disable-pagination
         group-by="group"
         elevation="0"
@@ -313,9 +313,6 @@ export default Vue.extend({
     },
     filterKeys(value) {
       this.searchValue = value;
-    },
-    setupCreateKeyClass() {
-      return "text-3 data-table-key-style";
     },
     downloadProject(platform) {
       this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.items, this.groups));

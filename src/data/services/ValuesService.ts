@@ -36,11 +36,11 @@ class ValuesService {
         })
     }
 
-    public static updateValue(projectId: number, valueTarget: Value): Promise<AxiosResponse<any>> {
+    public static updateValue(projectId: number, value: NewValue): Promise<AxiosResponse> {
         const bodyParameters = {
-            name: valueTarget.valueName
+            name: value.name
         };
-        return ApiService.patchAPI(ValuesService.valuesUrl + projectId + "/translations/" + valueTarget.keyId + "/values/" + valueTarget.valueId, bodyParameters);
+        return ApiService.patchAPI(ValuesService.valuesUrl + projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
     public static deleteValue(projectId: number, valueTarget: Value): Promise<AxiosResponse<any>> {
