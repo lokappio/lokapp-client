@@ -25,9 +25,6 @@ export default Vue.extend({
     projectId: Number,
     //"refreshEverything"
   },
-  created() {
-    console.log(this.item);
-  },
   computed: {
     inputId(): string {
       let id: string = this.item.key.id + this.header.value.toString();

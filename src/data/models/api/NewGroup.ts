@@ -5,6 +5,8 @@ export default class NewGroup {
   name: string;
   keys: NewKey[];
 
+  get isDefault(): boolean { return this.name === "common"}
+
   public static map(data: Partial<NewGroup>): NewGroup {
     const group: NewGroup = new NewGroup();
 

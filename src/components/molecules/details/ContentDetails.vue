@@ -20,9 +20,6 @@
         class="my-custom-table">
 
       <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
-        <!--<p :key="header.value" v-if="header.value == 'keys'">{{ item.key }}</p>
-        <p :key="header.value" v-else>{{ item[header.value] }}</p>-->
-
         <template-item-keys
             v-if="header.value === 'keys'"
             :key="header.value"
@@ -42,12 +39,12 @@
       <!-- Custom header for groups -->
       <template v-slot:group.header="{group, items, isOpen, toggle}">
         <template-group-header
+            :key="group.id"
             :headers="headers"
             :group="group"
             :items="items"
             :isOpen="isOpen"
             :toggle="toggle"
-            :groups="groups"
             :projectId="projectId"/>
       </template>
 
@@ -107,7 +104,6 @@ export default Vue.extend({
         }
       ] as any[],
       headers: [],
-      groups: [],
       id: 0,
       loading: true,
       searchValue: "",
@@ -155,8 +151,6 @@ export default Vue.extend({
           }
         });
       });
- 
-      console.log(items);
 
       return items;
     }
