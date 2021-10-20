@@ -5,7 +5,7 @@ export default class NewKey {
   name: string;
   isPlural: boolean;
   groupId: number;
-  values: NewValue[]
+  values: NewValue[] = [];
 
   public static map(data: Partial<NewKey>): NewKey {
     const key = new NewKey();

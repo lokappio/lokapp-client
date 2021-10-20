@@ -22,7 +22,7 @@
       <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
         <template-item-keys
             v-if="header.value === 'keys'"
-            :key="header.value"
+            :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
             :item="item"
             :projectId="projectId"
             v-on:saveKey="(value) => keySaved(value)"
@@ -31,7 +31,7 @@
 
         <template-item-values
             v-else
-            :key="header.value"
+            :key="`${item.key.id}_${item[header.value].id}_${header.value}`"
             :item="item"
             :header="header"
             :projectId="projectId"
