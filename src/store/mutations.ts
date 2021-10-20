@@ -22,30 +22,15 @@ export default {
         state.currentProject = project;
     },
     ADD_PROJECT_KEY(state: State, data: {group: NewGroup | null; key: NewKey}): void {
-        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === data.key.groupId);
-
-        if(currGroupIndex != -1) {
-            state.currentProject.groups[currGroupIndex].keys.push(data.key);
-        } else {
-            state.currentProject.groups.push(data.group);
-            state.currentProject.groups[state.currentProject.groups.length - 1].keys.push(data.key);
-        }
-
+        state.currentProject.addKey(data.group, data.key);
         state.currentProject = Object.assign({}, state.currentProject);
     },
     UPDATE_PROJECT_KEY(state: State, key: NewKey): void {
-        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === key.groupId);
-        const currKeyIndex: number = state.currentProject.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
-
-        state.currentProject.groups[currGroupIndex].keys[currKeyIndex] = Object.assign({}, key);
-
+        state.currentProject.updateKey(key);
         state.currentProject = Object.assign({}, state.currentProject);
     },
     DELETE_PROJECT_KEY(state: State, key: NewKey): void {
-        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === key.groupId);
-        const currKeyIndex: number = state.currentProject.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
-
-        state.currentProject.groups[currGroupIndex].keys.splice(currKeyIndex, 1);
+        state.currentProject.deleteKey(key);
         state.currentProject = Object.assign({}, state.currentProject);
     },
     SET_OPEN_CARD(state: State, card: CardEnum): void {
