@@ -70,7 +70,7 @@ export default Vue.extend({
   },
   methods: {
     saveKey() {
-      this.$service.keys.updateKey(this.projectId, this.updateKey)
+      this.$service.keys.updateKey(this.updateKey)
           .then(() => {
             this.isOpen = false
             this.$emit("saveKey", this.updateKey);
@@ -97,7 +97,7 @@ export default Vue.extend({
           });
     },
     deleteKey() {
-      this.$service.keys.deleteKey(this.projectId, this.item.key.id)
+      this.$service.keys.deleteKey(this.item.key.id)
           .then(() => {
             this.isOpen = false
             this.$emit("deleteKey", this.updateKey);

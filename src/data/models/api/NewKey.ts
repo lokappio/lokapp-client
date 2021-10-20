@@ -17,4 +17,13 @@ export default class NewKey {
 
     return key;
   }
+
+  public static empty(): NewKey {
+    const key = new NewKey();
+
+    key.name = "";
+    key.isPlural = false;
+
+    return key;
+  }
 }

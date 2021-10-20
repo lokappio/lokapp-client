@@ -21,7 +21,7 @@
                     <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
                     <language-creation v-if="$store.getters.openCard === CardEnum.CREATE_LANGUAGE"/>
                     <download-project v-if="$store.getters.openCard === CardEnum.DOWNLOAD_PROJECT"/>
-                    <key-creation v-if="$store.getters.openCard === CardEnum.CREATE_KEY"/>
+                    <!--<key-creation v-if="$store.getters.openCard === CardEnum.CREATE_KEY"/>-->
                 </v-overlay>
 
                 <v-row class="ma-0 mb-4 row-header-style">
@@ -94,7 +94,6 @@ export default Vue.extend ({
         ProfileManager,
         LanguagesGroup,
         LanguageCreation,
-        KeyCreation,
         Header,
         ContentDetails,
         ProjectManagement,

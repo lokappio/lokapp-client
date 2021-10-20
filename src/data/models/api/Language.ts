@@ -3,12 +3,12 @@ export default class Language {
     id: number;
     name: string;
 
-    constructor(id: number, name: string) {
-        this.id = id;
-        this.name = name;
-    }
+    public static map(data: Partial<Language>): Language {
+        const language: Language = new Language();
 
-    public static map(json: any): Language {
-        return new this(json.id, json.name);
+        language.id = data.id;
+        language.name = data.name;
+
+        return language;
     }
 }

@@ -53,20 +53,20 @@ class ProjectsService {
         return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
           .then(async (response) => {
               const currProject: Project = Project.map(response.data);
-              currProject.languages = await LanguagesService.getLanguages(projectId);
+              currProject.languages = await LanguagesService.getLanguages();
 
-              const keys: NewKey[] = await KeysService.getKeys(projectId);
+              const keys: NewKey[] = await KeysService.getKeys();
 
               //Set values for each keys
               await Promise.all(
                 keys.map(async (key) => {
-                  const values: NewValue[] = await ValuesService.getValuesByKeyId(projectId, key.id);
+                  const values: NewValue[] = await ValuesService.getValuesByKeyId(key.id);
                   key.values = values;
                 })
               );
 
 
-              const groups: NewGroup[] = await GroupsService.getGroups(projectId);
+              const groups: NewGroup[] = await GroupsService.getGroups();
               groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
               currProject.groups = groups;
 

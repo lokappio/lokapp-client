@@ -43,7 +43,7 @@ export default Vue.extend({
       document.getElementById(this.inputId).blur();
     },
     saveValue(): Promise<void> {
-      return this.$service.values.updateValue(this.projectId, this.item[this.header.value])
+      return this.$service.values.updateValue(this.item[this.header.value])
           .catch(() => {
             this.reportError(this.$t("errors.unknown_error"));
           });

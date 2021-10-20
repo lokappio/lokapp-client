@@ -1,20 +1,17 @@
-
-
 <template>
-    
     <v-btn class="button-action-style" height="55" :block="block" color="maincolor" @click="handler">
         <div class="title-h3 button-action-text">
             {{ text }}
         </div>
         <v-icon v-if="addIcon" color="white" class="pl-2">mdi-plus-circle</v-icon>
     </v-btn>
-  
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 
-export default (
-    'action-button', {
+export default Vue.extend({
+    name: 'action-button',
     props: {
         loading: Boolean,
         block: Boolean,

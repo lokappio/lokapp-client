@@ -15,4 +15,13 @@ export default class NewGroup {
 
     return group;
   }
+
+  public static empty(name: string): NewGroup {
+    const group: NewGroup = new NewGroup();
+
+    group.id = -1;
+    group.name = name;
+
+    return group;
+  }
 }

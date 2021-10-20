@@ -2,7 +2,7 @@
   <v-container class="full-contain my-table">
     <v-row v-if="getItems.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
       <v-col cols="4">
-        <action-button v-if="canUpdateKey" block :handler="openKeyCreationWithName" :text="''" addIcon/>
+        <action-button v-if="canUpdateKey" block :handler="creationIsOpen = true" :text="''" addIcon/>
       </v-col>
     </v-row>
 
@@ -52,9 +52,11 @@
 
       <!-- Custom footer on groups -->
       <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group }">
-        <template-group-footer :isOpen="isOpen" :group="group" :openKeyCreationWithName="() => openKeyCreationWithName(group)"/>
+        <template-group-footer :isOpen="isOpen" :group="group"/>
       </template>
     </v-data-table>
+
+    <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => isOpenCreation = false"></key-creation>
   </v-container>
 </template>
 
@@ -65,18 +67,20 @@ import TemplateItemKeys from "@/components/molecules/details/template-v-data-tab
 import TemplateGroupHeader from "@/components/molecules/details/template-v-data-table/TemplateGroupHeader";
 import TemplateGroupFooter from "@/components/molecules/details/template-v-data-table/TemplateGroupFooter";
 import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from "@/data/models/Card.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import NewKey from '@/data/models/api/NewKey';
 import {ValueQuantity} from "@/data/models/api/NewValue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
+import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
+import {DataTableHeader} from "vuetify";
 
 export default Vue.extend({
   name: "content-details",
   components: {
-   TemplateItemValues,
+    KeyCreation,
+    TemplateItemValues,
     TemplateGroupHeader,
     TemplateGroupFooter,
     TemplateItemKeys,
@@ -102,12 +106,13 @@ export default Vue.extend({
           sortable: false,
           groupable: false
         }
-      ] as any[],
+      ] as DataTableHeader[],
       headers: [],
       id: 0,
       loading: true,
       searchValue: "",
-      projectId: -1
+      projectId: -1,
+      isOpenCreation: false
     };
   },
   created() {
@@ -204,17 +209,6 @@ export default Vue.extend({
             this.errorGetSomething();
           })
           .finally(() => this.loading = false);
-    },
-    openKeyCreationWithName(group) {
-      if (!group) {
-        this.openKeyCreation(-1);
-      } else {
-        this.openKeyCreation(group.id);
-      }
-    },
-    openKeyCreation(groupId) {
-      this.$store.commit("SET_ACTUAL_GROUP_ID", groupId);
-      this.$store.commit("SET_OPEN_CARD", CardEnum.CREATE_KEY);
     },
     filterKeys(value) {
       this.searchValue = value;

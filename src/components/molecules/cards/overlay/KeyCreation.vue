@@ -1,4 +1,5 @@
 <template>
+  <v-overlay v-if="isOpen">
     <v-card color="white" class="pa-4 pa-md-7 card-style-key-creation">
         <v-container>
             <!-- Title -->
@@ -9,15 +10,14 @@
                     </p>
                 </v-col>
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeKeyCreation" color="black" class="float-right">
+                    <v-icon @click="closeKeyCreation()" color="black" class="float-right">
                         mdi-close
                     </v-icon>
                 </v-col>
             </v-row>
 
-            <keyboard-events :enter="createNewKey"/>
+            <keyboard-events :enter="createKeyWithGroup"/>
             <v-form ref="formCreateKey">
-
                 <!-- Key name -->
                 <v-row class="mt-2 pb-0 mb-0">
                     <v-col cols="12" class="pb-0 px-0">
@@ -26,7 +26,7 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col cols="12" class="pa-0">
-                        <v-text-field :rules="keyNameRules" class="custom-text-field" background-color="#F2F3F7" v-model="keyName" :label="$t('key_creation.key_name_label')" solo flat required></v-text-field>
+                        <v-text-field :rules="keyNameRules" class="custom-text-field" background-color="#F2F3F7" v-model="newKey.name" :label="$t('key_creation.key_name_label')" solo flat required></v-text-field>
                     </v-col>
                 </v-row>
 
@@ -41,26 +41,24 @@
                         <v-menu class="py-0 mb-0" bottom close-on-click>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn
-                                class="ml-0" 
+                                class="ml-0"
                                 color="maincolor"
                                 dark
                                 v-bind="attrs"
                                 v-on="on">
-                                    {{ getActualGroupName() }}
-                                    <v-icon color="white">
-                                        mdi-menu-down
-                                    </v-icon>
+                                    {{ currentGroup.name }}
+                                    <v-icon color="white">mdi-menu-down</v-icon>
                                 </v-btn>
                             </template>
                             <v-list class="set-scrollbar">
                                 <v-list-item v-for="group in groups" :key="group.id">
-                                    <v-list-item-title class="set-cursor-pointer" @click="activeGroupId = group.id"><span>{{ group.name }}</span></v-list-item-title>
+                                    <v-list-item-title class="set-cursor-pointer" @click="currentGroup = group"><span>{{ group.name }}</span></v-list-item-title>
                                 </v-list-item>
                             </v-list>
                         </v-menu>
                     </v-col>
                 </v-row>
-                <v-row class="mt-4" v-if="activeGroupId === -1">
+                <v-row class="mt-4" v-if="currentGroup.id === -1">
                     <v-col cols="12" class="pa-0">
                         <v-text-field :rules="groupNameRules" class="custom-text-field" background-color="#F2F3F7" v-model="groupName" :label="$t('key_creation.group_name_label')" solo flat required autofocus></v-text-field>
                     </v-col>
@@ -69,7 +67,7 @@
                 <!-- Is a plural key -->
                 <v-row class="mt-0 pb-0 mb-0">
                     <v-col cols="12" class="py-0 px-0">
-                        <v-checkbox class="custom-checkbox" hide-details="true" v-model="isPlural" :label="$t('key_creation.is_plural')"></v-checkbox>
+                        <v-checkbox class="custom-checkbox" hide-details="true" v-model="newKey.isPlural" :label="$t('key_creation.is_plural')"></v-checkbox>
                     </v-col>
                 </v-row>
 
@@ -90,12 +88,13 @@
                 <!-- ValidateButton -->
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="createNewKey" :text="$t('key_creation.validate_button')"/>
+                        <action-button block :loading="loading" :handler="createKeyWithGroup" :text="$t('key_creation.validate_button')"/>
                     </v-col>
                 </v-row>
             </v-form>
         </v-container>
     </v-card>
+  </v-overlay>
 </template>
 
 <script lang="ts">
@@ -112,6 +111,7 @@ import Vue from "vue";
 import NewKey from "@/data/models/api/NewKey";
 import Project from "@/data/models/api/Project";
 import Language from "@/data/models/api/Language";
+import NewGroup from "@/data/models/api/NewGroup";
 
 export default Vue.extend({
     name: 'key-creation',
@@ -119,31 +119,34 @@ export default Vue.extend({
         ActionButton,
         KeyboardEvents
     },
+    props: {
+      selectedGroup: NewGroup,
+      isOpen: Boolean
+    },
     created() {
         this.projectId = this.$store.getters.actualProjectId;
-        this.groupId = this.$store.getters.actualGroupId;
         this.loadData();
     },
     data: function() {
+        const emptyGroup = NewGroup.empty(this.$t("key_creation.new_group"));
+
         return {
-            loading: false,
-            groups: [
-              {
-                id: -1,
-                name: this.$t("key_creation.new_group")
-              },
-            ],
+            //DATA
+            groups: [emptyGroup],
+            currentGroup: emptyGroup,
+            newKey: NewKey.empty(),
             groupName: "",
-            keyName: "",
+            projectId: -1,
+
+            //RULES
             keyNameRules: keyNameRules(this.$t("rules.required"), this.$t("rules.key_name_length"), this.$t("rules.snake_case_only")),
             groupNameRules: groupNameRules(this.$t("rules.required"), this.$t("rules.group_name_length"), this.$t("rules.snake_case_only")),
+
+            //UI
+            loading: false,
             isBlockButton: true,
-            activeGroupId: -1,
             snackbarError: false,
             errorText: "",
-            isPlural: false,
-            projectId: -1,
-            groupId: -1
         }
     },
     computed: {
@@ -151,12 +154,19 @@ export default Vue.extend({
         return this.$store.state.currentProject;
       },
     },
+    watch: {
+      'newKey.name': function() {
+        this.newKey.name = this.newKey.name.replaceAll(" ", "_");
+      }
+    },
     methods: {
-        refreshKeysList() {
-            this.$eventBus.$emit(EventEnum.REFRESH_KEYS_LIST);
+        loadData(): Promise<void> {
+            this.loading = true;
+            this.currentGroup = this.selectedGroup ?? this.groups[0];
+            this.currentProject.groups.forEach((group) => this.groups.push(group));
         },
         closeKeyCreation() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
+          this.$emit('closeCreation', false)
         },
         errorGetSomething() {
             this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
@@ -164,114 +174,27 @@ export default Vue.extend({
         errorAction() {
             this.$eventBus.$emit(EventEnum.ERROR_ACTION);
         },
-        loadData(): Promise<void> {
-            this.loading = true;
-            this.groups = this.currentProject.groups.map((group) => {
-              return {
-                id: group.id,
-                name: group.name
-              }
-            });
-        },
-        createNewKey() {
+        async createKeyWithGroup(): Promise<void> {
             if (this.$refs.formCreateKey.validate() === true) {
                 this.loading = true;
-                let groupId = null;
-                if (this.activeGroupId === -1) {
-                    this.$service.groups.createGroup(this.projectId, this.groupName)
-                    .then((response) => {
-                        const newGroup = Group.map(response.data);
-                        groupId = newGroup.id;
-                        this.createKey(groupId);
-                    }).catch((error) => {
-                        if (error.response) {
-                            switch (error.response.status) {
-                                case 422:
-                                    this.$notify(this.$t("errors.group_already_exists"));
-                                    break;
-                                case 403:
-                                    this.$notify(this.$t("errors.unauthorized"));
-                                    this.errorAction();
-                                    break;
-                                case 404:
-                                    this.$notify(this.$t("errors.group_create_failed"));
-                                    this.errorAction();
-                                    break;
-                                default:
-                                    this.$notify(this.$t("errors.unknown_error"));
-                                    break;
-                            }
-                        }
-                    });
-                } else {
-                    groupId = this.activeGroupId;
-                    this.createKey(groupId);
+
+                let createdKey: NewKey;
+
+                try {
+                  createdKey = await this.$service.keys.createKeyWithGroup(this.currentGroup.id === -1, this.currentGroup, this.newKey)
+                } catch(e: string) {
+                  this.$notify(this.$t(e));
                 }
+
+                this.$store.commit("ADD_PROJECT_KEY", createdKey);
+                this.closeKeyCreation();
+                this.loading = false;
             }
         },
         setError(error) {
             this.errorText = error;
             this.snackbarError = true;
         },
-        createKey(groupId) {
-            this.$service.keys.createKey(this.projectId, this.keyName, groupId, this.isPlural)
-            .then((response) => {
-                const newKey = Key.map(response.data);
-                this.loading = false;
-                for (const language of Object.values(this.languages)) {
-                    if (language.tradValue === null || language.tradValue === "") {
-                        continue;
-                    }
-                    let quantityString = null;
-                    if (this.isPlural === true) {
-                        quantityString = PLURAL_DEFAULT;
-                    } 
-                    this.$service.values.createValue(
-                        this.projectId, 
-                        newKey.id, {
-                            valueName: language.tradValue, 
-                            languageId: language.id,
-                            quantity: quantityString})
-                    .catch(() => {
-                        this.errorAction();
-                    });
-                }
-            }).catch((error) => {
-                if (error.response) {
-                    switch (error.response.status) {
-                        case 422:
-                            this.$notify(this.$t("errors.key_name_already_exists"));
-                            this.refreshKeysList();
-                            break;
-                        case 403:
-                            this.$notify(this.$t("errors.unauthorized"));
-                            this.errorAction();
-                            break;
-                        default:
-                            this.$notify(this.$t("errors.unknown_error"));
-                            this.errorAction();
-                            break;
-                    }
-                }
-            }).finally(() => {
-                this.closeKeyCreation();
-                this.refreshKeysList();
-                this.loading = false;
-            });
-        },
-        getActualGroupName() {
-            const element = this.groups.find((element) => element.id === this.activeGroupId);
-            if (element != undefined)
-                return element.name;
-        },
-        checkKeyName() {
-            this.keyName = this.keyName.replaceAll(" ", "_");
-        }
-    },
-    watch: {
-        keyName: function() {
-            this.checkKeyName();
-        }
     }
 })
 
