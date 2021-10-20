@@ -31,12 +31,15 @@ class KeysService {
         return NewKey.map(result.data);
     }
 
-    public static async createKeyWithGroup(createGroup: boolean, group: NewGroup, key: NewKey): Promise<NewKey> {
+    public static async createKeyWithGroup(createGroup: boolean, group: NewGroup, key: NewKey): Promise<{group: NewGroup | null; key: NewKey}> {
+        const data: {group: NewGroup | null; key: NewKey} = {} as any;
+
         //IF GROUP DOESN'T EXIST YET IN DB, CREATE IT ...
         if (createGroup) {
             try {
-                const result: NewGroup = await GroupsService.createGroup(group)
+                const result: NewGroup = await GroupsService.createGroup(group);
                 key.groupId = result.id;
+                data.group = result;
             } catch(error) {
                 if (error.response) {
                     switch (error.response.status) {
@@ -54,6 +57,7 @@ class KeysService {
         } else {
             key.groupId = group.id;
         }
+
 
         let createdKey: NewKey;
         //CREATE KEY WITH CURRGROUP
@@ -80,7 +84,8 @@ class KeysService {
             throw "errors.unknown_error";
         }
 
-        return createdKey;
+        data.key = createdKey
+        return data;
     }
 
     public static deleteKey(keyId: number): Promise<AxiosResponse> {

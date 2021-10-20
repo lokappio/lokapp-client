@@ -23,7 +23,7 @@ class GroupsService {
         };
 
         const result: AxiosResponse = await ApiService.postAPI(GroupsService.groupsUrl + this.projectId + "/groups", bodyParameters);
-        return NewGroup.map(result);
+        return NewGroup.map(result.data);
     }
 
     public static updateGroup(groupId: number, groupName: string): Promise<AxiosResponse<any>> {

@@ -178,15 +178,16 @@ export default Vue.extend({
             if (this.$refs.formCreateKey.validate() === true) {
                 this.loading = true;
 
-                let createdKey: NewKey;
+                if(this.currentGroup.id === -1) this.currentGroup.name = this.groupName;
 
+                let data: {group: NewGroup | null; key: NewKey};
                 try {
-                  createdKey = await this.$service.keys.createKeyWithGroup(this.currentGroup.id === -1, this.currentGroup, this.newKey)
+                  data = await this.$service.keys.createKeyWithGroup(this.currentGroup.id === -1, this.currentGroup, this.newKey);
                 } catch(e: string) {
                   this.$notify(this.$t(e));
                 }
 
-                this.$store.commit("ADD_PROJECT_KEY", createdKey);
+                this.$store.commit("ADD_PROJECT_KEY", data);
                 this.closeKeyCreation();
                 this.loading = false;
             }

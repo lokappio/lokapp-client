@@ -3,7 +3,7 @@ import NewKey from "@/data/models/api/NewKey";
 export default class NewGroup {
   id: number;
   name: string;
-  keys: NewKey[];
+  keys: NewKey[] = [];
 
   get isDefault(): boolean { return this.name === "common"}
 

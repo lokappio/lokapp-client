@@ -6,6 +6,7 @@ import RoleProtection from "@/data/models/roles/RoleProtection";
 import {State} from "@/store/states";
 import Project from "@/data/models/api/Project";
 import NewKey from "@/data/models/api/NewKey";
+import NewGroup from "@/data/models/api/NewGroup";
 
 export default {
     SET_USER(state: State, user: any): void {
@@ -20,9 +21,15 @@ export default {
     SET_CURRENT_PROJECT(state: State, project: Project): void {
         state.currentProject = project;
     },
-    ADD_PROJECT_KEY(state: State, key: NewKey): void {
-        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === key.groupId);
-        state.currentProject.groups[currGroupIndex].keys.push(key);
+    ADD_PROJECT_KEY(state: State, data: {group: NewGroup | null; key: NewKey}): void {
+        const currGroupIndex: number = state.currentProject.groups.findIndex((group) => group.id === data.key.groupId);
+
+        if(currGroupIndex != -1) {
+            state.currentProject.groups[currGroupIndex].keys.push(data.key);
+        } else {
+            state.currentProject.groups.push(data.group);
+            state.currentProject.groups[state.currentProject.groups.length - 1].keys.push(data.key);
+        }
 
         state.currentProject = Object.assign({}, state.currentProject);
     },

@@ -21,7 +21,7 @@ class ValuesService {
         })
     }
 
-    public static async  createValue(keyId: number, value: NewValue): Promise<NewValue> {
+    public static async createValue(keyId: number, value: NewValue): Promise<NewValue> {
         const bodyParameters = {
             name: value.name,
             "language_id": value.languageId,
@@ -33,7 +33,7 @@ class ValuesService {
     }
 
     public static async createValueForKey(key: NewKey): Promise<NewValue[]> {
-        const result = await Promise.all(this.languages.map(async (language) => {
+        const result: NewValue[] = await Promise.all(this.languages.map(async (language) => {
             if (key.isPlural) {
                 return await Promise.all(Object.values(ValueQuantity).map(async (quantity) => {
                     const value = NewValue.map({name: "", 'language_id': language.id, 'quantity_string': quantity})
@@ -43,10 +43,9 @@ class ValuesService {
                 const value = NewValue.map({name: "", 'language_id': language.id, quantityString: null})
                 return await this.createValue(key.id, value);
             }
-        }));
+        }).flat());
 
-        console.log(result.flat());
-        return result.flat();
+        return result;
     }
 
     public static updateValue(value: NewValue): Promise<AxiosResponse> {
