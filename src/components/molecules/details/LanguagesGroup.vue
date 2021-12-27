@@ -16,9 +16,6 @@ import Vue from "vue";
 
 export default Vue.extend({
     name: "languages-group",
-    created() {
-        this.refreshLanguagesList();
-    },
     data() {
         return {
             languages: [],
@@ -27,7 +24,6 @@ export default Vue.extend({
     },
     mounted() {
         this.refreshLanguagesList()
-        //this.$eventBus.$on(EventEnum.REFRESH_LANGUAGES_LIST, this.refreshLanguagesList);
     },
     watch: {
         actualTab: function () {

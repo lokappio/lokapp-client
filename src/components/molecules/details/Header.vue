@@ -1,72 +1,61 @@
 <template>
-    <v-container class="full-contain pa-0 ma-0 my-full-container">
-        <v-row class="full-contain ma-0">
+        <v-container class="full-contain pa-0 ma-0 my-full-container">
+            <v-dialog v-model="dialogOpened" max-width="500">
+                <download-project-card :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"></download-project-card>
+            </v-dialog>
 
-            <!-- LeftPart -->
-            <v-col cols="6">
-                <div>
-                    <span class="title-h2 detail-project-name-title">
-                        {{projectName}}
-                    </span>
-                    <project-settings-button :projectId="projectId"/>
-                    <br/>
-                    <p class="text-2 detail-project-description">
-                        {{projectDescription}}
-                    </p>
-                </div>
-            </v-col>
+            <v-row class="full-contain ma-0">
+                <!-- LeftPart -->
+                <v-col cols="6">
+                    <div>
+                        <span class="title-h2 detail-project-name-title">{{ currentProject.name }}</span>
 
-            <v-col cols="1" class="pr-0 pl-auto">
-                <v-btn @click="openDownloadProject" color="maincolor" class="download-button">
-                    <v-icon color="white">
-                        mdi-download
-                    </v-icon>
-                </v-btn>
-            </v-col>
+                        <project-settings-button />
 
-            <!-- RightPart -->
-            <v-col cols="5">
-                <header-search-bar noRing/>
-            </v-col>
-        </v-row>
-    </v-container>
+                        <p class="text-2 detail-project-description">{{ currentProject.description }}</p>
+                    </div>
+                </v-col>
+
+                <v-col cols="1" class="pr-0 pl-auto">
+                    <v-btn @click="() => this.dialogOpened = true" color="maincolor" class="download-button">
+                        <v-icon color="white">mdi-download</v-icon>
+                    </v-btn>
+                </v-col>
+
+                <!-- RightPart -->
+                <v-col cols="5">
+                    <header-search-bar noRing />
+                </v-col>
+            </v-row>
+        </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import HeaderSearchBar from "@/components/molecules/header/HeaderSearchBar";
 import ProjectSettingsButton from "@/components/molecules/buttons/ProjectSettingsButton.vue";
 import CardEnum from "@/data/models/Card.enum";
 import EventEnum from "@/data/enum/event-bus.enum";
+import Vue from "vue";
+import Project from "@/data/models/api/Project";
+import DownloadProjectCard from "@/components/molecules/cards/overlay/DownloadProject.vue";
 
-export default (
-    'detail-header', {
+export default Vue.extend({
+    name: 'detail-header',
     components: {
+        DownloadProjectCard,
         HeaderSearchBar,
         ProjectSettingsButton
     },
-    created() {
-        this.projectId = this.$store.getters.actualProjectId;
-        this.$service.projects.getProjectById(this.projectId)
-        .then(project => {
-            this.projectName = project.name;
-            this.projectDescription = project.description;
-        }).catch(() => {
-            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-        })
+    data() {
+      return {
+          dialogOpened: false,
+      }
     },
-    methods: {
-        openDownloadProject() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.DOWNLOAD_PROJECT);
-        }
-    },
-    data: function() {
-        return {
-            projectName: "",
-            projectDescription: "",
-            projectId: -1
-        }
-    },
-    
+    computed: {
+      currentProject(): Project {
+          return this.$store.getters.currentProject;
+      }
+    }
 })
 </script>
 

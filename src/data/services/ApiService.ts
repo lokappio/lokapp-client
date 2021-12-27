@@ -2,6 +2,25 @@ import axios, { AxiosResponse } from "axios";
 import AuthService from "./AuthService";
 
 class ApiService {
+    public static downloadFile(url: string, name: string) {
+        return axios.get(url)
+          .then(async response => {
+              if(response.status === 200) {
+                  const blob = await response.blob();
+
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = name;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+              }
+              else {
+                  throw "adminFiles.error";
+              }
+          })
+    }
 
     public static getAPI(urlToCall: string): Promise<AxiosResponse<any>> {
         return AuthService.getToken()

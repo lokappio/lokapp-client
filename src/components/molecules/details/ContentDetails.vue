@@ -41,7 +41,6 @@
             <!-- Custom header for groups -->
             <template v-slot:group.header="{group, items, isOpen, toggle}">
                 <template-group-header
-                    :key="group.id"
                     :headers="headers"
                     :group="group"
                     :items="items"

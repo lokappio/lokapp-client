@@ -20,7 +20,7 @@
                     <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
                     <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
                     <language-creation v-if="$store.getters.openCard === CardEnum.CREATE_LANGUAGE"/>
-                    <download-project v-if="$store.getters.openCard === CardEnum.DOWNLOAD_PROJECT"/>
+                    <!--<download-project v-if="$store.getters.openCard === CardEnum.DOWNLOAD_PROJECT"/>-->
                     <!--<key-creation v-if="$store.getters.openCard === CardEnum.CREATE_KEY"/>-->
                 </v-overlay>
 
@@ -65,11 +65,9 @@ import LanguageManagement from "@/components/molecules/cards/overlay/LanguageMan
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
 import Header from "@/components/molecules/details/Header.vue";
 import ContentDetails from "@/components/molecules/details/ContentDetails.vue";
-import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
 import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vue";
 import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
-import DownloadProject from "@/components/molecules/cards/overlay/DownloadProject.vue";
 import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
@@ -99,7 +97,6 @@ export default Vue.extend ({
         ProjectManagement,
         DeleteProject,
         LeaveProject,
-        DownloadProject,
         LanguageManagement,
         LanguageDelete,
         UserManagement,

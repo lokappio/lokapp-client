@@ -1,6 +1,6 @@
 <template>
     <td :colspan="headers.length" class="my-custom-group-header">
-       <template v-if="isActive === false">
+       <template v-if="isActive === false" >
             <v-icon color="maincolor" @click="toggle">
                 {{ isOpen ? 'mdi-chevron-down' : 'mdi-chevron-right' }}
             </v-icon>
@@ -39,12 +39,13 @@
 import { groupNameRules } from "@/data/rules/GroupRules";
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
+import NewGroup from "@/data/models/api/NewGroup";
 
 export default Vue.extend({
     name: 'template-group-header',
     props: {
       headers: {},
-      group: {},
+      group: NewGroup,
       items: translationItem,
       isOpen: Boolean,
       toggle: Function,

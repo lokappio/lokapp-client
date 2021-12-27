@@ -43,12 +43,12 @@ export default (
     components: {
         InvitationsButton
     },
+    props: ['noRing'],
     data: function() {
         return {
             searchValue: ""
         }
     },
-    props: ['noRing'],
     methods: {
         changeValue() {
             this.$eventBus.$emit(EventEnum.FILTER_PROJECTS_LIST, this.searchValue);

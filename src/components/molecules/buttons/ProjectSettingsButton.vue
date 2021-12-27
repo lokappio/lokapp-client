@@ -17,12 +17,10 @@
 import EventEnum from "@/data/enum/event-bus.enum";
 import CardEnum from "@/data/models/Card.enum";
 import { getRoleClass, getRoleEnum } from "@/data/models/roles/role.enum";
+import Vue from "vue";
 
-export default (
-    'project-settings-button', {
-    props: {
-        projectId: Number
-    },
+export default Vue.extend({
+    name: 'project-settings-button',
     data() {
         return {
             items: [],
@@ -38,7 +36,7 @@ export default (
                     title: this.$t("dropdown.users"),
                     callback: () => {
                         this.$store.commit("SET_OPEN_CARD", CardEnum.MANAGE_USERS);
-                        this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
+                        //this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
                     }
                 });
             }
@@ -47,7 +45,7 @@ export default (
                     title: this.$t("dropdown.languages"),
                     callback: () => {
                         this.$store.commit("SET_OPEN_CARD", CardEnum.MANAGE_LANGUAGE);
-                        this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
+                        //this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
                     }
                 });
             }
@@ -56,7 +54,7 @@ export default (
                     title: this.$t("dropdown.project"),
                     callback: () => {
                         this.$store.commit("SET_OPEN_CARD", CardEnum.MANAGE_PROJECT);
-                        this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
+                        //this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
                     }
                 });
             }
@@ -66,7 +64,7 @@ export default (
                     deprecated: true,
                     callback: () => {
                         this.$store.commit("SET_OPEN_CARD", CardEnum.DELETE_PROJECT);
-                        this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
+                        //this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
                     }
                 });
             } else {
@@ -75,13 +73,13 @@ export default (
                     deprecated: true,
                     callback: () => {
                         this.$store.commit("SET_OPEN_CARD", CardEnum.LEAVE_PROJECT);
-                        this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
+                        //this.$store.commit("SET_ACTUAL_PROJECT_ID", this.projectId);
                     }
                 });
             }
         },
         askRoleToBackend() {
-            this.$service.user.getMyselfInProject(this.projectId)
+            this.$service.user.getMyselfInProject(this.$store.getters.currentProject.id)
             .then((response) => {
                 this.setupItemsWithRole(getRoleEnum(response.data.role));
             }).catch(() => {
