@@ -84,7 +84,7 @@ export default Vue.extend ({
     name: 'DetailProject',
     metaInfo(): MetaInfo {
         return {
-            title: `${this.projectName ? this.projectName : ''}`,
+            title: this.currentProject.name ?? '',
             titleTemplate: `Lokapp - %s`
         }
     },
@@ -112,25 +112,22 @@ export default Vue.extend ({
         loading: true as boolean,
         CardEnum,
         projectId: -1 as number,
-        projectName: null as string | null
       }
     },
     created() {
         this.$store.commit("SET_ACTUAL_PROJECT_ID", parseInt(this.$route.params.project_id));
         this.projectId = this.$store.getters.actualProjectId;
-        this.reloadProject();
+        this.loadProject();
     },
     computed: {
-      currentProject() { return this.$store.state.currentProject;}
+      currentProject(): Project { return this.$store.state.currentProject;}
     },
     methods: {
-        reloadProject() {
+        loadProject() {
             this.loading = true;
             this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
             this.$service.projects.getEntireProjectById(parseInt(this.$route.params.project_id))
             .then((project: Project) => {
-              console.log(project);
-
                 this.loading = false;
                 this.$store.commit("SET_CURRENT_PROJECT", project);
                 this.updateMyRole();

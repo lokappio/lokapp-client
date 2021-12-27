@@ -1,63 +1,63 @@
 <template>
-  <v-container class="full-contain my-table">
-    <v-row v-if="getItems.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
-      <v-col cols="4">
-        <action-button v-if="canUpdateKey" block :handler="creationIsOpen = true" :text="''" addIcon/>
-      </v-col>
-    </v-row>
+    <v-container class="full-contain my-table">
+        <v-row v-if="getItems.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
+            <v-col cols="4">
+                <action-button v-if="canUpdateKey" block :handler="creationIsOpen = true" :text="''" addIcon/>
+            </v-col>
+        </v-row>
 
-    <v-data-table
-        v-show="getItems.length > 0"
-        hide-default-footer
-        :headers="headers"
-        :items="getItems"
-        :loading="loading"
-        :search="searchValue"
-        item-class="text-3 data-table-key-style"
-        disable-pagination
-        group-by="group"
-        elevation="0"
-        class="my-custom-table">
-
-      <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
-        <template-item-keys
-            v-if="header.value === 'keys'"
-            :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
-            :item="item"
-            :projectId="projectId"
-            v-on:saveKey="(value) => keySaved(value)"
-            v-on:deleteKey="(value) => keyDeleted(value)"
-        />
-
-        <template-item-values
-            v-else
-            :key="`${item.key.id}_${item[header.value].id}_${header.value}`"
-            :item="item"
-            :header="header"
-            :projectId="projectId"
-        />
-      </template>
-
-      <!-- Custom header for groups -->
-      <template v-slot:group.header="{group, items, isOpen, toggle}">
-        <template-group-header
-            :key="group.id"
+        <v-data-table
+            v-show="getItems.length > 0"
+            hide-default-footer
             :headers="headers"
-            :group="group"
-            :items="items"
-            :isOpen="isOpen"
-            :toggle="toggle"
-            :projectId="projectId"/>
-      </template>
+            :items="getItems"
+            :loading="loading"
+            :search="searchValue"
+            item-class="text-3 data-table-key-style"
+            disable-pagination
+            group-by="group"
+            elevation="0"
+            class="my-custom-table">
 
-      <!-- Custom footer on groups -->
-      <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group }">
-        <template-group-footer :isOpen="isOpen" :group="group"/>
-      </template>
-    </v-data-table>
+            <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
+                <template-item-keys
+                    v-if="header.value === 'keys'"
+                    :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
+                    :item="item"
+                    :projectId="projectId"
+                    v-on:saveKey="(value) => keySaved(value)"
+                    v-on:deleteKey="(value) => keyDeleted(value)"
+                />
 
-    <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => isOpenCreation = false"></key-creation>
-  </v-container>
+                <template-item-values
+                    v-else
+                    :key="`${item.key.id}_${item[header.value].id}_${header.value}`"
+                    :item="item"
+                    :header="header"
+                    :projectId="projectId"
+                />
+            </template>
+
+            <!-- Custom header for groups -->
+            <template v-slot:group.header="{group, items, isOpen, toggle}">
+                <template-group-header
+                    :key="group.id"
+                    :headers="headers"
+                    :group="group"
+                    :items="items"
+                    :isOpen="isOpen"
+                    :toggle="toggle"
+                    :projectId="projectId"/>
+            </template>
+
+            <!-- Custom footer on groups -->
+            <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group }">
+                <template-group-footer :isOpen="isOpen" :group="group"/>
+            </template>
+        </v-data-table>
+
+        <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => this.isOpenCreation = false"></key-creation>
+    </v-container>
 </template>
 
 <script lang="ts">
@@ -70,156 +70,162 @@ import EventEnum from "@/data/enum/event-bus.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
-import NewKey from '@/data/models/api/NewKey';
+import NewKey from "@/data/models/api/NewKey";
 import {ValueQuantity} from "@/data/models/api/NewValue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import {DataTableHeader} from "vuetify";
 
 export default Vue.extend({
-  name: "content-details",
-  components: {
-    KeyCreation,
-    TemplateItemValues,
-    TemplateGroupHeader,
-    TemplateGroupFooter,
-    TemplateItemKeys,
-    ActionButton
-  },
-  data() {
-    return {
-      basicHeaders: [
-        {
-          text: "Groupe",
-          value: "group",
-          align: "start",
-          width: "400px",
-          sortable: false,
-          filterable: false,
-          groupable: true
-        },
-        {
-          text: this.$t("project_detail.keys").toString(),
-          align: "start",
-          value: "keys",
-          width: "400px",
-          sortable: false,
-          groupable: false
+    name: "content-details",
+    components: {
+        KeyCreation,
+        TemplateItemValues,
+        TemplateGroupHeader,
+        TemplateGroupFooter,
+        TemplateItemKeys,
+        ActionButton
+    },
+    data() {
+        return {
+            basicHeaders: [
+                {
+                    text: "Groupe",
+                    value: "group",
+                    align: "start",
+                    width: "400px",
+                    sortable: false,
+                    filterable: false,
+                    groupable: true
+                },
+                {
+                    text: this.$t("project_detail.keys").toString(),
+                    align: "start",
+                    value: "keys",
+                    width: "400px",
+                    sortable: false,
+                    groupable: false
+                }
+            ] as DataTableHeader[],
+            headers: [],
+            id: 0,
+            loading: true,
+            searchValue: "",
+            projectId: -1,
+            isOpenCreation: false
+        };
+    },
+    mounted() {
+        this.projectId = this.$store.getters.actualProjectId;
+        this.filterDataWithLanguage(null);
+    },
+    watch: {
+        "actualLanguage": function (value) {
+            this.filterDataWithLanguage(value);
         }
-      ] as DataTableHeader[],
-      headers: [],
-      id: 0,
-      loading: true,
-      searchValue: "",
-      projectId: -1,
-      isOpenCreation: false
-    };
-  },
-  created() {
-    this.projectId = this.$store.getters.actualProjectId;
-  },
-  computed: {
-    canUpdateKey(): boolean {
-      return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
     },
-    getItems(): translationItem[] {
-      const currProject: Project = this.$store.state.currentProject;
-      const items: any[] = [];
+    computed: {
+        canUpdateKey(): boolean {
+            return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
+        },
+        actualLanguage(): number {
+            return this.$store.getters.actualLanguage;
+        },
+        getItems(): translationItem[] {
+            const currProject: Project = this.$store.state.currentProject;
+            const items: any[] = [];
 
-      currProject.groups?.forEach((group) => {
-        group.keys?.forEach((key) => {
-          if(key.isPlural) {
-            Object.values(ValueQuantity).forEach((quantity) => {
-              const item: translationItem = {
-                "key": key,
-                "group": group,
-                "quantity": quantity
-              };
+            currProject.groups?.forEach((group) => {
+                group.keys?.forEach((key) => {
+                    if (key.isPlural) {
+                        Object.values(ValueQuantity).forEach((quantity) => {
+                            const item: translationItem = {
+                                "key": key,
+                                "group": group,
+                                "quantity": quantity
+                            };
 
-              key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
-                item[value.languageId] = value;
-              });
+                            key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
+                                item[value.languageId] = value;
+                            });
 
-              items.push(item);
-            });
-          } else {
-            const item: translationItem = {
-              "key": key,
-              "group": group,
-            };
+                            items.push(item);
+                        });
+                    } else {
+                        const item: translationItem = {
+                            "key": key,
+                            "group": group
+                        };
 
-            key.values?.forEach((value) => {
-              item[value.languageId] = value;
-            });
+                        key.values?.forEach((value) => {
+                            item[value.languageId] = value;
+                        });
 
-            items.push(item);
-          }
-        });
-      });
-
-      return items;
-    }
-  },
-  methods: {
-    keySaved(value: NewKey): void{
-      //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
-      this.$store.commit("UPDATE_PROJECT_KEY", value);
-    },
-    keyDeleted(value: NewKey): void {
-      //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
-      this.$store.commit("DELETE_PROJECT_KEY", value);
-    },
-    errorGetSomething() {
-      this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-    },
-    filterDataWithLanguage(languageId: number): Promise<void> {
-      this.loading = true;
-
-      return this.$service.languages.getLanguages(this.projectId)
-          .then((languages) => {
-            this.headers = this.basicHeaders;
-
-            if (languageId != -1) {
-              languages.forEach((language) => {
-                this.headers.push({
-                  text: language.name,
-                  align: "start",
-                  value: language.id.toString(),
-                  width: "400px",
-                  sortable: false,
-                  filterable: true,
-                  groupable: false
+                        items.push(item);
+                    }
                 });
-              });
-            } else {
-              const language: Language = languages.find((item) => item.id === languageId);
+            });
 
-              this.headers.push({
-                text: language.name,
-                align: "start",
-                value: language.id.toString(),
-                width: "400px",
-                sortable: false,
-                filterable: true,
-                groupable: false
-              });
-            }
-          })
-          .catch((e) => {
-            this.errorGetSomething();
-          })
-          .finally(() => this.loading = false);
+            return items;
+        }
     },
-    filterKeys(value) {
-      this.searchValue = value;
-    },
-    downloadProject(platform) {
-      this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.items, this.groups));
+    methods: {
+        keySaved(value: NewKey): void {
+            //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
+            this.$store.commit("UPDATE_PROJECT_KEY", value);
+        },
+        keyDeleted(value: NewKey): void {
+            //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
+            this.$store.commit("DELETE_PROJECT_KEY", value);
+        },
+        errorGetSomething() {
+            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
+        },
+        filterDataWithLanguage(languageId: number): Promise<void> {
+            this.loading = true;
+
+            return this.$service.languages.getLanguages()
+                .then((languages) => {
+                    this.headers = Array.from(this.basicHeaders);
+
+                    if (languageId == null) {
+                        languages.forEach((language) => {
+                            this.headers.push({
+                                text: language.name,
+                                align: "start",
+                                value: language.id.toString(),
+                                width: "400px",
+                                sortable: false,
+                                filterable: true,
+                                groupable: false
+                            });
+                        });
+                    } else {
+                        const language: Language = languages.find((item) => item.id === languageId);
+
+                        this.headers.push({
+                            text: language.name,
+                            align: "start",
+                            value: language.id.toString(),
+                            width: "400px",
+                            sortable: false,
+                            filterable: true,
+                            groupable: false
+                        });
+                    }
+                })
+                .catch(() => {
+                    this.errorGetSomething();
+                })
+                .finally(() => this.loading = false);
+        },
+        filterKeys(value) {
+            this.searchValue = value;
+        },
+        downloadProject(platform) {
+            this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.items, this.groups));
+        }
     }
-  },
-  mounted() {
-    this.filterDataWithLanguage(1);
-  }
 });
 </script>
 
@@ -227,36 +233,36 @@ export default Vue.extend({
 @import '~vuetify/src/styles/styles.sass';
 
 .no-data-button {
-  margin-left: 45%;
+    margin-left: 45%;
 }
 
 .my-table {
-  max-width: 100%;
-  overflow-y: scroll;
+    max-width: 100%;
+    overflow-y: scroll;
 }
 
 .my-custom-table {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .my-custom-table > .v-data-table__wrapper > table {
-  border-spacing: 0px 16px !important;
+    border-spacing: 0px 16px !important;
 }
 
 .data-table-key-style {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .data-table-key-style > td {
-  background-color: white;
-  max-width: 50vw;
+    background-color: white;
+    max-width: 50vw;
 }
 
 .v-row-group__summary {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .icon-style-big {
-  font-size: 32px !important;
+    font-size: 32px !important;
 }
 </style>

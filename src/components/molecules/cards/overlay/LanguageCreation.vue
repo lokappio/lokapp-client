@@ -77,11 +77,11 @@ export default (
                     if (error.response) {
                         switch (error.response.status) {
                             case 404:
-                                this.reloadProject();
+                                this.loadProject();
                                 break;
                             case 403:
                                 this.$notify(this.$t("errors.unauthorized"));
-                                this.reloadProject();
+                                this.loadProject();
                                 break;
                             case 422:
                                 this.$notify(this.$t("errors.language_already_exists"));
@@ -104,7 +104,7 @@ export default (
         closeLanguageCreation() {
             this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
         },
-        reloadProject() {
+        loadProject() {
             this.$eventBus.$emit(EventEnum.ERROR_ACTION);
         }
     }
