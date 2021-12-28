@@ -8,131 +8,117 @@
                 </v-col>
 
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="() => this.$emit('close', false)" color="black" class="float-right">mdi-close</v-icon>
+                    <v-icon @click="() => closeDialog()" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
-            <template v-if="!isDownloadFinished">
+            <template>
                 <v-row class="mt-4 pb-0 mb-0">
                     <v-col cols="12" class="pb-0 px-0">
                         <span class="title-h3">{{ $t("download_project.platform_target") }}</span>
                     </v-col>
                 </v-row>
 
-                <v-row class="mt-0 mb-4">
+                <v-row>
                     <v-col cols="12" class="pb-0 pt-0 px-0">
-                        <v-menu class="py-0 mb-0" bottom close-on-click>
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-btn
-                                    class="ml-0"
-                                    color="maincolor"
-                                    dark
-                                    v-bind="attrs"
-                                    v-on="on">
-                                    {{ getActualPlatformName() }}
-                                    <v-icon color="white">mdi-menu-down</v-icon>
-                                </v-btn>
-                            </template>
-
-                            <v-list>
-                                <v-list-item v-for="platform in platforms" :key="platform.id">
-                                    <v-list-item-title @click="activePlatformId = platform.id">{{ platform.name }}</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                        </v-menu>
+                        <v-select
+                            solo
+                            background-color="primary"
+                            dark
+                            :items="platforms"
+                            item-text="name"
+                            v-model="selectedPlatform"
+                        ></v-select>
                     </v-col>
                 </v-row>
 
-                <v-row class="mt-2 pb-0">
-                    <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="generateFiles" :text="$t('download_project.generate_files')"/>
-                    </v-col>
-                </v-row>
+                <template v-if="isGenerated">
+                    <v-row v-if="files.length === 0" class="mt-4 pb-0 mb-0">
+                        <v-col cols="12" class="pb-0 px-0">
+                            <p class="title-h3">{{ $t("download_project.no_file_to_download") }}</p>
+                        </v-col>
+                    </v-row>
+
+                    <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0 file-list-style">
+                        <v-col cols="auto" class="py-0 px-0">
+                            <span class="text-2">{{ file.name }}</span>
+                        </v-col>
+
+                        <v-col cols="auto">
+                            <v-icon @click="() => copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
+                            <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
+                        </v-col>
+                    </v-row>
+
+
+                    <v-row class="mt-2 pb-0">
+                        <v-col cols="12" class="pb-0 px-0">
+                            <action-button block :handler="downloadEverything" :text="$t('download_project.download_everything')"/>
+                        </v-col>
+                    </v-row>
+                </template>
             </template>
 
-            <template v-else>
-                <v-row v-if="files.length === 0" class="mt-4 pb-0 mb-0">
-                    <v-col cols="12" class="pb-0 px-0">
-                        <p class="title-h3">{{ $t("download_project.no_file_to_download") }}</p>
-                    </v-col>
-                </v-row>
-
-                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0 file-list-style">
-                    <v-col cols="auto" class="py-0 px-0">
-                        <span class="text-2">{{ file.name }}</span>
-                    </v-col>
-
-                    <v-col cols="auto">
-                        <v-icon @click="() => copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
-                        <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
-                    </v-col>
-                </v-row>
-
-
-                <v-row class="mt-2 pb-0">
-                    <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="downloadEverything" :text="$t('download_project.download_everything')"/>
-                    </v-col>
-                </v-row>
-            </template>
         </v-container>
     </v-card>
 
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton";
-import JSZip from "jszip";
-import FileSaver from "file-saver";
+import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from "vue";
 import {FileData, TranslationFile} from "@/data/models/types/export";
 import {Platform} from "@/data/models/enums/project";
+import Export from "@/data/helpers/export";
 
 export default Vue.extend({
     name: "download-project-card",
-    components: {
-        ActionButton
-    },
+    components: {ActionButton},
     props: {
         dialogOpened: Boolean
     },
     data() {
         return {
-            platforms: this.setPlatforms(),
-            activePlatformId: 0,
-            loading: false,
-            isDownloadFinished: false,
+            isGenerated: false,
+            selectedPlatform: Platform.ANDROID,
             files: [] as TranslationFile[]
         };
     },
-    methods: {
-        setPlatforms(): [] {
-            const res = [];
-            let i = 0;
-            Object.values(Platform).forEach((platform) => {
-                res.push({
-                    id: i,
-                    name: platform
-                });
-                i++;
-            });
-            return res;
+    watch: {
+        selectedPlatform: {
+            immediate: true,
+            handler: function() {this.generateFiles();}
         },
-        getActualPlatformName() {
-            return this.platforms[this.activePlatformId].name;
-        },
-        generateFiles(): void {
-            const filesData: FileData[] = this.$service.export.exportDatas(this.getActualPlatformName());
-            this.$notify(this.$t("success.files_generated").toString());
-            this.isDownloadFinished = true;
+        dialogOpened(isOpened) {
+            if (isOpened) {
+                //ON RE-OPENED, RESET DATA
+                this.files = [];
+                this.isGenerated = false;
+                this.selectedPlatform = Platform.ANDROID;
 
-            switch (this.getActualPlatformName()) {
+                this.generateFiles();
+            }
+        }
+    },
+    computed: {
+        platforms(): { id: number; name: string }[] {
+            return Object.values(Platform).map((platform, index) => {
+                return {id: index, name: platform};
+            });
+        }
+    },
+    methods: {
+        generateFiles(): void {
+            const filesData: FileData[] = this.$service.export.exportDatas(this.selectedPlatform);
+            this.isGenerated = true;
+
+            switch (this.selectedPlatform) {
                 case Platform.ANDROID:
                     this.files = filesData.map((file) => {
                         return {
                             name: "strings_" + file.language + ".xml",
                             content: file.content
-                        }
+                        };
                     });
                     break;
                 case Platform.IOS:
@@ -140,7 +126,7 @@ export default Vue.extend({
                         return {
                             name: file.plural ? "Localizable_" + file.language + ".stringsdict" : "Localizable_" + file.language + ".strings",
                             content: file.content
-                        }
+                        };
                     });
                     break;
                 case Platform.WEB:
@@ -148,7 +134,7 @@ export default Vue.extend({
                         return {
                             name: file.language + ".json",
                             content: file.content
-                        }
+                        };
                     });
                     break;
                 default:
@@ -156,36 +142,18 @@ export default Vue.extend({
             }
         },
         copyFile(file: TranslationFile) {
-            const el = document.createElement("textarea");
-            el.value = file.content;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand("copy");
-            document.body.removeChild(el);
+            navigator.clipboard.writeText(file.content);
             this.$notify(this.$t("success.copy").toString());
         },
-        async downloadFile(file: TranslationFile): Promise<void> {
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(file.content));
-            element.setAttribute('download', file.name);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
+        downloadFile(file: TranslationFile): void {
+            Export.downloadFile(file.content, file.name);
         },
         downloadEverything() {
-            const zip = new JSZip();
-            this.files.forEach((file) => {
-                zip.file(file.name, file.content);
-            });
-            zip.generateAsync({type: "blob"})
-                .then((content) => {
-                    FileSaver.saveAs(content, "archive-lokapp.zip");
-                }).catch((err) => {
-                console.log("Error while zipping");
-                console.log(err);
-            });
+            Export.downloadEverything(this.files);
         },
+        closeDialog() {
+            this.$emit("close", false);
+        }
     }
 });
 </script>
