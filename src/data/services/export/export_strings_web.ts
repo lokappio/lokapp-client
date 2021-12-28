@@ -1,15 +1,16 @@
 import Language from "@/data/models/export/Language";
 import { EXPORT_CONFIGURATION, replaceMarkers } from "./export_configuration";
-import {LocalizedGroup} from "@/data/models/api/Project";
+import {LocalizedGroup, Plural} from "@/data/models/api/Project";
 import {FileData} from "@/data/models/types/export";
+import {KeyType} from "@/data/models/enums/project";
 
-const generateWebStringFile = (language: Language, localizedObjects: LocalizedGroup[]): FileData => {
+const generateWebStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
     let exportedString = `{\n`;
     const platform = EXPORT_CONFIGURATION.PLATFORMS.WEB;
 
-    localizedObjects.forEach((groupObject, index) => {
+    localizedProject.forEach((localizedGroup, index) => {
         //Check if some keys inside group
-        if (groupObject.localizations.length === 0) {
+        if (localizedGroup.localizations.length === 0) {
             return;
         }
 
@@ -17,24 +18,22 @@ const generateWebStringFile = (language: Language, localizedObjects: LocalizedGr
         let isInAGroup = false;
 
         //Group without name = key at root of json
-        if (groupObject.name != null) {
+        if (localizedGroup.name != null) {
             indentationKey = "        ";
             isInAGroup = true;
-            exportedString += `    "${groupObject.name}": {\n`;
+            exportedString += `    "${localizedGroup.name}": {\n`;
         }
 
-        groupObject.localizations.forEach((localization: any, indexKey: number) => {
-            if (localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.SINGULAR) {
+        localizedGroup.localizations.forEach((localization: any, indexKey: number) => {
+            if (localization.type === KeyType.SINGULAR) {
                 const value = localization[language.name].toString().replace(/"/g, "\\\"");
                 exportedString += `${indentationKey}"${localization.key}": "${replaceMarkers(value, platform)}"`;
             } else {
-                const plurals = {[EXPORT_CONFIGURATION.PLURAL_CONFIG.ZERO.KEY]: "zero", [EXPORT_CONFIGURATION.PLURAL_CONFIG.ONE.KEY]: "one", [EXPORT_CONFIGURATION.PLURAL_CONFIG.OTHER.KEY]: "other"};
                 exportedString += `${indentationKey}"${localization.key}": "`;
-                Object.keys(plurals).forEach((plural: any, index: number) => {
-                    const value = localization[language.name][plural];
-                    if (value != undefined) {
-                        exportedString += `${replaceMarkers(value.replace(/"/g, "\\\""), platform)}`;
-                    }
+                const values: Plural = localization[language.name] as Plural;
+
+                Object.entries(values).forEach((value, index) => {
+                    exportedString += `${replaceMarkers(value[1].replace(/"/g, "\\\""), platform)}`;
                     if (index < 2) {
                         exportedString += " | ";
                     } else {
@@ -45,13 +44,13 @@ const generateWebStringFile = (language: Language, localizedObjects: LocalizedGr
 
             //Is there data after or not
             if (isInAGroup) {
-                if (indexKey < groupObject.localizations.length - 1) {
+                if (indexKey < localizedGroup.localizations.length - 1) {
                     exportedString += `,\n`;
                 } else {
                     exportedString += `\n`;
                 }
             } else {
-                if (indexKey < groupObject.localizations.length - 1 || index < localizedObjects.length - 1) {
+                if (indexKey < localizedGroup.localizations.length - 1 || index < localizedProject.length - 1) {
                     exportedString += `,\n`;
                 } else {
                     exportedString += `\n`;
@@ -61,7 +60,7 @@ const generateWebStringFile = (language: Language, localizedObjects: LocalizedGr
 
         //Close group
         if (isInAGroup) {
-            if (index === localizedObjects.length - 1) {
+            if (index === localizedProject.length - 1) {
                 exportedString += `    }\n`;
             } else {
                 exportedString += `    },\n`;
