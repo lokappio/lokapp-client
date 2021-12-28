@@ -24,7 +24,7 @@
 
                 <!-- RightPart -->
                 <v-col cols="5">
-                    <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
+                    <v-text-field clearable solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
                 </v-col>
             </v-row>
         </v-container>
@@ -47,6 +47,14 @@ export default Vue.extend({
           dialogOpened: false,
           searchValue: "",
       }
+    },
+    destroyed() {
+        this.$store.commit("SET_SEARCH_TRANSLATION", "");
+    },
+    watch: {
+        searchValue(value) {
+            this.$store.commit("SET_SEARCH_TRANSLATION", value);
+        }
     },
     computed: {
       currentProject(): Project {

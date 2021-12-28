@@ -12,7 +12,6 @@
             :headers="headers"
             :items="getItems"
             :loading="loading"
-            :search="searchValue"
             item-class="text-3 data-table-key-style"
             disable-pagination
             group-by="group"
@@ -61,10 +60,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import TemplateItemValues from "@/components/molecules/details/template-v-data-table/TemplateItemValues";
-import TemplateItemKeys from "@/components/molecules/details/template-v-data-table/TemplateItemKeys";
-import TemplateGroupHeader from "@/components/molecules/details/template-v-data-table/TemplateGroupHeader";
-import TemplateGroupFooter from "@/components/molecules/details/template-v-data-table/TemplateGroupFooter";
+import TemplateItemValues from "@/components/molecules/details/template-v-data-table/TemplateItemValues.vue";
+import TemplateItemKeys from "@/components/molecules/details/template-v-data-table/TemplateItemKeys.vue";
+import TemplateGroupHeader from "@/components/molecules/details/template-v-data-table/TemplateGroupHeader.vue";
+import TemplateGroupFooter from "@/components/molecules/details/template-v-data-table/TemplateGroupFooter.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
@@ -109,7 +108,6 @@ export default Vue.extend({
             headers: [],
             id: 0,
             loading: true,
-            searchValue: "",
             projectId: -1,
             isOpenCreation: false
         };
@@ -124,6 +122,9 @@ export default Vue.extend({
         }
     },
     computed: {
+        searchValue(): string {
+            return this.$store.state.searchTranslation;
+        },
         canUpdateKey(): boolean {
             return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteKey : false;
         },
@@ -135,7 +136,7 @@ export default Vue.extend({
             const items: any[] = [];
 
             currProject.groups?.forEach((group) => {
-                group.keys?.forEach((key) => {
+                group.keys?.filter((key) => key.name.includes(this.searchValue)).forEach((key) => {
                     if (key.isPlural) {
                         Object.values(ValueQuantity).forEach((quantity) => {
                             const item: translationItem = {
@@ -217,9 +218,6 @@ export default Vue.extend({
                     this.errorGetSomething();
                 })
                 .finally(() => this.loading = false);
-        },
-        filterKeys(value) {
-            this.searchValue = value;
         },
         /*downloadProject(platform) {
             this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.getItems, this.groups));
