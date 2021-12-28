@@ -45,7 +45,7 @@
 
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="downloadProjectWithPlatform" :text="$t('download_project.generate_files')"/>
+                        <action-button block :loading="loading" :handler="generateFiles" :text="$t('download_project.generate_files')"/>
                     </v-col>
                 </v-row>
             </template>
@@ -57,16 +57,15 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-else v-for="file in files" :key="file.name" class="mt-1 pt-0 file-list-style">
-                    <v-col cols="10" class="py-0 px-0">
+                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0 file-list-style">
+                    <v-col cols="auto" class="py-0 px-0">
                         <span class="text-2">{{ file.name }}</span>
                     </v-col>
 
-                    <v-spacer></v-spacer>
-
-                    <v-icon @click="copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
-
-                    <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
+                    <v-col cols="auto">
+                        <v-icon @click="() => copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
+                        <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
+                    </v-col>
                 </v-row>
 
 
@@ -76,7 +75,6 @@
                     </v-col>
                 </v-row>
             </template>
-
         </v-container>
     </v-card>
 
@@ -85,12 +83,10 @@
 <script lang="ts">
 import {EXPORT_CONFIGURATION} from "@/data/services/export/export_configuration";
 import ActionButton from "@/components/molecules/buttons/ActionButton";
-import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from "@/data/models/Card.enum";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Vue from "vue";
-import ApiService from "@/data/services/ApiService";
+import {FileData, TranslationFile} from "@/data/models/types/export";
 
 export default Vue.extend({
     name: "download-project-card",
@@ -106,17 +102,11 @@ export default Vue.extend({
             activePlatformId: 0,
             loading: false,
             isDownloadFinished: false,
-            files: []
+            files: [] as TranslationFile[]
         };
     },
-    mounted() {
-        this.$eventBus.$on(EventEnum.DOWNLOAD_IS_FINISHED, this.downloadFinished);
-    },
-    beforeDestroy() {
-        this.$eventBus.$off(EventEnum.DOWNLOAD_IS_FINISHED, this.downloadFinished);
-    },
     methods: {
-        setPlatforms() {
+        setPlatforms(): [] {
             const res = [];
             let i = 0;
             Object.values(EXPORT_CONFIGURATION.PLATFORMS).forEach((platform) => {
@@ -131,20 +121,57 @@ export default Vue.extend({
         getActualPlatformName() {
             return this.platforms[this.activePlatformId].name;
         },
-        downloadProjectWithPlatform() {
-            this.$service.export.exportDatas(this.getActualPlatformName())
+        generateFiles(): void {
+            const filesData: FileData[] = this.$service.export.exportDatas(this.getActualPlatformName());
+            this.$notify(this.$t("success.files_generated").toString());
+            this.isDownloadFinished = true;
+
+            switch (this.getActualPlatformName()) {
+                case EXPORT_CONFIGURATION.PLATFORMS.ANDROID:
+                    this.files = filesData.map((file) => {
+                        return {
+                            name: "strings_" + file.language + ".xml",
+                            content: file.content
+                        }
+                    });
+                    break;
+                case EXPORT_CONFIGURATION.PLATFORMS.IOS:
+                    this.files = filesData.map((file) => {
+                        return {
+                            name: file.plural ? "Localizable_" + file.language + ".strings" : "Localizable_" + file.language + ".stringsdict",
+                            content: file.content
+                        }
+                    });
+                    break;
+                case EXPORT_CONFIGURATION.PLATFORMS.WEB:
+                    this.files = filesData.map((file) => {
+                        return {
+                            name: file.language + ".json",
+                            content: file.content
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
         },
-        copyFile(file) {
+        copyFile(file: TranslationFile) {
             const el = document.createElement("textarea");
             el.value = file.content;
             document.body.appendChild(el);
             el.select();
             document.execCommand("copy");
             document.body.removeChild(el);
-            this.$notify(this.$t("success.copy"));
+            this.$notify(this.$t("success.copy").toString());
         },
-        async downloadFile(file): Promise<void> {
-            return ApiService.downloadFile(encodeURIComponent(file.content), file.name)
+        async downloadFile(file: TranslationFile): Promise<void> {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(file.content));
+            element.setAttribute('download', file.name);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         },
         downloadEverything() {
             const zip = new JSZip();
@@ -159,36 +186,6 @@ export default Vue.extend({
                 console.log(err);
             });
         },
-        downloadFinished(platform, files) {
-            if (files.length > 1) {
-                this.$notify(this.$t("success.files_generated"));
-            }
-            this.isDownloadFinished = true;
-            this.files = files;
-            switch (platform) {
-                case EXPORT_CONFIGURATION.PLATFORMS.ANDROID:
-                    this.files.forEach((file) => {
-                        file.name = "strings_" + file.language + ".xml";
-                    });
-                    break;
-                case EXPORT_CONFIGURATION.PLATFORMS.IOS:
-                    this.files.forEach((file) => {
-                        if (file.plural === false) {
-                            file.name = "Localizable_" + file.language + ".strings";
-                        } else {
-                            file.name = "Localizable_" + file.language + ".stringsdict";
-                        }
-                    });
-                    break;
-                case EXPORT_CONFIGURATION.PLATFORMS.WEB:
-                    this.files.forEach((file) => {
-                        file.name = file.language + ".json";
-                    });
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 });
 </script>

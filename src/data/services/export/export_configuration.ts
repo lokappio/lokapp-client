@@ -1,14 +1,11 @@
 import { escapeXMLCharacters } from "../../helpers/escape_XMLCharacters";
-import { getGroups, getKeys, getLanguages, getLocalizationsObjects } from "./export_parsing";
 import { generateAndroidStringFiles } from "./export_strings_android";
 import { generateIOSStringFiles } from "./export_strings_ios";
-import Group from "../../models/export/Group";
-import Key from "../../models/export/Key";
 import Language from "../../models/export/Language";
-import Localizable from "../../models/export/Localizable";
 import { generateWebStringFiles } from "./export_strings_web";
 import store from "@/store";
-import Project from "@/data/models/api/Project";
+import Project, {LocalizedGroup} from "@/data/models/api/Project";
+import {FileData} from "@/data/models/types/export";
 
 export const EXPORT_CONFIGURATION: any = {
     PLATFORMS : {
@@ -117,7 +114,7 @@ export const mixGroupAndKeyName = (groupName: string, keyName: string) => {
     return groupName + "_" + keyName;
 }
 
-const generateStringFiles = (platform: any, languagesParsed: any, localizedObjects: any) => {
+const generateStringFiles = (platform: string, languagesParsed: Language[], localizedObjects: LocalizedGroup[]): FileData[] => {
     switch (platform) {
         case EXPORT_CONFIGURATION.PLATFORMS.ANDROID:
             return generateAndroidStringFiles(languagesParsed, localizedObjects);
@@ -130,42 +127,9 @@ const generateStringFiles = (platform: any, languagesParsed: any, localizedObjec
     }
 }
 
-const sortObjects = (localizationsObjects: any) => {
-
-    //Sort groups by alphabetical order
-    localizationsObjects.sort((first: any, second: any) => {
-        //Null group first
-        if (first.name === null) {
-            return -1;
-        }
-        if (second.name === null) {
-            return 1;
-        }
-        return (first.name.localeCompare(second.name));
-    });
-
-    //Sort keys by alphabetical order
-    localizationsObjects.forEach((group: any) => {
-        group.localizations.sort((first: any, second: any) => {
-            return (first.key.localeCompare(second.key));
-        });
-    });
-};
-
-export const exportProject = (platform: string) => {
+export const exportProject = (platform: string): FileData[] => {
     const project: Project = store.getters.currentProject;
-    console.log(project);
 
-    //Generate common object to manipulate data
-    /*const languagesParsed: Array<Language> = project.languages;
-    const groupsParsed: Array<Group> = getGroups(groups);
-    const keysParsed: Array<Key> = getKeys(items, languagesParsed);
-
-    const localizationsObjects: Array<Localizable> = getLocalizationsObjects(languagesParsed, groupsParsed, keysParsed);
-    sortObjects(localizationsObjects);*/
-
-    const localizedProject = project.toLocalizedProject();
-    console.log(localizedProject);
-
-    //return generateStringFiles(platform, languagesParsed, localizationsObjects);
+    const localizedProject: LocalizedGroup[] = project.toLocalizedProject();
+    return generateStringFiles(platform, project.languages, localizedProject);
 };

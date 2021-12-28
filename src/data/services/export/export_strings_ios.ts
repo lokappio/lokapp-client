@@ -1,60 +1,66 @@
 import { EXPORT_CONFIGURATION, replaceMarkers, mixGroupAndKeyName } from "./export_configuration";
 import Language from "../../models/export/Language";
-import Localizable from "../../models/export/Localizable";
+import {LocalizedGroup, Plural} from "@/data/models/api/Project";
+import {KeyType} from "@/data/models/enums/project";
 
-const generateIOSStringDictFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
+const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[]) => {
+    const platform = EXPORT_CONFIGURATION.PLATFORMS.IOS;
+
     let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\
 <plist version=\"1.0\">\n\
 <dict>\n";
 
-    let i = 0;
-    for (; i < localizedObjects.length; i++) {
-        const item = localizedObjects[i];
-        if (item.localizations.find((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL)) {
-            exportedString += `    <!-- MARK: ${item.name} -->\n`;
-        }
+        localizedProject.forEach((localizedGroup) => {
 
-        item.localizations
-        .filter((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL)
-        .forEach((localization: any) => {
-            exportedString += "    <key>" + mixGroupAndKeyName(item.name, localization.key) + "</key>\n";
-            exportedString += "    <dict>\n";
-            exportedString += "        <key>NSStringLocalizedFormatKey</key>\n";
-            exportedString += "        <string>%#@variable_name@</string>\n";
-            exportedString += "        <key>variable_name</key>\n";
-            exportedString += "        <dict>\n";
-            exportedString += "            <key>NSStringFormatSpecTypeKey</key>\n";
-            exportedString += "            <string>NSStringPluralRuleType</string>\n";
-            exportedString += "            <key>NSStringFormatValueTypeKey</key>\n";
-            exportedString += "            <string>d</string>\n";
-
-            for (const key in EXPORT_CONFIGURATION.PLURAL_CONFIG) {
-                const quantity = EXPORT_CONFIGURATION.PLURAL_CONFIG[key].KEY;
-                if (localization[language.name][quantity]) {
-                    exportedString += "            <key>" + quantity + "</key>\n";
-                    exportedString += "            <string>" + replaceMarkers(localization[language.name][quantity], platform).replace(/"/g, "\\\"") + "</string>\n";
-                }
+            if (localizedGroup.localizations.find((localization) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL)) {
+                exportedString += `    <!-- MARK: ${localizedGroup.name} -->\n`;
             }
 
-            exportedString += "        </dict>\n";
-            exportedString += "    </dict>\n";
+            localizedGroup.localizations
+            .filter((localization) => localization.type === KeyType.PLURAL)
+            .forEach((localization) => {
+                exportedString += "    <key>" + mixGroupAndKeyName(localizedGroup.name, localization.key) + "</key>\n";
+                exportedString += "    <dict>\n";
+                exportedString += "        <key>NSStringLocalizedFormatKey</key>\n";
+                exportedString += "        <string>%#@variable_name@</string>\n";
+                exportedString += "        <key>variable_name</key>\n";
+                exportedString += "        <dict>\n";
+                exportedString += "            <key>NSStringFormatSpecTypeKey</key>\n";
+                exportedString += "            <string>NSStringPluralRuleType</string>\n";
+                exportedString += "            <key>NSStringFormatValueTypeKey</key>\n";
+                exportedString += "            <string>d</string>\n";
+
+                const value: Plural = localization[language.name] as Plural;
+                Object.entries(value).forEach((value) => {
+
+                }
+
+                for (const key in EXPORT_CONFIGURATION.PLURAL_CONFIG) {
+                    const quantity = EXPORT_CONFIGURATION.PLURAL_CONFIG[key].KEY;
+                    if (localization[language.name][quantity]) {
+                        exportedString += "            <key>" + quantity + "</key>\n";
+                        exportedString += "            <string>" + replaceMarkers(localization[language.name][quantity], platform).replace(/"/g, "\\\"") + "</string>\n";
+                    }
+                }
+
+                exportedString += "        </dict>\n";
+                exportedString += "    </dict>\n";
+            });
         });
-    }
+
     exportedString += "</dict>\n";
     exportedString += "</plist>\n";
-
-    if (i < localizedObjects.length - 1) {
-        exportedString += "\n";
-    }
+    exportedString += "\n";
 
     return {language: language.name.toUpperCase(), content: exportedString, plural: true};
 };
 
-const generateIOSStringFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
+const generateIOSStringFile = (language: Language, localizedObjects: LocalizedGroup[]) => {
     let exportedString = "";
+    const platform = EXPORT_CONFIGURATION.PLATFORMS.IOS;
 
-    localizedObjects.forEach((groupObject: any, index: number) => {
+    localizedObjects.forEach((groupObject, index) => {
         //Check if data in group
         const indexOfFirst = groupObject.localizations.findIndex((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.SINGULAR);
         if (indexOfFirst === -1) {
@@ -77,11 +83,11 @@ const generateIOSStringFile = (platform: any, language: Language, localizedObjec
     return {language: language.name.toUpperCase(), content: exportedString, plural: false};
 };
 
-export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: Array<Localizable>) => {
+export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]) => {
     const answer: any = [];
     languages.forEach((language: Language) => {
-        answer.push(generateIOSStringFile(EXPORT_CONFIGURATION.PLATFORMS.IOS, language, localizedObjects));
-        answer.push(generateIOSStringDictFile(EXPORT_CONFIGURATION.PLATFORMS.IOS, language, localizedObjects));
+        answer.push(generateIOSStringFile(language, localizedObjects));
+        answer.push(generateIOSStringDictFile(language, localizedObjects));
     });
     return answer;
 }

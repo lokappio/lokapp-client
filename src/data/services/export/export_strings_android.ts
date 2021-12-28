@@ -1,35 +1,33 @@
-import { EXPORT_CONFIGURATION, mixGroupAndKeyName, replaceMarkers } from "./export_configuration";
+import {EXPORT_CONFIGURATION, mixGroupAndKeyName, replaceMarkers} from "./export_configuration";
 import Language from "../../models/export/Language";
-import Localizable from "../../models/export/Localizable";
+import {LocalizedGroup, Plural} from "@/data/models/api/Project";
+import {KeyType} from "@/data/models/enums/project";
+import {FileData} from "@/data/models/types/export";
 
-const generateAndroidStringFile = (language: Language, localizedObjects: Array<Localizable>) => {
+const generateAndroidStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
     const platform = EXPORT_CONFIGURATION.PLATFORMS.ANDROID;
 
-    let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<resources>\n";
+    let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<resources>\n";
 
-    localizedObjects.forEach((groupObject: Localizable, index: number) => {
-
+    localizedProject.forEach((localizedGroup, index) => {
         if (index > 0) {
             exportedString += "\n";
         }
-        if (groupObject.name != null) {
-            exportedString += `    <!-- ${groupObject.name} -->\n`;
+        if (localizedGroup.name != null) {
+            exportedString += `    <!-- ${localizedGroup.name} -->\n`;
         }
 
-        groupObject.localizations.forEach((localization: any) => {
-
-            if (localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.SINGULAR) {
+        localizedGroup.localizations.forEach((localization) => {
+            if (localization.type === KeyType.SINGULAR) {
                 const value = localization[language.name].toString().replace(/"/g, "\\\"");
-                exportedString += `    <string name="${mixGroupAndKeyName(groupObject.name, localization.key)}">"${replaceMarkers(value, platform)}"</string>\n`;
+                exportedString += `    <string name="${mixGroupAndKeyName(localizedGroup.name, localization.key)}">"${replaceMarkers(value, platform)}"</string>\n`;
             } else {
-                exportedString += `    <plurals name="${mixGroupAndKeyName(groupObject.name, localization.key)}">\n`;
+                exportedString += `    <plurals name="${mixGroupAndKeyName(localizedGroup.name, localization.key)}">\n`;
+                const value: Plural = localization[language.name] as Plural;
 
-                const plurals = {[EXPORT_CONFIGURATION.PLURAL_CONFIG.ZERO.KEY]: "zero", [EXPORT_CONFIGURATION.PLURAL_CONFIG.ONE.KEY]: "one", [EXPORT_CONFIGURATION.PLURAL_CONFIG.OTHER.KEY]: "other"};
-                Object.keys(plurals).forEach((plural: any) => {
-                    const value = localization[language.name][plural];
+                Object.entries(value).forEach((value) => {
                     if (value !== undefined) {
-                        exportedString += `        <item quantity="${plurals[plural]}">"${replaceMarkers(value.replace(/"/g, "\\\""), platform)}"</item>\n`;
+                        exportedString += `        <item quantity="${value[0]}">"${replaceMarkers(value[1].replace(/"/g, "\\\""), platform)}"</item>\n`;
                     }
                 });
 
@@ -44,10 +42,6 @@ const generateAndroidStringFile = (language: Language, localizedObjects: Array<L
     return {language: language.name.toUpperCase(), content: exportedString};
 };
 
-export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: Array<Localizable>) => {
-    const answer: any = [];
-    languages.forEach((language: Language) => {
-        answer.push(generateAndroidStringFile(language, localizedObjects));
-    });
-    return answer;
+export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
+    return languages.map((language: Language) => generateAndroidStringFile(language, localizedObjects));
 };

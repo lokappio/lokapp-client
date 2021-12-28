@@ -61,6 +61,7 @@ class ProjectsService {
               await Promise.all(
                 keys.map(async (key) => {
                   const values: NewValue[] = await ValuesService.getValuesByKeyId(key.id);
+                  values.forEach((value) => value.languageName = currProject.languages.find((lang) => lang.id == value.languageId).name)
                   key.values = values;
                 })
               );

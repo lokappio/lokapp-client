@@ -1,7 +1,8 @@
 import { exportProject, EXPORT_CONFIGURATION } from "./export/export_configuration";
+import {FileData} from "@/data/models/types/export";
 
 class ExportService {
-    public static exportDatas = (platform: string) => {
+    public static exportDatas = (platform: string): FileData[] => {
         switch (platform) {
             case EXPORT_CONFIGURATION.PLATFORMS.ANDROID: 
                 return exportProject(EXPORT_CONFIGURATION.PLATFORMS.ANDROID);

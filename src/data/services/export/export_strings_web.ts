@@ -1,11 +1,12 @@
 import Language from "@/data/models/export/Language";
-import Localizable from "@/data/models/export/Localizable";
 import { EXPORT_CONFIGURATION, replaceMarkers } from "./export_configuration";
+import {LocalizedGroup} from "@/data/models/api/Project";
 
-const generateWebStringFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
+const generateWebStringFile = (language: Language, localizedObjects: LocalizedGroup[]) => {
     let exportedString = `{\n`;
+    const platform = EXPORT_CONFIGURATION.PLATFORMS.WEB;
 
-    localizedObjects.forEach((groupObject: Localizable, index: number) => {
+    localizedObjects.forEach((groupObject, index) => {
         //Check if some keys inside group
         if (groupObject.localizations.length === 0) {
             return;
@@ -71,10 +72,6 @@ const generateWebStringFile = (platform: any, language: Language, localizedObjec
     return {language: language.name.toUpperCase(), content: exportedString};
 };
 
-export const generateWebStringFiles = (languages: Array<Language>, localizedObjects: Array<Localizable>) => {
-    const answer: any = [];
-    languages.forEach((language: Language) => {
-        answer.push(generateWebStringFile(EXPORT_CONFIGURATION.PLATFORMS.WEB, language, localizedObjects));
-    });
-    return answer;
+export const generateWebStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]) => {
+    return languages.map((language: Language) => generateWebStringFile(language, localizedObjects));
 };

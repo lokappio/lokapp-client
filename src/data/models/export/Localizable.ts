@@ -13,17 +13,3 @@ export class LocalizableKey {
         return new this(json.key, json.type);
     }
 }
-
-export default class Localizable {
-    name: string | null;
-    localizations: Array<LocalizableKey>;
-
-    constructor(name: string | null, localizations: Array<LocalizableKey>) {
-        this.name = name;
-        this.localizations = localizations;
-    }
-
-    public static map(json: any): Localizable {
-        return new this(json.name, json.localizations);
-    }
-}
