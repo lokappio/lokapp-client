@@ -1,11 +1,11 @@
-import { EXPORT_CONFIGURATION, replaceMarkers, mixGroupAndKeyName } from "./export_configuration";
+import { replaceMarkers, mixGroupAndKeyName } from "./export_configuration";
 import Language from "../../models/export/Language";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
-import {KeyType} from "@/data/models/enums/project";
+import {KeyType, Platform} from "@/data/models/enums/project";
 import {FileData} from "@/data/models/types/export";
 
 const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
-    const platform = EXPORT_CONFIGURATION.PLATFORMS.IOS;
+    const platform = Platform.IOS;
 
     let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\
@@ -14,7 +14,7 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
 
         localizedProject.forEach((localizedGroup) => {
 
-            if (localizedGroup.localizations.find((localization) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL)) {
+            if (localizedGroup.localizations.find((localization) => localization.type === KeyType.PLURAL)) {
                 exportedString += `    <!-- MARK: ${localizedGroup.name} -->\n`;
             }
 
@@ -52,7 +52,7 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
 };
 
 const generateIOSStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
-    const platform = EXPORT_CONFIGURATION.PLATFORMS.IOS;
+    const platform = Platform.IOS;
     let exportedString = "";
 
     localizedProject.forEach((localizedGroup) => {

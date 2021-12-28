@@ -1,11 +1,11 @@
-import {EXPORT_CONFIGURATION, mixGroupAndKeyName, replaceMarkers} from "./export_configuration";
+import {mixGroupAndKeyName, replaceMarkers} from "./export_configuration";
 import Language from "../../models/export/Language";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
-import {KeyType} from "@/data/models/enums/project";
+import {KeyType, Platform} from "@/data/models/enums/project";
 import {FileData} from "@/data/models/types/export";
 
 const generateAndroidStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
-    const platform = EXPORT_CONFIGURATION.PLATFORMS.ANDROID;
+    const platform = Platform.ANDROID;
 
     let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<resources>\n";
 

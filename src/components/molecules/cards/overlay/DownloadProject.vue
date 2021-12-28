@@ -81,12 +81,12 @@
 </template>
 
 <script lang="ts">
-import {EXPORT_CONFIGURATION} from "@/data/services/export/export_configuration";
 import ActionButton from "@/components/molecules/buttons/ActionButton";
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Vue from "vue";
 import {FileData, TranslationFile} from "@/data/models/types/export";
+import {Platform} from "@/data/models/enums/project";
 
 export default Vue.extend({
     name: "download-project-card",
@@ -109,7 +109,7 @@ export default Vue.extend({
         setPlatforms(): [] {
             const res = [];
             let i = 0;
-            Object.values(EXPORT_CONFIGURATION.PLATFORMS).forEach((platform) => {
+            Object.values(Platform).forEach((platform) => {
                 res.push({
                     id: i,
                     name: platform
@@ -127,7 +127,7 @@ export default Vue.extend({
             this.isDownloadFinished = true;
 
             switch (this.getActualPlatformName()) {
-                case EXPORT_CONFIGURATION.PLATFORMS.ANDROID:
+                case Platform.ANDROID:
                     this.files = filesData.map((file) => {
                         return {
                             name: "strings_" + file.language + ".xml",
@@ -135,7 +135,7 @@ export default Vue.extend({
                         }
                     });
                     break;
-                case EXPORT_CONFIGURATION.PLATFORMS.IOS:
+                case Platform.IOS:
                     this.files = filesData.map((file) => {
                         return {
                             name: file.plural ? "Localizable_" + file.language + ".stringsdict" : "Localizable_" + file.language + ".strings",
@@ -143,7 +143,7 @@ export default Vue.extend({
                         }
                     });
                     break;
-                case EXPORT_CONFIGURATION.PLATFORMS.WEB:
+                case Platform.WEB:
                     this.files = filesData.map((file) => {
                         return {
                             name: file.language + ".json",

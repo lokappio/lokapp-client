@@ -7,5 +7,5 @@ export enum KeyTypeValues {
 }
 
 export enum Platform {
-  ANDROID="android", IOS="ios", WEB="web"
+  ANDROID="Android", IOS="iOS", WEB="Web"
 }

@@ -6,32 +6,7 @@ import { generateWebStringFiles } from "./export_strings_web";
 import store from "@/store";
 import Project, {LocalizedGroup} from "@/data/models/api/Project";
 import {FileData} from "@/data/models/types/export";
-
-export const EXPORT_CONFIGURATION: any = {
-    PLATFORMS : {
-        ANDROID: "Android",
-        IOS: "iOS",
-        WEB: "Web"
-    },
-    LOCALIZATION_TYPE : {
-        SINGULAR: "singular",
-        PLURAL: "plural"
-    },
-    PLURAL_CONFIG : {
-        ZERO: {
-            PATTERN: "[zero]",
-            KEY: "zero"
-        },
-        ONE: {
-            PATTERN: "[one]",
-            KEY: "one"
-        },
-        OTHER: {
-            PATTERN: "[other]",
-            KEY: "other"
-        }
-    },
-};
+import {Platform} from "@/data/models/enums/project";
 
 export const STRING_CONFIGURATION: any = {
     STRING: "s",
@@ -42,21 +17,21 @@ export const STRING_CONFIGURATION: any = {
 };
 
 export const STRING_SPECIFIERS: any = {
-    [EXPORT_CONFIGURATION.PLATFORMS.ANDROID]: {
+    [Platform.ANDROID]: {
         [STRING_CONFIGURATION.STRING]: "s",
         [STRING_CONFIGURATION.NUMBER]: "d",
         [STRING_CONFIGURATION.NUMBER_PRECISION]: "$1d",
         [STRING_CONFIGURATION.FLOAT]: "f",
         [STRING_CONFIGURATION.FLOAT_PRECISION]: "$1f"
     },
-    [EXPORT_CONFIGURATION.PLATFORMS.IOS]: {
+    [Platform.IOS]: {
         [STRING_CONFIGURATION.STRING]: "@",
         [STRING_CONFIGURATION.NUMBER]: "d",
         [STRING_CONFIGURATION.NUMBER_PRECISION]: "$1d",
         [STRING_CONFIGURATION.FLOAT]: "f",
         [STRING_CONFIGURATION.FLOAT_PRECISION]: "$1f"
     },
-    [EXPORT_CONFIGURATION.PLATFORMS.WEB]: {
+    [Platform.WEB]: {
         [STRING_CONFIGURATION.STRING]: "@",
         [STRING_CONFIGURATION.NUMBER]: "d",
         [STRING_CONFIGURATION.NUMBER_PRECISION]: "$1d",
@@ -65,7 +40,7 @@ export const STRING_SPECIFIERS: any = {
     }
 };
 
-export const replaceMarkers = (str: string, platform: any) => {
+export const replaceMarkers = (str: string, platform: Platform) => {
     const regexp = new RegExp(/(\$\{([.0-9]{0,}[s|d|f]{1})\})/g);
     const replacements = STRING_SPECIFIERS[platform];
     const data = [...str.matchAll(regexp)].reverse();
@@ -80,7 +55,7 @@ export const replaceMarkers = (str: string, platform: any) => {
             if (markerValue.match(new RegExp(platformMarker))) {
                 let replacedMarker = "";
 
-                if (platform === EXPORT_CONFIGURATION.PLATFORMS.WEB) {
+                if (platform === Platform.WEB) {
                     if (markerValue === platformMarker) {
                         replacedMarker = markerValue.replace(platformMarker, replacements[platformMarker]);
                     } else {
@@ -116,11 +91,11 @@ export const mixGroupAndKeyName = (groupName: string, keyName: string) => {
 
 const generateStringFiles = (platform: string, languagesParsed: Language[], localizedObjects: LocalizedGroup[]): FileData[] => {
     switch (platform) {
-        case EXPORT_CONFIGURATION.PLATFORMS.ANDROID:
+        case Platform.ANDROID:
             return generateAndroidStringFiles(languagesParsed, localizedObjects);
-        case EXPORT_CONFIGURATION.PLATFORMS.IOS:
+        case Platform.IOS:
             return generateIOSStringFiles(languagesParsed, localizedObjects);
-        case EXPORT_CONFIGURATION.PLATFORMS.WEB:
+        case Platform.WEB:
             return generateWebStringFiles(languagesParsed, localizedObjects);
         default:
             break;

@@ -1,12 +1,12 @@
 import Language from "@/data/models/export/Language";
-import { EXPORT_CONFIGURATION, replaceMarkers } from "./export_configuration";
+import { replaceMarkers } from "./export_configuration";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
 import {FileData} from "@/data/models/types/export";
-import {KeyType} from "@/data/models/enums/project";
+import {KeyType, Platform} from "@/data/models/enums/project";
 
 const generateWebStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
     let exportedString = `{\n`;
-    const platform = EXPORT_CONFIGURATION.PLATFORMS.WEB;
+    const platform = Platform.WEB;
 
     localizedProject.forEach((localizedGroup, index) => {
         //Check if some keys inside group

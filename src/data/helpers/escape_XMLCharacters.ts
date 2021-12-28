@@ -1,4 +1,4 @@
-import { EXPORT_CONFIGURATION } from "../services/export/export_configuration";
+import {Platform} from "@/data/models/enums/project";
 
 const findAMPCharacters = (str: string): string => {
     const regexp = new RegExp(/((?!&amp;)[&])/g);
@@ -16,8 +16,8 @@ const findAMPCharacters = (str: string): string => {
     return output;
 }
 
-export const escapeXMLCharacters = (platform: any, output: string) => {
-    if (platform === EXPORT_CONFIGURATION.PLATFORMS.ANDROID) {
+export const escapeXMLCharacters = (platform: Platform, output: string) => {
+    if (platform === Platform.ANDROID) {
         output = findAMPCharacters(output);
     }
     return output;
