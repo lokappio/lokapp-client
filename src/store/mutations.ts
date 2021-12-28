@@ -5,8 +5,8 @@ import CardEnum from "@/data/models/Card.enum";
 import RoleProtection from "@/data/models/roles/RoleProtection";
 import {State} from "@/store/states";
 import Project from "@/data/models/api/Project";
-import NewKey from "@/data/models/api/NewKey";
-import NewGroup from "@/data/models/api/NewGroup";
+import Key from "@/data/models/api/Key";
+import Group from "@/data/models/api/Group";
 
 export default {
     SET_USER(state: State, user: any): void {
@@ -21,15 +21,15 @@ export default {
     SET_CURRENT_PROJECT(state: State, project: Project): void {
         state.currentProject = project;
     },
-    ADD_PROJECT_KEY(state: State, data: {group: NewGroup | null; key: NewKey}): void {
+    ADD_PROJECT_KEY(state: State, data: {group: Group | null; key: Key}): void {
         state.currentProject.addKey(data.group, data.key);
         state.currentProject = Object.assign({}, state.currentProject);
     },
-    UPDATE_PROJECT_KEY(state: State, key: NewKey): void {
+    UPDATE_PROJECT_KEY(state: State, key: Key): void {
         state.currentProject.updateKey(key);
         state.currentProject = Object.assign({}, state.currentProject);
     },
-    DELETE_PROJECT_KEY(state: State, key: NewKey): void {
+    DELETE_PROJECT_KEY(state: State, key: Key): void {
         state.currentProject.deleteKey(key);
         state.currentProject = Object.assign({}, state.currentProject);
     },

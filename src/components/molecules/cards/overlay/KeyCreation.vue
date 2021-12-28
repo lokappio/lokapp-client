@@ -99,19 +99,14 @@
 
 <script lang="ts">
 import ActionButton from "@/components/molecules/buttons/ActionButton";
-import Key from "@/data/models/api/Key";
 import {keyNameRules} from "@/data/rules/KeyRules";
-import Group from "@/data/models/api/Group";
-import { PLURAL_DEFAULT } from "@/data/models/PluralTemplate";
-import { groupNameRules } from "@/data/rules/GroupRules";
-import CardEnum from "@/data/models/Card.enum";
+import {groupNameRules} from "@/data/rules/GroupRules";
 import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "../../KeyboardEvents.vue";
 import Vue from "vue";
-import NewKey from "@/data/models/api/NewKey";
+import Key from "@/data/models/api/Key";
 import Project from "@/data/models/api/Project";
-import Language from "@/data/models/api/Language";
-import NewGroup from "@/data/models/api/NewGroup";
+import Group from "@/data/models/api/Group";
 
 export default Vue.extend({
     name: 'key-creation',
@@ -120,7 +115,7 @@ export default Vue.extend({
         KeyboardEvents
     },
     props: {
-      selectedGroup: NewGroup,
+      selectedGroup: Group,
       isOpen: Boolean
     },
     created() {
@@ -128,13 +123,13 @@ export default Vue.extend({
         this.loadData();
     },
     data: function() {
-        const emptyGroup = NewGroup.empty(this.$t("key_creation.new_group"));
+        const emptyGroup = Group.empty(this.$t("key_creation.new_group"));
 
         return {
             //DATA
             groups: [emptyGroup],
             currentGroup: emptyGroup,
-            newKey: NewKey.empty(),
+            newKey: Key.empty(),
             groupName: "",
             projectId: -1,
 
@@ -180,7 +175,7 @@ export default Vue.extend({
 
                 if(this.currentGroup.id === -1) this.currentGroup.name = this.groupName;
 
-                let data: {group: NewGroup | null; key: NewKey};
+                let data: {group: Group | null; key: Key};
                 try {
                   data = await this.$service.keys.createKeyWithGroup(this.currentGroup.id === -1, this.currentGroup, this.newKey);
                 } catch(e: string) {

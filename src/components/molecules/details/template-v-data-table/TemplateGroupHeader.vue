@@ -39,13 +39,13 @@
 import { groupNameRules } from "@/data/rules/GroupRules";
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
-import NewGroup from "@/data/models/api/NewGroup";
+import Group from "@/data/models/api/Group";
 
 export default Vue.extend({
     name: 'template-group-header',
     props: {
       headers: {},
-      group: NewGroup,
+      group: Group,
       items: translationItem,
       isOpen: Boolean,
       toggle: Function,

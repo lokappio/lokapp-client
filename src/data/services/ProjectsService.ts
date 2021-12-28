@@ -6,11 +6,11 @@ import { Role } from "../models/roles/role.enum";
 import ApiService from "./ApiService";
 import Project from "@/data/models/api/Project";
 import GroupsService from "@/data/services/GroupsService";
-import NewGroup from "@/data/models/api/NewGroup";
+import Group from "@/data/models/api/Group";
 import KeysService from "@/data/services/KeysService";
-import NewKey from "@/data/models/api/NewKey";
+import Key from "@/data/models/api/Key";
 import ValuesService from "@/data/services/ValuesService";
-import NewValue from "@/data/models/api/NewValue";
+import Value from "@/data/models/api/Value";
 import LanguagesService from "@/data/services/LanguagesService";
 
 class ProjectsService {
@@ -55,19 +55,19 @@ class ProjectsService {
               const currProject: Project = Project.map(response.data);
               currProject.languages = await LanguagesService.getLanguages();
 
-              const keys: NewKey[] = await KeysService.getKeys();
+              const keys: Key[] = await KeysService.getKeys();
 
               //Set values for each keys
               await Promise.all(
                 keys.map(async (key) => {
-                  const values: NewValue[] = await ValuesService.getValuesByKeyId(key.id);
+                  const values: Value[] = await ValuesService.getValuesByKeyId(key.id);
                   values.forEach((value) => value.languageName = currProject.languages.find((lang) => lang.id == value.languageId).name)
                   key.values = values;
                 })
               );
 
 
-              const groups: NewGroup[] = await GroupsService.getGroups();
+              const groups: Group[] = await GroupsService.getGroups();
               groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
               currProject.groups = groups;
 

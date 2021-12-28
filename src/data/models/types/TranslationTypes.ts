@@ -1,7 +1,7 @@
-import NewValue, {ValueQuantity} from "@/data/models/api/NewValue";
-import NewKey from "@/data/models/api/NewKey";
-import NewGroup from "@/data/models/api/NewGroup";
+import Value, {ValueQuantity} from "@/data/models/api/Value";
+import Key from "@/data/models/api/Key";
+import Group from "@/data/models/api/Group";
 
-export type translationItem = {key: NewKey; group: NewGroup; quantity: ValueQuantity; [language: string]: NewValue};
+export type translationItem = {key: Key; group: Group; quantity: ValueQuantity; [language: string]: Value};
 
-export type translationGroup = Partial<NewGroup>;
+export type translationGroup = Partial<Group>;

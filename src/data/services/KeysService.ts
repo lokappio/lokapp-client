@@ -1,8 +1,8 @@
 import config from "@/config";
 import { AxiosResponse } from "axios";
 import ApiService from "./ApiService";
-import NewKey from "@/data/models/api/NewKey";
-import NewGroup from "@/data/models/api/NewGroup";
+import Key from "@/data/models/api/Key";
+import Group from "@/data/models/api/Group";
 import GroupsService from "@/data/services/GroupsService";
 import ValuesService from "@/data/services/ValuesService";
 import store from '@/store/index';
@@ -11,16 +11,16 @@ class KeysService {
     static keysUrl: string = config.baseUrl + "/projects/";
     static get projectId(): number { return store.getters.actualProjectId}
 
-    public static getKeys(): Promise<Array<NewKey>> {
+    public static getKeys(): Promise<Array<Key>> {
         return ApiService.getAPI(KeysService.keysUrl + this.projectId + "/translations")
         .then((response) => {
             return response.data.map((item: any) => {
-                return NewKey.map(item);
+                return Key.map(item);
             })
         })
     }
 
-    public static async createKey(key: NewKey): Promise<NewKey> {
+    public static async createKey(key: Key): Promise<Key> {
         const bodyParameters = {
             name: key.name,
             "group_id": key.groupId,
@@ -28,16 +28,16 @@ class KeysService {
         };
 
         const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + this.projectId + "/translations/", bodyParameters);
-        return NewKey.map(result.data);
+        return Key.map(result.data);
     }
 
-    public static async createKeyWithGroup(createGroup: boolean, group: NewGroup, key: NewKey): Promise<{group: NewGroup | null; key: NewKey}> {
-        const data: {group: NewGroup | null; key: NewKey} = {} as any;
+    public static async createKeyWithGroup(createGroup: boolean, group: Group, key: Key): Promise<{group: Group | null; key: Key}> {
+        const data: {group: Group | null; key: Key} = {} as any;
 
         //IF GROUP DOESN'T EXIST YET IN DB, CREATE IT ...
         if (createGroup) {
             try {
-                const result: NewGroup = await GroupsService.createGroup(group);
+                const result: Group = await GroupsService.createGroup(group);
                 key.groupId = result.id;
                 data.group = result;
             } catch(error) {
@@ -59,7 +59,7 @@ class KeysService {
         }
 
 
-        let createdKey: NewKey;
+        let createdKey: Key;
         //CREATE KEY WITH CURRGROUP
         try {
             createdKey = await this.createKey(key);
@@ -92,7 +92,7 @@ class KeysService {
         return ApiService.delAPI(KeysService.keysUrl + this.projectId + "/translations/" + keyId);
     }
 
-    public static updateKey(key: NewKey): Promise<AxiosResponse> {
+    public static updateKey(key: Key): Promise<AxiosResponse> {
         const bodyParameters = {
             name: key.name,
             "is_plural": key.isPlural

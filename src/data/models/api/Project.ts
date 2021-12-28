@@ -1,9 +1,9 @@
-import NewGroup from "@/data/models/api/NewGroup";
+import Group from "@/data/models/api/Group";
 import Language from "@/data/models/api/Language";
-import NewKey from "@/data/models/api/NewKey";
+import Key from "@/data/models/api/Key";
 import {KeyType} from "@/data/models/enums/project";
 import {groupBy} from "@/data/helpers/utils";
-import NewValue from "@/data/models/api/NewValue";
+import Value from "@/data/models/api/Value";
 
 export class Plural {
   other: string;
@@ -28,7 +28,7 @@ export default class Project {
   color: string;
   description: string;
   languages: Language[];
-  groups: NewGroup[];
+  groups: Group[];
 
   static map(data: Partial<Project>): Project {
     const project: Project = new Project();
@@ -54,7 +54,7 @@ export default class Project {
         localization.type = key.isPlural ? KeyType.PLURAL : KeyType.SINGULAR;
 
         if(key.isPlural) {
-          Object.entries(groupBy<NewValue[]>(key.values, 'languageName')).forEach((value) => {
+          Object.entries(groupBy<Value[]>(key.values, 'languageName')).forEach((value) => {
             const pluralValue = new Plural();
 
             value[1].forEach((value) => {
@@ -78,7 +78,7 @@ export default class Project {
     return localized;
   }
 
-  addKey(group: NewGroup | null, key: NewKey): void {
+  addKey(group: Group | null, key: Key): void {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
 
     if(currGroupIndex != -1) {
@@ -89,14 +89,14 @@ export default class Project {
     }
   }
 
-  updateKey(key: NewKey): void {
+  updateKey(key: Key): void {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
     const currKeyIndex: number = this.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
 
     this.groups[currGroupIndex].keys[currKeyIndex] = Object.assign({}, key);
   }
 
-  deleteKey(key: NewKey): void {
+  deleteKey(key: Key): void {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
     const currKeyIndex: number = this.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
 

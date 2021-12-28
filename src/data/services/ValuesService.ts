@@ -1,9 +1,8 @@
 import config from "@/config";
 import { AxiosResponse } from "axios";
-import Value from "../models/api/Value";
 import ApiService from "./ApiService";
-import NewKey from "@/data/models/api/NewKey";
-import NewValue, {ValueQuantity} from "@/data/models/api/NewValue";
+import Key from "@/data/models/api/Key";
+import Value, {ValueQuantity} from "@/data/models/api/Value";
 import Language from "@/data/models/api/Language";
 import store from '@/store/index';
 
@@ -12,16 +11,8 @@ class ValuesService {
     static get languages(): Language[] { return store.getters.currentProject.languages}
     static get projectId(): number { return store.getters.actualProjectId}
 
-    public static getEveryValues(): Promise<Array<Value>> {
-        return ApiService.getAPI(ValuesService.valuesUrl + this.projectId + "/translations/all")
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return Value.map(item);
-            })
-        })
-    }
 
-    public static async createValue(keyId: number, value: NewValue): Promise<NewValue> {
+    public static async createValue(keyId: number, value: Value): Promise<Value> {
         const bodyParameters = {
             name: value.name,
             "language_id": value.languageId,
@@ -29,18 +20,18 @@ class ValuesService {
         };
 
         const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values", bodyParameters)
-        return NewValue.map(result.data);
+        return Value.map(result.data);
     }
 
-    public static async createValueForKey(key: NewKey): Promise<NewValue[]> {
-        const result: NewValue[] = await Promise.all(this.languages.map(async (language) => {
+    public static async createValueForKey(key: Key): Promise<Value[]> {
+        const result: Value[] = await Promise.all(this.languages.map(async (language) => {
             if (key.isPlural) {
                 return await Promise.all(Object.values(ValueQuantity).map(async (quantity) => {
-                    const value = NewValue.map({name: "", 'language_id': language.id, 'quantity_string': quantity})
+                    const value = Value.map({name: "", 'language_id': language.id, 'quantity_string': quantity})
                     return await this.createValue(key.id, value);
                 }));
             } else {
-                const value = NewValue.map({name: "", 'language_id': language.id, quantityString: null})
+                const value = Value.map({name: "", 'language_id': language.id, quantityString: null})
                 return await this.createValue(key.id, value);
             }
         }).flat());
@@ -48,22 +39,18 @@ class ValuesService {
         return result;
     }
 
-    public static updateValue(value: NewValue): Promise<AxiosResponse> {
+    public static updateValue(value: Value): Promise<AxiosResponse> {
         const bodyParameters = {
             name: value.name
         };
         return ApiService.patchAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
-    public static deleteValue(valueTarget: Value): Promise<AxiosResponse<any>> {
-        return ApiService.delAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + valueTarget.keyId + "/values/" + valueTarget.valueId);
-    }
-
-    public static getValuesByKeyId(keyId: number): Promise<NewValue[]> {
+    public static getValuesByKeyId(keyId: number): Promise<Value[]> {
         return ApiService.getAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values")
         .then((response) => {
             return response.data.map((item: any) => {
-                return NewValue.map(item);
+                return Value.map(item);
             });
         })
     }
