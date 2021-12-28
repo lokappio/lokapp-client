@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import {optionalString} from "@/data/formatting/StringFormatting";
+import {optionalString} from "@/data/helpers/stringFormatting";
 import {userEmailRules, userPasswordLoginRules, userPasswordRules} from "@/data/rules/UserRules";
 import ForgotPassword from "@/components/molecules/cards/overlay/ForgotPassword.vue";
 import CardEnum from "@/data/models/Card.enum";

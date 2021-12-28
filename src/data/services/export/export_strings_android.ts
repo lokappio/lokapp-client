@@ -1,5 +1,5 @@
 import {mixGroupAndKeyName, replaceMarkers} from "./export_configuration";
-import Language from "../../models/export/Language";
+import Language from "../../models/api/Language";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
 import {KeyType, Platform} from "@/data/models/enums/project";
 import {FileData} from "@/data/models/types/export";

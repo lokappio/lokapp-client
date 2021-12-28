@@ -31,7 +31,7 @@
 
 <script>
 import ProjectList from "@/data/models/api/ProjectList";
-import {getInitialOfString} from "@/data/formatting/StringFormatting";
+import {getInitialOfString} from "@/data/helpers/stringFormatting";
 import ProjectSettingsButton from "@/components/molecules/buttons/ProjectSettingsButton";
 import CardEnum from "@/data/models/Card.enum";
 

@@ -1,4 +1,4 @@
-import Language from "@/data/models/export/Language";
+import Language from "@/data/models/api/Language";
 import { replaceMarkers } from "./export_configuration";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
 import {FileData} from "@/data/models/types/export";

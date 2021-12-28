@@ -1,7 +1,7 @@
 import { escapeXMLCharacters } from "../../helpers/escape_XMLCharacters";
 import { generateAndroidStringFiles } from "./export_strings_android";
 import { generateIOSStringFiles } from "./export_strings_ios";
-import Language from "../../models/export/Language";
+import Language from "../../models/api/Language";
 import { generateWebStringFiles } from "./export_strings_web";
 import store from "@/store";
 import Project, {LocalizedGroup} from "@/data/models/api/Project";
