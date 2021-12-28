@@ -47,5 +47,11 @@ export default {
     },
     SET_ACTUAL_ROLE(state: State, role: RoleProtection): void {
         state.actualRole = role;
-    }
+    },
+    SET_SEARCH_PROJECT(state: State, value: string): void {
+        state.searchProject = value;
+    },
+    SET_SEARCH_TRANSLATION(state: State, value: string): void {
+        state.searchTranslation = value;
+    },
 }

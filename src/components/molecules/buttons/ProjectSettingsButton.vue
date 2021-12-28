@@ -13,7 +13,7 @@
     </v-menu>
 </template>
 
-<script>
+<script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
 import CardEnum from "@/data/models/Card.enum";
 import { getRoleClass, getRoleEnum } from "@/data/models/roles/role.enum";
@@ -21,6 +21,7 @@ import Vue from "vue";
 
 export default Vue.extend({
     name: 'project-settings-button',
+    props: {projectId: Number},
     data() {
         return {
             items: [],
@@ -79,7 +80,7 @@ export default Vue.extend({
             }
         },
         askRoleToBackend() {
-            this.$service.user.getMyselfInProject(this.$store.getters.currentProject.id)
+            this.$service.user.getMyselfInProject(this.projectId)
             .then((response) => {
                 this.setupItemsWithRole(getRoleEnum(response.data.role));
             }).catch(() => {

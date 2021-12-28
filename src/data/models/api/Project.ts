@@ -26,6 +26,8 @@ export default class Project {
   id: number;
   name: string;
   color: string;
+  createdAt: Date;
+  updatedAt: Date;
   description: string;
   languages: Language[];
   groups: Group[];
@@ -37,6 +39,8 @@ export default class Project {
     project.name = data.name;
     project.color = data.color;
     project.description = data.description;
+    project.createdAt = data.createdAt;
+    project.updatedAt = data.updatedAt;
 
     return project;
   }

@@ -6,7 +6,7 @@ export const userString = (beginOfString: string, userName: string) => {
         return (beginOfString + ", " + userName);
 }
 
-export const getInitialOfString = (stringToAnalyse: string) => {
+export const firstChar = (stringToAnalyse: string) => {
     return (stringToAnalyse.charAt(0).toUpperCase());
 }
 

@@ -24,17 +24,14 @@
 
                 <!-- RightPart -->
                 <v-col cols="5">
-                    <header-search-bar noRing />
+                    <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
                 </v-col>
             </v-row>
         </v-container>
 </template>
 
 <script lang="ts">
-import HeaderSearchBar from "@/components/molecules/header/HeaderSearchBar";
 import ProjectSettingsButton from "@/components/molecules/buttons/ProjectSettingsButton.vue";
-import CardEnum from "@/data/models/Card.enum";
-import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
 import DownloadProjectCard from "@/components/molecules/cards/overlay/DownloadProject.vue";
@@ -43,12 +40,12 @@ export default Vue.extend({
     name: 'detail-header',
     components: {
         DownloadProjectCard,
-        HeaderSearchBar,
         ProjectSettingsButton
     },
     data() {
       return {
           dialogOpened: false,
+          searchValue: "",
       }
     },
     computed: {

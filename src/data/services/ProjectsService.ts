@@ -16,13 +16,9 @@ import LanguagesService from "@/data/services/LanguagesService";
 class ProjectsService {
     static projectsUrl: string = config.baseUrl + "/projects";
 
-    public static getProjects(): Promise<Array<ProjectList>> {
+    public static getProjects(): Promise<Project[]> {
         return ApiService.getAPI(ProjectsService.projectsUrl) 
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return ProjectList.map(item);
-            });
-        })
+        .then((response) => response.data.map((item: any) => Project.map(item)))
     }
 
     public static createProject(project: ProjectList, projectLanguage: string): Promise<AxiosResponse<any>> {
@@ -40,6 +36,7 @@ class ProjectsService {
 
     /***
      * @deprecated
+     * Use getEntireProjectById
      * @param projectId
      */
     public static getProjectById(projectId: number): Promise<ProjectList> {

@@ -7,8 +7,6 @@
         <v-card class="card-style-content background-color-white px-6 pt-16 mr-0 ml-auto">
 
             <v-container v-if="!loading" class="ma-0 pa-0 full-contain card-container">
-                
-
                 <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
                     <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
                     <project-management v-if="$store.getters.openCard === CardEnum.MANAGE_PROJECT"/>
@@ -46,13 +44,9 @@
                 </v-row>
 
             </v-container>
-
         </v-card>
     </v-container>
-    
 </template>
-
-
 
 <script lang="ts">
 import { Vue } from "vue-property-decorator";
@@ -153,20 +147,7 @@ export default Vue.extend ({
                 this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
            }
         }
-    },
-    /*mounted() {
-
-        this.$eventBus.$on(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-        this.$eventBus.$on(EventEnum.RELOAD_PROJECT, this.reloadProject);
-        this.$eventBus.$on(EventEnum.BACK_TO_DASHBOARD, this.backToDashboard);
-        this.$eventBus.$on(EventEnum.ERROR_ACTION, this.reloadProject);
-    },
-    /*beforeDestroy() {
-        this.$eventBus.$off(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-        this.$eventBus.$off(EventEnum.RELOAD_PROJECT, this.reloadProject);
-        this.$eventBus.$off(EventEnum.BACK_TO_DASHBOARD, this.backToDashboard);
-        this.$eventBus.$off(EventEnum.ERROR_ACTION, this.reloadProject);
-    }*/
+    }
 })
 </script>
 

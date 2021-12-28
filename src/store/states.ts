@@ -16,6 +16,8 @@ export interface State {
   invitations: Invitation[];
   actualRole: RoleProtection;
   currentProject: Project;
+  searchProject: string;
+  searchTranslation: string;
 }
 
 
@@ -30,4 +32,6 @@ export default {
   invitations: [],
   actualRole: null,
   currentProject: null,
+  searchProject: "",
+  searchTranslation: "",
 }

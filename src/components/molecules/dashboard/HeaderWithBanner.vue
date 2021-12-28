@@ -6,16 +6,14 @@
             <!-- HeaderTitle -->
             <v-col cols="12" md="6" class="title-height">
                 <v-btn class="mr-5 ml-2 rounded-button-style icon-color" @click="$store.commit('SET_OPEN_CARD', CardEnum.MANAGE_PROFILE)" color="white" icon>
-                    <v-icon large class="icon-color">
-                        mdi-account
-                    </v-icon>
+                    <v-icon large class="icon-color">mdi-account</v-icon>
                 </v-btn>
                 <header-title displayDescription="true"/>
             </v-col>
             
             <!-- HeaderSearchbar -->
             <v-col cols="12" md="6" class="pt-1 pr-0 search-bar-height">
-                <HeaderSearchbar/>
+                <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
             </v-col>
         
             <!-- HeaderBanner -->
@@ -48,23 +46,31 @@
 
 <script>
 import HeaderTitle from "@/components/molecules/header/HeaderTitle";
-import HeaderSearchbar from "@/components/molecules/header/HeaderSearchBar";
 import HeaderBanner from "@/components/molecules/header/HeaderBanner";
 import InvitationsButton from "@/components/molecules/buttons/InvitationsButton.vue";
+import Vue from "vue";
 import CardEnum from "@/data/models/Card.enum";
 
-export default (
-    'header-banner', {
+export default Vue.extend({
+    name: 'header-banner',
     components: {
         HeaderTitle,
-        HeaderSearchbar,
         HeaderBanner,
         InvitationsButton
     },
     props: ['projectDetail'],
     data() {
         return {
-            CardEnum
+            CardEnum,
+            searchValue: ""
+        }
+    },
+    destroyed() {
+        this.$store.commit("SET_SEARCH_PROJECT", "");
+    },
+    watch: {
+        searchValue(value) {
+            this.$store.commit("SET_SEARCH_PROJECT", value);
         }
     }
 })
