@@ -138,7 +138,7 @@ export default Vue.extend({
                 case EXPORT_CONFIGURATION.PLATFORMS.IOS:
                     this.files = filesData.map((file) => {
                         return {
-                            name: file.plural ? "Localizable_" + file.language + ".strings" : "Localizable_" + file.language + ".stringsdict",
+                            name: file.plural ? "Localizable_" + file.language + ".stringsdict" : "Localizable_" + file.language + ".strings",
                             content: file.content
                         }
                     });

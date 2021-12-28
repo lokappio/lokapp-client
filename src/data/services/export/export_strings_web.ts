@@ -1,8 +1,9 @@
 import Language from "@/data/models/export/Language";
 import { EXPORT_CONFIGURATION, replaceMarkers } from "./export_configuration";
 import {LocalizedGroup} from "@/data/models/api/Project";
+import {FileData} from "@/data/models/types/export";
 
-const generateWebStringFile = (language: Language, localizedObjects: LocalizedGroup[]) => {
+const generateWebStringFile = (language: Language, localizedObjects: LocalizedGroup[]): FileData => {
     let exportedString = `{\n`;
     const platform = EXPORT_CONFIGURATION.PLATFORMS.WEB;
 
@@ -72,6 +73,6 @@ const generateWebStringFile = (language: Language, localizedObjects: LocalizedGr
     return {language: language.name.toUpperCase(), content: exportedString};
 };
 
-export const generateWebStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]) => {
+export const generateWebStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
     return languages.map((language: Language) => generateWebStringFile(language, localizedObjects));
 };

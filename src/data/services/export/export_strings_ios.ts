@@ -2,8 +2,9 @@ import { EXPORT_CONFIGURATION, replaceMarkers, mixGroupAndKeyName } from "./expo
 import Language from "../../models/export/Language";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
 import {KeyType} from "@/data/models/enums/project";
+import {FileData} from "@/data/models/types/export";
 
-const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[]) => {
+const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
     const platform = EXPORT_CONFIGURATION.PLATFORMS.IOS;
 
     let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
@@ -31,18 +32,12 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
                 exportedString += "            <key>NSStringFormatValueTypeKey</key>\n";
                 exportedString += "            <string>d</string>\n";
 
-                const value: Plural = localization[language.name] as Plural;
-                Object.entries(value).forEach((value) => {
+                const values: Plural = localization[language.name] as Plural;
+                Object.entries(values).forEach((value) => {
+                    exportedString += "            <key>" + value[0] + "</key>\n";
+                    exportedString += "            <string>" + replaceMarkers(value[1], platform).replace(/"/g, "\\\"") + "</string>\n";
 
-                }
-
-                for (const key in EXPORT_CONFIGURATION.PLURAL_CONFIG) {
-                    const quantity = EXPORT_CONFIGURATION.PLURAL_CONFIG[key].KEY;
-                    if (localization[language.name][quantity]) {
-                        exportedString += "            <key>" + quantity + "</key>\n";
-                        exportedString += "            <string>" + replaceMarkers(localization[language.name][quantity], platform).replace(/"/g, "\\\"") + "</string>\n";
-                    }
-                }
+                });
 
                 exportedString += "        </dict>\n";
                 exportedString += "    </dict>\n";
@@ -56,34 +51,28 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
     return {language: language.name.toUpperCase(), content: exportedString, plural: true};
 };
 
-const generateIOSStringFile = (language: Language, localizedObjects: LocalizedGroup[]) => {
-    let exportedString = "";
+const generateIOSStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
     const platform = EXPORT_CONFIGURATION.PLATFORMS.IOS;
+    let exportedString = "";
 
-    localizedObjects.forEach((groupObject, index) => {
-        //Check if data in group
-        const indexOfFirst = groupObject.localizations.findIndex((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.SINGULAR);
-        if (indexOfFirst === -1) {
-            return;
+    localizedProject.forEach((localizedGroup) => {
+        exportedString += "\n";
+
+        if (localizedGroup.name != null) {
+            exportedString += "// MARK: - " + localizedGroup.name + "\n\n";
         }
-        //Write data
-        if (index > 0) {
-            exportedString += "\n";
-        }
-        if (groupObject.name != null) {
-            exportedString += "// MARK: - " + groupObject.name + "\n\n";
-        }
-        groupObject.localizations.forEach((localization: any) => {
-            if (localization.type !== EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL) {
-                const value = localization[language.name].toString().replace(/"/g, "\\\"");
-                exportedString += `"${mixGroupAndKeyName(groupObject.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
-            }
-        });
+
+        localizedGroup.localizations
+          .filter((localization) => localization.type === KeyType.SINGULAR)
+          .forEach((localization) => {
+              const value = localization[language.name].toString().replace(/"/g, "\\\"");
+              exportedString += `"${mixGroupAndKeyName(localizedGroup.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
+          });
     });
     return {language: language.name.toUpperCase(), content: exportedString, plural: false};
 };
 
-export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]) => {
+export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
     const answer: any = [];
     languages.forEach((language: Language) => {
         answer.push(generateIOSStringFile(language, localizedObjects));
