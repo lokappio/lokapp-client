@@ -2,7 +2,9 @@ import { EXPORT_CONFIGURATION, mixGroupAndKeyName, replaceMarkers } from "./expo
 import Language from "../../models/export/Language";
 import Localizable from "../../models/export/Localizable";
 
-const generateAndroidStringFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
+const generateAndroidStringFile = (language: Language, localizedObjects: Array<Localizable>) => {
+    const platform = EXPORT_CONFIGURATION.PLATFORMS.ANDROID;
+
     let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <resources>\n";
 
@@ -45,7 +47,7 @@ const generateAndroidStringFile = (platform: any, language: Language, localizedO
 export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: Array<Localizable>) => {
     const answer: any = [];
     languages.forEach((language: Language) => {
-        answer.push(generateAndroidStringFile(EXPORT_CONFIGURATION.PLATFORMS.ANDROID, language, localizedObjects));
+        answer.push(generateAndroidStringFile(language, localizedObjects));
     });
     return answer;
 };

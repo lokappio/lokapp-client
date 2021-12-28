@@ -221,9 +221,9 @@ export default Vue.extend({
         filterKeys(value) {
             this.searchValue = value;
         },
-        downloadProject(platform) {
-            this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.items, this.groups));
-        }
+        /*downloadProject(platform) {
+            this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.getItems, this.groups));
+        }*/
     }
 });
 </script>

@@ -4,7 +4,7 @@ import Key from "../../models/export/Key";
 import Language from "../../models/export/Language";
 import Localizable, { LocalizableKey } from "../../models/export/Localizable";
 
-export const getLanguages = (headers: any): Array<Language> => {
+/*export const getLanguages = (headers: any): Array<Language> => {
     const languages: Array<Language> = [];
     headers.forEach((element: any) => {
         if (element.value != "group" && element.value != "keys") {
@@ -15,7 +15,7 @@ export const getLanguages = (headers: any): Array<Language> => {
         }
     });
     return languages;
-};
+};*/
 
 export const getGroups = (groups: any): Array<Group> => {
     const groupsParsed: Array<Group> = [];

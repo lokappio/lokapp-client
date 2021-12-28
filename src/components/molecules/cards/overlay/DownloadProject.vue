@@ -132,7 +132,7 @@ export default Vue.extend({
             return this.platforms[this.activePlatformId].name;
         },
         downloadProjectWithPlatform() {
-            this.$eventBus.$emit(EventEnum.DOWNLOAD_PROJECT, this.platforms[this.activePlatformId].name);
+            this.$service.export.exportDatas(this.getActualPlatformName())
         },
         copyFile(file) {
             const el = document.createElement("textarea");

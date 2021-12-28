@@ -7,6 +7,7 @@ export default class NewValue {
   name: string
   quantityString: ValueQuantity;
   languageId: number;
+  languageName: string;
   keyId: number;
 
   static map(data: Partial<NewValue>): NewValue {
@@ -16,6 +17,7 @@ export default class NewValue {
     value.name = data.name;
     value.quantityString = data['quantity_string'] != null ? ValueQuantity[data['quantity_string']] : null ;
     value.languageId = data['language_id'];
+    value.languageName = data['language_name'];
     value.keyId = data['key_id'];
 
     return value;

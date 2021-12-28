@@ -7,9 +7,10 @@ import Key from "../../models/export/Key";
 import Language from "../../models/export/Language";
 import Localizable from "../../models/export/Localizable";
 import { generateWebStringFiles } from "./export_strings_web";
+import store from "@/store";
+import Project from "@/data/models/api/Project";
 
 export const EXPORT_CONFIGURATION: any = {
-
     PLATFORMS : {
         ANDROID: "Android",
         IOS: "iOS",
@@ -151,14 +152,20 @@ const sortObjects = (localizationsObjects: any) => {
     });
 };
 
-export const exportProject = (platform: string, headers: any, items: any, groups: any) => {
+export const exportProject = (platform: string) => {
+    const project: Project = store.getters.currentProject;
+    console.log(project);
 
     //Generate common object to manipulate data
-    const languagesParsed: Array<Language> = getLanguages(headers);
+    /*const languagesParsed: Array<Language> = project.languages;
     const groupsParsed: Array<Group> = getGroups(groups);
     const keysParsed: Array<Key> = getKeys(items, languagesParsed);
-    const localizationsObjects: Array<Localizable> = getLocalizationsObjects(languagesParsed, groupsParsed, keysParsed);
-    sortObjects(localizationsObjects);
 
-    return generateStringFiles(platform, languagesParsed, localizationsObjects);
+    const localizationsObjects: Array<Localizable> = getLocalizationsObjects(languagesParsed, groupsParsed, keysParsed);
+    sortObjects(localizationsObjects);*/
+
+    const localizedProject = project.toLocalizedProject();
+    console.log(localizedProject);
+
+    //return generateStringFiles(platform, languagesParsed, localizationsObjects);
 };
