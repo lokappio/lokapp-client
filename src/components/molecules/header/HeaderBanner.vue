@@ -2,7 +2,6 @@
 <template>
     <v-container class="pa-0 banner-container full-contain">
         <v-row class="ma-0 full-contain banner-container">
-
             <!-- Text -->
             <v-col cols="6" class="pa-8 pr-0 col-style">
                 <span class="title-h2 banner-title-style">

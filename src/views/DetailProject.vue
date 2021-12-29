@@ -7,12 +7,8 @@
         <v-card class="card-style-content background-color-white px-6 pt-16 mr-0 ml-auto">
 
             <v-container v-if="!loading" class="ma-0 pa-0 full-contain card-container">
-                <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
-                    <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
-                </v-overlay>
-
                 <v-row class="ma-0 mb-4 row-header-style">
-                    <header-banner projectDetail />
+                    <header-banner projectDetail="true" />
                 </v-row>
 
                 <v-row class="ma-0 pl-0 pl-md-10  row-languages-style">
@@ -41,7 +37,6 @@
 import { Vue } from "vue-property-decorator";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
-import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
 import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
 import Header from "@/components/molecules/project/Header.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
@@ -63,7 +58,6 @@ export default Vue.extend ({
     components: {
         LeftNavBar,
         HeaderBanner,
-        ProfileManager,
         LanguagesGroup,
         Header,
         ContentDetails,
