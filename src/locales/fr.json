@@ -45,6 +45,7 @@
         "not_existing_key": "Cette clé n'existe plus",
         "not_existing_language": "Ce langage n'existe plus",
         "not_your_project": "Ceci n'est pas votre projet",
+        "retrieve_project": "Erreur lors de la récupération du projet",
         "project_deleted": "Erreur lors de la suppression du projet",
         "reset_failed": "L'email donné n'existe pas dans Lokapp",
         "unauthorized": "Vous n'êtes pas autorisé à réaliser cette action",

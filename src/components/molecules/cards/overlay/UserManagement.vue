@@ -87,7 +87,6 @@
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
 import ProjectUser from "@/data/models/api/ProjectUser";
-import CardEnum from "@/data/models/Card.enum";
 import {getRoleClass, getRoleEnum, Role} from "@/data/models/roles/role.enum";
 import RoleProtection from "@/data/models/roles/RoleProtection";
 import Vue from "vue";

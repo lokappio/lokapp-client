@@ -23,14 +23,8 @@ import { Vue } from "vue-property-decorator";
 import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
-import CardEnum from "@/data/models/Card.enum";
 
 export default Vue.extend ({
-    data() {
-        return {
-            CardEnum
-        }
-    },
     components: {
         MyProjects,
         HeaderBanner,

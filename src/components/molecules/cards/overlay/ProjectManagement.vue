@@ -153,25 +153,22 @@ export default Vue.extend({
                 this.actualColor = this.project.color;
                 this.writtenColor = this.project.color;
                 this.projectDescription = this.project.description;
-            }).catch(() => {
-                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
             });
         },
         validateSettings() {
-            if (this.$refs.formChangeSettings.validate() === true) {
+            if ((this.$refs.formChangeSettingsas as Vue & { validate: () => boolean }).validate() === true) {
                 this.loading = true;
                 this.$service.projects.changeProjectSettings(this.projectId, this.projectName, this.actualColor, this.projectDescription)
                 .then(() => {
-                    this.$notify(this.$t("success.project_updated"));
+                    this.$notify(this.$t("success.project_updated").toString());
                     this.refreshProject();
                 }).catch((error) => {
                     if (error.response) {
                         switch (error.response.status) {
                             case 403:
-                                this.$notify(this.$t("error.unauthorized"));
+                                this.$notify(this.$t("error.unauthorized").toString());
                                 break;
                         }
-                        this.$eventBus.$emit(EventEnum.ERROR_ACTION);
                     }
                 }).finally(() => {
                     this.loading = false;
@@ -181,7 +178,6 @@ export default Vue.extend({
         },
         closeManageProject() {
             this.$emit("close");
-            this.$eventBus.$emit(EventEnum.REFRESH_PROJECTS_LIST);
         },
     }
 })

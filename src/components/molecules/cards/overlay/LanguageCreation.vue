@@ -16,14 +16,16 @@
                 <!-- Language name -->
                 <v-row class="mt-4 pb-0 mb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <span class="title-h3">{{ $t('language_creation.language_name_title') }}</span>
+                        <span class="title-h3">{{ $t("language_creation.language_name_title") }}</span>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col cols="12" class="pb-0 pt-0 px-0">
-                        <v-text-field autofocus :rules="languageNameRules" class="custom-text-field" background-color="#F2F3F7" v-model="languageName" :label="$t('language_creation.language_name_label')" solo flat required></v-text-field>
+                        <v-text-field autofocus :rules="languageNameRules" class="custom-text-field" background-color="#F2F3F7" v-model="languageName"
+                                      :label="$t('language_creation.language_name_label')" solo flat required></v-text-field>
                     </v-col>
                 </v-row>
+
                 <!-- ValidateButton -->
                 <v-row class="mt-0 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
@@ -38,20 +40,19 @@
 <script>
 import ActionButton from "@/components/molecules/buttons/ActionButton";
 import {languageNameRules} from "@/data/rules/LanguageRules";
-import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 
-export default Vue.extend ({
-    name: 'language-creation',
+export default Vue.extend({
+    name: "language-creation",
     components: {ActionButton},
     props: {dialogOpened: Boolean},
-    data: function() {
+    data: function () {
         return {
             loading: false,
             languageName: "",
-            languageNameRules: languageNameRules(this.$t("rules.required"), this.$t("rules.language_name_length"), this.$t("rules.only_aphabetic_characters")),
-            isBlockButton: true,
-        }
+            languageNameRules: languageNameRules(this.$t("rules.required").toString(), this.$t("rules.language_name_length").toString(), this.$t("rules.only_aphabetic_characters").toString()),
+            isBlockButton: true
+        };
     },
     watch: {
         dialogOpened(isOpened) {
@@ -66,56 +67,43 @@ export default Vue.extend ({
         createNewLanguage() {
             if (this.$refs.formCreateLanguage.validate() === true) {
                 this.loading = true;
+
                 this.$service.languages.createLanguage(this.languageName)
-                .then(() => {
-                    this.loading = false;
-                    this.$notify(this.$t("success.language_created").toString());
-                    this.refreshLanguagesList();
-                    this.closeLanguageCreation();
-                }).catch((error) => {
-                    if (error.response) {
-                        switch (error.response.status) {
-                            case 404:
-                                this.loadProject();
-                                break;
-                            case 403:
-                                this.$notify(this.$t("errors.unauthorized").toString());
-                                this.loadProject();
-                                break;
-                            case 422:
-                                this.$notify(this.$t("errors.language_already_exists").toString());
-                                this.refreshLanguagesList();
-                                break;
+                    .then(() => {
+                        this.loading = false;
+                        this.$notify(this.$t("success.language_created").toString());
+                        this.closeLanguageCreation();
+                    })
+                    .catch((error) => {
+                        if (error.response) {
+                            switch (error.response.status) {
+                                case 403:
+                                    this.$notify(this.$t("errors.unauthorized").toString());
+                                    break;
+                                case 422:
+                                    this.$notify(this.$t("errors.language_already_exists").toString());
+                                    break;
+                            }
                         }
-                    }
-                }).finally(() => {
+                    }).finally(() => {
                     this.loading = false;
-                    this.refreshKeysList();
-                })
+                });
             }
-        },
-        refreshLanguagesList() {
-            this.$eventBus.$emit(EventEnum.REFRESH_LANGUAGES_LIST);
-        },
-        refreshKeysList() {
-            this.$eventBus.$emit(EventEnum.REFRESH_KEYS_LIST);
         },
         closeLanguageCreation() {
             this.$emit("close", false);
-        },
-        loadProject() {
-            this.$eventBus.$emit(EventEnum.ERROR_ACTION);
         }
     }
-})
+});
 
 </script>
 
 <style lang="scss" scoped>
 @import '~vuetify/src/styles/styles.sass';
-    .card-style-project {
-        border-radius: 20px !important;
-        width: 400px;
-    }
+
+.card-style-project {
+    border-radius: 20px !important;
+    width: 400px;
+}
 
 </style>
