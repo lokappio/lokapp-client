@@ -28,7 +28,7 @@
 
                         <!-- ADD PROJECT ITEM -->
                         <v-col cols="12" sm="6" md="4" lg="3" xl="2" class="project-card-col">
-                            <ProjectCard/>
+                            <ProjectCard />
                         </v-col>
                     </v-row>
                 </template>
@@ -39,11 +39,7 @@
                         <p><span class="title-h3">{{ $t("dashboard.no_project_in_dashboard") }}</span></p>
                     </v-row>
                     <!-- Button -->
-                    <v-row align-content="start" justify="center" class="middle-row my-0 mx-auto">
-                        <v-col cols="4">
-                            <action-button :loading="loading" block :handler="openCreateProjectCard" :text="text" addIcon/>
-                        </v-col>
-                    </v-row>
+                    <ProjectCard />
                 </template>
             </v-container>
         </v-row>
@@ -52,18 +48,13 @@
 
 <script lang="ts">
 import ProjectCard from "../cards/ProjectCard.vue";
-import ActionButton from "../buttons/ActionButton.vue";
-import CardEnum from "@/data/models/Card.enum";
 import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
     name: "my-projects",
-    components: {
-        ProjectCard,
-        ActionButton
-    },
+    components: {ProjectCard},
     created() {
         this.refreshProjectList();
     },
@@ -86,9 +77,6 @@ export default Vue.extend({
         }
     },
     methods: {
-        openCreateProjectCard() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.CREATE_PROJECT);
-        },
         refreshProjectList() {
             this.$service.projects.getProjects()
                 .then(projects => {

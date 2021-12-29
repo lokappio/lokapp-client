@@ -1,20 +1,14 @@
-
-
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
+    <v-card width="100%" color="white" class="pa-4 pa-md-7 card-style-project">
         <v-container>
-
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11" class="px-0">
-                    <p class="title-h2">
-                    {{ $t("project_creation.title") }}
-                    </p>
+                    <p class="title-h2">{{ $t("project_creation.title") }}</p>
                 </v-col>
+
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeCreationProject" color="black" class="float-right">
-                        mdi-close
-                    </v-icon>
+                    <v-icon @click="closeCreationProject" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
@@ -38,18 +32,19 @@
                         <span class="title-h3">{{ $t('project_creation.color_title') }}</span>
                     </v-col>
                 </v-row>
+
                 <v-row class="my-2">
                     <v-col :style="{ 'height':'50px', 'background-color':'white' }" cols="7" class="pa-0">
-                        <v-btn class="button-color-picker" :color='"#" + actualColor' width="100%" height="100%" depressed>
-                        </v-btn>
+                        <v-btn class="button-color-picker" :color='"#" + actualColor' width="100%" height="100%" depressed></v-btn>
                     </v-col>
                 </v-row>
+
                 <v-row class="my-2" justify="space-between">
                     <v-col v-for="color in colors" :key="color.color" :style="{ 'height':'30px', 'background-color':'white' }" cols="2" class="pb-0 pt-0 px-0">
-                        <v-btn class="button-color-picker" :color='"#" + color.color' width="100%" height="100%" @click="actualColor = color.color; writtenColor = color.color" depressed>
-                        </v-btn>
+                        <v-btn class="button-color-picker" :color='"#" + color.color' width="100%" height="100%" @click="actualColor = color.color; writtenColor = color.color" depressed></v-btn>
                     </v-col>
                 </v-row>
+
                 <v-row class="mt-2" justify="space-between">
                     <v-col cols="12" class="pa-0">
                         <v-text-field :rules="colorRules" class="custom-text-field" background-color="#F2F3F7" v-model="writtenColor" solo flat prefix="#"></v-text-field>
@@ -62,6 +57,7 @@
                         <span class="title-h3">{{ $t('project_creation.language_name_title') }} <span class="text-2 grey-color"> {{ $t('common.optional') }}</span></span>
                     </v-col>
                 </v-row>
+
                 <v-row>
                     <v-col class="py-0 px-0">
                         <v-text-field class="custom-text-field" background-color="#F2F3F7" v-model="projectLanguage" :rules="languageRules" :label="$t('project_creation.language_name_label')" solo flat></v-text-field>
@@ -74,6 +70,7 @@
                         <span class="title-h3">{{ $t('project_creation.description_title') }} <span class="text-2 grey-color"> {{ $t('common.optional') }}</span></span>
                     </v-col>
                 </v-row>
+
                 <v-row>
                     <v-col class="py-0 px-0">
                         <v-textarea
@@ -107,16 +104,14 @@ import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
 import {optionalLanguageRules} from "@/data/rules/LanguageRules";
-import CardEnum from "@/data/models/Card.enum";
 import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "../../KeyboardEvents.vue";
+import Vue from "vue";
 
-export default (
-    'project-creation', {
-    components: {
-        ActionButton,
-        KeyboardEvents
-    },
+export default Vue.extend({
+    name: 'project-creation',
+    components: {ActionButton, KeyboardEvents},
+    props: {dialogOpened: Boolean},
     data: function () {
         return {
             loading: false,
@@ -136,7 +131,22 @@ export default (
             projectLanguage: null,
             actualColor: "309BD8",
             writtenColor: "309BD8",
-            projectDescription: null
+            projectDescription: ""
+        }
+    },
+    watch: {
+        dialogOpened: {
+            immediate: true,
+            handler: function (isOpen) {
+                if(isOpen) {
+                    this.projectName = "";
+                    this.actualColor = "";
+                    this.projectDescription = "";
+                }
+            }
+        },
+        writtenColor() {
+            this.updateColor();
         }
     },
     methods: {
@@ -156,7 +166,7 @@ export default (
                     this.$router.push(`/projects/${newProject.id}`);
                 }).catch(() => {
                     this.$eventBus.$emit(EventEnum.ERROR_ACTION);
-                    this.$$notify(this.$t("errors.unknown_error"));
+                    this.$notify(this.$t("errors.unknown_error"));
                 }).finally(() => {
                     this.loading = false;
                 })
@@ -168,13 +178,7 @@ export default (
             }
         },
         closeCreationProject() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            this.$eventBus.$emit(EventEnum.REFRESH_PROJECTS_LIST);
-        }
-    },
-    watch: {
-        writtenColor() {
-            this.updateColor();
+            this.$emit("closeDelete");
         }
     }
 })

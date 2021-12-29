@@ -2,7 +2,6 @@
     <v-container fluid class="full-screen-container px-0 py-3">
     <keyboard-events :escape="closePopup"></keyboard-events>
         <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
-            <project-creation v-if="$store.getters.openCard === CardEnum.CREATE_PROJECT"/>
             <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
             <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
         </v-overlay>
@@ -31,7 +30,6 @@ import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import CardEnum from "@/data/models/Card.enum";
-import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation";
 import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
@@ -47,7 +45,6 @@ export default Vue.extend ({
         MyProjects,
         HeaderBanner,
         LeftNavBar,
-        ProjectCreation,
         ProfileManager,
         LanguageDelete,
         KeyboardEvents

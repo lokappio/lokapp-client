@@ -1,45 +1,55 @@
 <template>
-    <v-card v-if="project" class="pa-2 card-project-style full-contain background-color-white">
-        <v-container class="full-contain full-container pa-0">
-            <v-row class="ma-0 pa-1 full-row round-corner-row full-contain background-color-white">
-                <v-col cols="3" @click="openProjectView" class="pa-0 full-row set-cursor-pointer">
-                    <div class="round-corner-row title-h1 full-contain div-text-contain-center" :style="{ 'background-color':'#' + this.project.color }">
-                        {{ firstCharProjectName }}
-                    </div>
-                </v-col>
+    <div class="full-contain">
+        <v-dialog v-model="dialogOpened" max-width="500px">
+            <ProjectCreation :dialog-opened="dialogOpened" @closeDelete="() => this.dialogOpened = false"/>
+        </v-dialog>
 
-                <v-col cols="8" @click="openProjectView" class="pr-0 full-row set-cursor-pointer">
-                    <div class="mb-2 pt-1 text-truncate title-h3">{{ project.name }}</div>
-                    <p class="description-style mb-0">{{ project.description }}</p>
-                </v-col>
+        <v-card v-if="project" class="pa-2 card-project-style full-contain background-color-white">
+            <v-container class="full-contain full-container pa-0">
+                <v-row class="ma-0 pa-1 full-row round-corner-row full-contain background-color-white">
+                    <v-col cols="3" @click="openProjectView" class="pa-0 full-row set-cursor-pointer">
+                        <div class="round-corner-row title-h1 full-contain div-text-contain-center" :style="{ 'background-color':'#' + this.project.color }">
+                            {{ firstCharProjectName }}
+                        </div>
+                    </v-col>
 
-                <v-col cols="1" class="pa-0">
-                    <project-settings-button :projectId="project.id"/>
-                </v-col>
+                    <v-col cols="8" @click="openProjectView" class="pr-0 full-row set-cursor-pointer">
+                        <div class="mb-2 pt-1 text-truncate title-h3">{{ project.name }}</div>
+                        <p class="description-style mb-0">{{ project.description }}</p>
+                    </v-col>
+
+                    <v-col cols="1" class="pa-0">
+                        <project-settings-button :projectId="project.id"/>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-card>
+
+        <v-card v-else elevation="0" class="pa-0 card-project-style full-contain empty set-cursor-pointer no-click-effect" @click="openCreateProject" :ripple="false">
+            <v-row align="center" justify="center" class="ma-0 full-row">
+                <v-icon color="maincolor" class="full-contain" large>mdi-plus-circle</v-icon>
             </v-row>
-        </v-container>
-    </v-card>
-
-    <v-card v-else elevation="0" class="pa-0 card-project-style full-contain empty set-cursor-pointer no-click-effect" @click="openCreateProject" :ripple="false">
-        <v-row align="center" justify="center" class="ma-0 full-row">
-            <v-icon color="maincolor" class="full-contain" large>mdi-plus-circle</v-icon>
-        </v-row>
-    </v-card>
-
+        </v-card>
+    </div>
 </template>
 
 <script lang="ts">
 import {firstChar} from "@/data/helpers/stringFormatting";
 import ProjectSettingsButton from "@/components/molecules/buttons/ProjectSettingsButton.vue";
-import CardEnum from "@/data/models/Card.enum";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
+import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation.vue";
 
 export default Vue.extend(
     {
         name: "project-card",
-        components: {ProjectSettingsButton},
+        components: {ProjectCreation, ProjectSettingsButton},
         props: {project: Project},
+        data() {
+            return {
+                dialogOpened: false,
+            }
+        },
         computed: {
           firstCharProjectName(): string {
               return firstChar(this.project?.name);
@@ -47,12 +57,11 @@ export default Vue.extend(
         },
         methods: {
             openProjectView() {
-                this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-                this.$store.commit("SET_ACTUAL_PROJECT_ID", this.project.id);
+                this.$store.commit("SET_CURRENT_PROJECT", this.project);
                 this.$router.push(`/projects/${this.project.id}`);
             },
             openCreateProject() {
-                this.$store.commit("SET_OPEN_CARD", CardEnum.CREATE_PROJECT);
+                this.dialogOpened = true;
             }
         }
     });
