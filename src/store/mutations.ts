@@ -39,9 +39,6 @@ export default {
     SET_ACTUAL_LANGUAGE(state: State, language: Language): void {
         state.actualLanguage = language;
     },
-    SET_TARGET_USER(state: State, user: ProjectUser): void {
-        state.targetUser = user;
-    },
     SET_INVITATIONS(state: State, invitations: Invitation[]): void {
         state.invitations = invitations;
     },

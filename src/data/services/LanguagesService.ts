@@ -8,8 +8,8 @@ class LanguagesService {
     static languagesUrl: string = config.baseUrl + "/projects/";
     static get projectId(): number { return store.getters.actualProjectId}
 
-    public static getLanguages(): Promise<Array<Language>> {
-        return ApiService.getAPI(LanguagesService.languagesUrl + this.projectId + "/languages")
+    public static getLanguages(projectId = this.projectId): Promise<Array<Language>> {
+        return ApiService.getAPI(LanguagesService.languagesUrl + projectId + "/languages")
         .then((response) => {
             return response.data.map((item: any) => Language.map(item));
         })

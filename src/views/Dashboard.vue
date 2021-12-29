@@ -5,8 +5,6 @@
             <project-creation v-if="$store.getters.openCard === CardEnum.CREATE_PROJECT"/>
             <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
             <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
-            <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
-            <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
         </v-overlay>
 
         <left-nav-bar/>
@@ -33,10 +31,9 @@ import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import CardEnum from "@/data/models/Card.enum";
-import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation";import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
+import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation";
+import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
-import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
-import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "@/components/molecules/KeyboardEvents.vue";
 
@@ -53,8 +50,6 @@ export default Vue.extend ({
         ProjectCreation,
         ProfileManager,
         LanguageDelete,
-        UserDelete,
-        InvitationCreation,
         KeyboardEvents
     },
     metaInfo() {

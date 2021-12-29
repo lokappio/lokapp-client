@@ -13,7 +13,6 @@ export default {
   currentProject: (state: State): Project => state.currentProject,
   openCard: (state: State): CardEnum => state.openCard,
   actualLanguage: (state: State): Language => state.actualLanguage,
-  targetUser: (state: State): ProjectUser => state.targetUser,
   invitations: (state: State): Invitation[] => state.invitations,
   actualRole: (state: State): RoleProtection => state.actualRole
 }

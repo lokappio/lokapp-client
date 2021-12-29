@@ -9,9 +9,6 @@
             <v-container v-if="!loading" class="ma-0 pa-0 full-contain card-container">
                 <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
                     <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
-                    <project-management v-if="$store.getters.openCard === CardEnum.MANAGE_PROJECT"/>
-                    <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
-                    <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
                 </v-overlay>
 
                 <v-row class="ma-0 mb-4 row-header-style">
@@ -48,9 +45,6 @@ import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.
 import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
 import Header from "@/components/molecules/project/Header.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
-import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
-import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
-import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import CardEnum from "@/data/models/Card.enum";
 import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "@/components/molecules/KeyboardEvents.vue";
@@ -73,9 +67,6 @@ export default Vue.extend ({
         LanguagesGroup,
         Header,
         ContentDetails,
-        ProjectManagement,
-        UserDelete,
-        InvitationCreation,
         KeyboardEvents
     },
     data() {

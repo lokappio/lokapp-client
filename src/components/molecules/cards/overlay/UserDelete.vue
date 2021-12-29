@@ -2,18 +2,15 @@
     <v-card color="white" class="pa-4 pa-md-7 card-style-project">
 
             <!-- Title and close -->
-            <v-icon @click="closeOverlay" color="black" class="float-right">
-                mdi-close
-            </v-icon>
+            <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
+
             <v-card-title class="title-style d-flex justify-space-around">
                 {{ $t("user_delete.title", { name: this.user.username ? this.user.username : $t("user_delete.user") }) }}
             </v-card-title>
 
             <!-- Confirmation text -->
             <v-card-text class="pb-0">
-                <div class="field text-center">
-                {{ $t("user_delete.description_1") }}
-                </div>
+                <div class="field text-center">{{ $t("user_delete.description_1") }}</div>
             </v-card-text>
 
             <!-- Buttons -->
@@ -36,37 +33,40 @@
 </template>
 
 <script lang="ts">
-import CardEnum from '@/data/models/Card.enum'
 import Vue from 'vue'
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue"
+import ProjectUser from "@/data/models/api/ProjectUser";
 
 export default Vue.extend({
     name: "user-delete",
-    components: {
-        ActionButton
-    },
-    created() {
-        this.user = this.$store.getters.targetUser
-        if (this.user === null) {
-            this.$notify(this.$t("errors.unknown_error") as string);
-            this.closeOverlay();
-        }
-    },
+    components: {ActionButton},
+    props: {projectId: Number, user: ProjectUser, dialogOpened: Boolean},
     data() {
         return {
-            user: null,
             loading: false,
             project: null,
             projectName: ""
         }
     },
+    watch: {
+        dialogOpened: {
+            immediate: true,
+            handler: function (isOpen) {
+                if(isOpen) {
+                    if (this.user === null) {
+                        this.$notify(this.$t("errors.unknown_error") as string);
+                        this.closeOverlay();
+                    }
+                }
+            }
+        }
+    },
     methods: {
         closeOverlay(): void {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.MANAGE_USERS);
-            this.$store.commit("SET_TARGET_USER", null);
+            this.$emit("closeDelete");
         },
         deleteUser(): void {
-            this.$service.projects.removeUserFromProject(this.$store.getters.actualProjectId, this.user.userId)
+            this.$service.projects.removeUserFromProject(this.projectId, this.user.userId)
             .then(() => {
                 this.$notify(this.$t("success.user_delete") as string);
             }).catch((error) => {
