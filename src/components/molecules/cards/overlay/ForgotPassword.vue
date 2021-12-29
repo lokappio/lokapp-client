@@ -1,21 +1,17 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
         <v-container class="pa-0">
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11" class="pl-0">
-                    <h2 class="title-h2">
-                    {{ this.$t("forgot_password.title") }}
-                    </h2>
+                    <h2 class="title-h2">{{ this.$t("forgot_password.title") }}</h2>
                 </v-col>
+
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeOverlay" color="black" class="float-right">
-                        mdi-close
-                    </v-icon>
+                    <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
-            <keyboard-events :enter="resetPassword" :escape="closeOverlay"/>
             <v-form ref="formSendEmail" onSubmit="return false;">
                 <!-- Email -->
                 <v-row class="mt-3 pb-0 mb-0">
@@ -23,6 +19,7 @@
                         <span class="title-h3">{{ $t('forgot_password.email_title') }}</span>
                     </v-col>
                 </v-row>
+
                 <v-row class="mt-0 mb-2">
                     <v-col cols="12" class="py-0 px-2">
                         <v-text-field :rules="emailRules" class="custom-text-field" background-color="#F2F3F7" v-model="sendEmail" :label="$t('forgot_password.email_label')" type="email" solo flat required></v-text-field>
@@ -36,18 +33,13 @@
 </template>
 
 <script lang="ts">
-import CardEnum from '@/data/models/Card.enum'
 import { userEmailRules } from '@/data/rules/UserRules';
 import Vue from 'vue'
 import ActionButton from '@/components/molecules/buttons/ActionButton.vue'
-import KeyboardEvents from '../../KeyboardEvents.vue';
 
 export default Vue.extend({
     name: "forgot-password",
-    components: {
-        ActionButton,
-        KeyboardEvents
-    },
+    components: {ActionButton},
     created() {
         this.sendEmail = this.email;
     },
@@ -60,13 +52,13 @@ export default Vue.extend({
     data() {
         return {
             sendEmail: "",
-            emailRules: userEmailRules(this.$t("rules.required") as string, this.$t("rules.mail_valid") as string),
+            emailRules: userEmailRules(this.$t("rules.required").toString(), this.$t("rules.mail_valid").toString()),
             loading: false
         }
     },
     methods: {
         closeOverlay() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
+            this.$emit("close");
         },
         resetPassword() {
             if ((this.$refs.formSendEmail as any).validate() === true) {
@@ -89,7 +81,3 @@ export default Vue.extend({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-
-</style>

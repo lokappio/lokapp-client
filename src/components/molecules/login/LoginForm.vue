@@ -1,41 +1,35 @@
-
-
 <template>
   <v-card height="100%" mandatory elevation="0">
-
-    <v-overlay color="transparent" absolute :value="$store.getters.openCard === CardEnum.FORGOT_PASSWORD">
-      <forgot-password :email="email"/>
-    </v-overlay>
+    <v-dialog v-model="dialogOpenedResetPassword" max-width="500px">
+      <forgot-password :email="email"  @close="() => this.dialogOpenedResetPassword = false"/>
+    </v-dialog>
 
     <!-- Connexion ou Inscription -->
       <v-tabs v-model="toggleExclusive" color="white" grow centered >
         <v-tabs-slider color="maincolor"></v-tabs-slider>
         <v-tab :key="0" @change="activeConnexion">
-          <div :class="toggleExclusive === 0 ? 'activatedTab' : 'desactivatedTab'">
-            {{ connexionText }}
-          </div>
+          <span :class="toggleExclusive === 0 ? 'activatedTab' : 'desactivatedTab'">{{ $t("connexion.login") }}</span>
         </v-tab>
+
         <v-tab :key="1" @change="activeInscription">
-          <div :class="toggleExclusive === 1 ? 'activatedTab' : 'desactivatedTab'">
-            {{ inscriptionText }}
-          </div>
+          <span :class="toggleExclusive === 1 ? 'activatedTab' : 'desactivatedTab'">{{ $t("connexion.register") }}</span>
         </v-tab>
       </v-tabs>
 
-    <!-- Formulaires -->
-      <v-tabs-items v-model="toggleExclusive">
 
-        <!-- Formulaire de connexion -->
+      <v-tabs-items v-model="toggleExclusive">
+        <!-- LOGIN -->
         <v-tab-item :key="0" @keyup.enter="validateLogin()">
           <v-form class="pt-md-10 pl-md-2 pr-md-2 pb-md-3" ref="formLogin">
             <v-text-field class="pt-4 pt-md-1" v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
             <v-text-field class="pt-2 pt-md-1" v-model="passwordLogin" :rules="passwordLoginRules" type="password" :label=passwordLabel required></v-text-field>
             <v-btn color="black" :loading="loading" :disabled="loading" @click="validateLogin" min-height="50" block><div class="buttonValid">{{ $t("connexion.login") }}</div></v-btn>
           </v-form>
+
           <div class="mt-2 ml-2 smallLine" @click="forgotPassword">{{ $t("connexion.forgot_password") }}</div>
         </v-tab-item>
 
-        <!-- Formulaire d'inscription -->
+        <!-- SIGN UP -->
         <v-tab-item :key="1" @keyup.enter="validateRegister()">
           <v-form class="pt-md-10 pl-md-2 pr-md-2 pb-md-3" ref="formRegister">
             <v-text-field class="pt-4 pt-md-1" v-model="pseudo" :label=pseudoLabel></v-text-field>
@@ -44,11 +38,8 @@
             <v-text-field class="pt-2 pt-md-1" v-model="passwordCopy" :rules="passwordCopyRules" type="password" :label=passwordConfirmLabel required></v-text-field>
             <v-btn color="black" :loading="loading" :disabled="loading" min-height="50" @click="validateRegister" block><div class="buttonValid">{{ $t("connexion.register") }}</div></v-btn>
           </v-form>
-          <div class="mt-2 ml-2 smallLine" @click="forgotPassword">{{ $t("connexion.forgot_password") }}</div>
         </v-tab-item>
-
       </v-tabs-items>
-
   </v-card>
 </template>
 
@@ -57,32 +48,29 @@ import {optionalString} from "@/data/helpers/stringFormatting";
 import {userEmailRules, userPasswordLoginRules, userPasswordRules} from "@/data/rules/UserRules";
 import ForgotPassword from "@/components/molecules/cards/overlay/ForgotPassword.vue";
 import CardEnum from "@/data/models/Card.enum";
+import Vue from "vue";
 
-export default (
-  'login-form', {
-  components: {
-    ForgotPassword
-  },
-  data: function () {
+export default Vue.extend({
+  name: 'login-form',
+  components: {ForgotPassword},
+  data() {
     return {
       //Tabs
       toggleExclusive: 0,
-      connexionText: this.$t("connexion.login"),
-      inscriptionText: this.$t("connexion.register"),
-      pseudoLabel: optionalString(this.$t("connexion.nickname"), this.$t("common.optional")),
+      pseudoLabel: optionalString(this.$t("connexion.nickname").toString(), this.$t("common.optional").toString()),
       mailLabel: this.$t("connexion.mail") + "*",
       passwordLabel: this.$t("connexion.password") + "*",
       passwordConfirmLabel: this.$t("connexion.password_confirmation") + "*",
 
       //Login/Inscription
       email: '',
-      emailRules: userEmailRules(this.$t("rules.required"), this.$t("rules.mail_valid")),
+      emailRules: userEmailRules(this.$t("rules.required").toString(), this.$t("rules.mail_valid").toString()),
 
       passwordLogin: '',
-      passwordLoginRules: userPasswordLoginRules(this.$t("rules.required")),
+      passwordLoginRules: userPasswordLoginRules(this.$t("rules.required").toString()),
 
       password: '',
-      passwordRules: userPasswordRules(this.$t("rules.required"), this.$t("rules.password_length"), this.$t("rules.password_strong")),
+      passwordRules: userPasswordRules(this.$t("rules.required").toString(), this.$t("rules.password_length").toString(), this.$t("rules.password_strong").toString()),
 
       passwordCopy: '',
       passwordCopyRules: [
@@ -92,7 +80,7 @@ export default (
 
       pseudo: null,
 
-      // Checkbox and buttons
+      dialogOpenedResetPassword: false,
       loading: false,
       CardEnum
     }
@@ -107,7 +95,7 @@ export default (
         this.pseudo = '';
     },
     forgotPassword() {
-      this.$store.commit("SET_OPEN_CARD", CardEnum.FORGOT_PASSWORD);
+        this.dialogOpenedResetPassword = true;
     },
     validateLogin() {
       if (this.$refs.formLogin.validate() === true) {

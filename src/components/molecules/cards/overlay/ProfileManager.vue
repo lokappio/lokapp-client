@@ -71,7 +71,6 @@
 import ActionButton from "@/components/molecules/buttons/ActionButton";
 import DeprecatedButton from "@/components/molecules/buttons/DeprecatedButton";
 import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from "@/data/models/Card.enum";
 import {optionalUsernameRules} from "@/data/rules/UserRules";
 import Vue from "vue";
 
@@ -84,10 +83,9 @@ export default Vue.extend({
             oldUsername: "",
             username: "",
             email: "",
-            usernameRules: optionalUsernameRules(this.$t("rules.username_length")),
+            usernameRules: optionalUsernameRules(this.$t("rules.username_length").toString()),
             modificationActivated: false,
             loading: false,
-            CardEnum
         };
     },
     watch: {
@@ -113,14 +111,14 @@ export default Vue.extend({
                     }
                     this.email = user.email;
                 }).catch(() => {
-                this.$notify(this.$t("error.connexion_problem"));
+                this.$notify(this.$t("error.connexion_problem").toString());
             });
         },
         changeProfile() {
             this.modificationActivated = true;
         },
         validateProfile() {
-            if (this.username != this.oldUsername) {
+            if (this.username !== this.oldUsername) {
                 if (this.username.length === 0) {
                     this.username = null;
                 }
@@ -144,9 +142,8 @@ export default Vue.extend({
         logMeOut() {
             this.$service.auth.logOut()
                 .then(() => {
-                    this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
                     this.$router.push("/login");
-                    this.$notify(this.$t("success.logout"));
+                    this.$notify(this.$t("success.logout").toString());
                 }).catch(() => {
                 this.$eventBus.$emit(EventEnum.ERROR_ACTION);
             });
@@ -154,10 +151,9 @@ export default Vue.extend({
         resetPassword() {
             this.$service.auth.resetPassword(this.email)
                 .then(() => {
-                    this.$notify(this.$t("success.password_reset"));
+                    this.$notify(this.$t("success.password_reset").toString());
                     this.$service.auth.logOut()
                         .then(() => {
-                            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
                             this.$router.push("/login");
                         }).catch(() => {
                         this.$eventBus.$emit(EventEnum.ERROR_ACTION);
