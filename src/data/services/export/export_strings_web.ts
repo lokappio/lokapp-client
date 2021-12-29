@@ -26,20 +26,22 @@ const generateWebStringFile = (language: Language, localizedProject: LocalizedGr
 
         localizedGroup.localizations.forEach((localization: any, indexKey: number) => {
             if (localization.type === KeyType.SINGULAR) {
-                const value = localization[language.name].toString().replace(/"/g, "\\\"");
+                const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
                 exportedString += `${indentationKey}"${localization.key}": "${replaceMarkers(value, platform)}"`;
             } else {
                 exportedString += `${indentationKey}"${localization.key}": "`;
                 const values: Plural = localization[language.name] as Plural;
 
-                Object.entries(values).forEach((value, index) => {
-                    exportedString += `${replaceMarkers(value[1].replace(/"/g, "\\\""), platform)}`;
-                    if (index < 2) {
-                        exportedString += " | ";
-                    } else {
-                        exportedString += `"`;
-                    }
-                });
+                if (values) {
+                    Object.entries(values).forEach((value, index) => {
+                        exportedString += `${replaceMarkers(value[1].replace(/"/g, "\\\""), platform)}`;
+                        if (index < 2) {
+                            exportedString += " | ";
+                        } else {
+                            exportedString += `"`;
+                        }
+                    });
+                }
             }
 
             //Is there data after or not

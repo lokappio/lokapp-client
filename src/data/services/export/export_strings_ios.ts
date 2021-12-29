@@ -33,11 +33,12 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
                 exportedString += "            <string>d</string>\n";
 
                 const values: Plural = localization[language.name] as Plural;
-                Object.entries(values).forEach((value) => {
-                    exportedString += "            <key>" + value[0] + "</key>\n";
-                    exportedString += "            <string>" + replaceMarkers(value[1], platform).replace(/"/g, "\\\"") + "</string>\n";
-
-                });
+                if(values) {
+                    Object.entries(values).forEach((value) => {
+                        exportedString += "            <key>" + value[0] + "</key>\n";
+                        exportedString += "            <string>" + replaceMarkers(value[1] ?? "", platform).replace(/"/g, "\\\"") + "</string>\n";
+                    });
+                }
 
                 exportedString += "        </dict>\n";
                 exportedString += "    </dict>\n";
@@ -65,7 +66,7 @@ const generateIOSStringFile = (language: Language, localizedProject: LocalizedGr
         localizedGroup.localizations
           .filter((localization) => localization.type === KeyType.SINGULAR)
           .forEach((localization) => {
-              const value = localization[language.name].toString().replace(/"/g, "\\\"");
+              const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
               exportedString += `"${mixGroupAndKeyName(localizedGroup.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
           });
     });

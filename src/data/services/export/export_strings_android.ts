@@ -19,17 +19,18 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
 
         localizedGroup.localizations.forEach((localization) => {
             if (localization.type === KeyType.SINGULAR) {
-                const value = localization[language.name].toString().replace(/"/g, "\\\"");
+                const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
                 exportedString += `    <string name="${mixGroupAndKeyName(localizedGroup.name, localization.key)}">"${replaceMarkers(value, platform)}"</string>\n`;
             } else {
                 exportedString += `    <plurals name="${mixGroupAndKeyName(localizedGroup.name, localization.key)}">\n`;
-                const value: Plural = localization[language.name] as Plural;
+                const value: Plural = (localization[language.name] as Plural) ?? new Plural();
 
                 Object.entries(value).forEach((value) => {
                     if (value !== undefined) {
                         exportedString += `        <item quantity="${value[0]}">"${replaceMarkers(value[1].replace(/"/g, "\\\""), platform)}"</item>\n`;
                     }
                 });
+
 
                 exportedString += `    </plurals>\n`;
             }

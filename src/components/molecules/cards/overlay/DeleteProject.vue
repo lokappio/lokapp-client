@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-import Project from '@/data/models/api/Project';
 import Vue from 'vue'
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue"
 import EventEnum from "@/data/enum/event-bus.enum";

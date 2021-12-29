@@ -6,9 +6,9 @@ import {groupBy} from "@/data/helpers/utils";
 import Value from "@/data/models/api/Value";
 
 export class Plural {
-  other: string;
-  one: string;
-  zero: string;
+  other = "";
+  one = "";
+  zero = "";
 }
 
 export class Localization {
@@ -62,7 +62,7 @@ export default class Project {
             const pluralValue = new Plural();
 
             value[1].forEach((value) => {
-              pluralValue[value.quantityString] = value.name
+              pluralValue[value.quantityString] = value?.name ?? ""
             });
 
             localization[value[0]] = pluralValue;

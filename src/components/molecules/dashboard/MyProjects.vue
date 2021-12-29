@@ -47,10 +47,8 @@
 
 <script lang="ts">
 import ProjectCard from "../cards/ProjectCard.vue";
-import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
-import ProjectCompact from "@/data/models/api/ProjectCompact";
 
 export default Vue.extend({
     name: "my-projects",
@@ -65,7 +63,6 @@ export default Vue.extend({
             totalSecondes: 0,
             timer: null,
             loading: false,
-            text: this.$t("dashboard.add_project")
         };
     },
     computed: {
