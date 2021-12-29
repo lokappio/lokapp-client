@@ -53,7 +53,7 @@ export default Vue.extend({
     },
     watch: {
         searchValue(value) {
-            this.$store.commit("SET_SEARCH_TRANSLATION", value);
+            this.$store.commit("SET_SEARCH_TRANSLATION", value ?? "");
         }
     },
     computed: {
