@@ -1,22 +1,13 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
-
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
         <!-- Title and close -->
-        <v-icon @click="closeOverlay" color="black" class="float-right">
-            mdi-close
-        </v-icon>
-        <v-card-title class="title-style d-flex justify-space-around">
-            {{ $t("leave_project.title") }}
-        </v-card-title>
+        <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
+        <v-card-title class="title-style d-flex justify-space-around">{{ $t("leave_project.title") }}</v-card-title>
 
         <!-- Confirmation text -->
         <v-card-text class="pb-0">
-            <div class="field text-center">
-            {{ $t("leave_project.description_1") }}
-            </div>
-            <div class="field text-center">
-            {{ $t("leave_project.description_2") }}
-            </div>
+            <div class="field text-center">{{ $t("leave_project.description_1") }}</div>
+            <div class="field text-center">{{ $t("leave_project.description_2") }}</div>
         </v-card-text>
 
         <!-- Buttons -->
@@ -40,39 +31,43 @@
 
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from '@/data/models/Card.enum';
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from 'vue'
 
 export default Vue.extend({
     name: "leave-project",
-    components: {
-        ActionButton
-    },
-    created() {
-        this.$service.projects.getProjectById(this.$store.getters.actualProjectId)
-        .then(project => {
-            this.projectName = project.name;
-        }).catch(() => {
-            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-        });
-    },
+    components: {ActionButton},
+    props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
             projectName: "",
             loading: false
         }
     },
+    watch: {
+        dialogOpened(isOpen) {
+            if(isOpen) {
+                this.projectName = "";
+
+                this.getProject();
+            }
+        }
+    },
     methods: {
+        getProject() {
+            this.$service.projects.getProjectById(this.projectId)
+                .then(project => this.projectName = project.name)
+                .catch(() => this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING));
+        },
         closeOverlay() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
+            this.$emit("close");
         },
         leaveProject() {
             this.loading = true;
             this.$service.projects.leaveProject(this.$store.getters.actualProjectId)
             .then(() => {
                 this.$notify(this.$t("success.project_leave") as string);
-                this.$eventBus.$emit(EventEnum.BACK_TO_DASHBOARD);
+                this.$router.push("/dashboard");
             }).catch(() => {
                 this.$notify(this.$t("errors.unknown_error") as string);
                 this.$eventBus.$emit(EventEnum.ERROR_ACTION);

@@ -10,16 +10,8 @@
                 <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
                     <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
                     <project-management v-if="$store.getters.openCard === CardEnum.MANAGE_PROJECT"/>
-                    <delete-project v-if="$store.getters.openCard === CardEnum.DELETE_PROJECT"/>
-                    <language-management v-if="$store.getters.openCard === CardEnum.MANAGE_LANGUAGE"/>
-                    <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
-                    <leave-project v-if="$store.getters.openCard === CardEnum.LEAVE_PROJECT"/>
-                    <user-management :project-id="currentProject.id" v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>
                     <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
                     <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
-                    <!--<language-creation v-if="$store.getters.openCard === CardEnum.CREATE_LANGUAGE"/>-->
-                    <!--<download-project v-if="$store.getters.openCard === CardEnum.DOWNLOAD_PROJECT"/>-->
-                    <!--<key-creation v-if="$store.getters.openCard === CardEnum.CREATE_KEY"/>-->
                 </v-overlay>
 
                 <v-row class="ma-0 mb-4 row-header-style">
@@ -54,14 +46,9 @@ import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
 import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
-import LanguageManagement from "@/components/molecules/cards/overlay/LanguageManagement.vue";
-import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
 import Header from "@/components/molecules/project/Header.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
 import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
-import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vue";
-import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
-import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import CardEnum from "@/data/models/Card.enum";
@@ -87,11 +74,6 @@ export default Vue.extend ({
         Header,
         ContentDetails,
         ProjectManagement,
-        DeleteProject,
-        LeaveProject,
-        LanguageManagement,
-        LanguageDelete,
-        UserManagement,
         UserDelete,
         InvitationCreation,
         KeyboardEvents

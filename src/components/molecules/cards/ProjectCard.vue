@@ -39,9 +39,7 @@ export default Vue.extend(
     {
         name: "project-card",
         components: {ProjectSettingsButton},
-        props: {
-            project: Project
-        },
+        props: {project: Project},
         computed: {
           firstCharProjectName(): string {
               return firstChar(this.project?.name);

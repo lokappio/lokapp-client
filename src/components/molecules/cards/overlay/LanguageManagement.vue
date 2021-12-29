@@ -1,17 +1,14 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
         <v-container>
         <!-- Title -->
             <v-row class="mb-2 row-title">
                 <v-col cols="11">
-                    <h2 class="title-h2">
-                    {{ $t('language_manage.title') }}
-                    </h2>
+                    <h2 class="title-h2">{{ $t('language_manage.title') }}</h2>
                 </v-col>
+
                 <v-col cols="1">
-                    <v-icon @click="closeOverlay" color="black" class="float-right">
-                        mdi-close
-                    </v-icon>
+                    <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
             <v-container class="list-languages-style pa-0">
@@ -36,25 +33,36 @@ import Vue from 'vue'
 
 export default Vue.extend({
     name: "language-management",
-    created() {
-        this.$service.languages.getLanguages(this.$store.getters.actualProjectId)
-        .then((languages) => {
-            languages.forEach(language => {
-                this.languages.push(language);
-            });
-        }).catch(() => {
-            this.closeOverlay();
-            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-        });
-    },
+    props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
             languages: []
         }
     },
+    watch: {
+        dialogOpened(isOpened) {
+            if (isOpened) {
+                //ON RE-OPENED, RESET DATA
+                this.languages = [];
+
+                this.getLanguages();
+            }
+        }
+    },
     methods: {
+        getLanguages() {
+            this.$service.languages.getLanguages(this.projectId)
+                .then((languages) => {
+                    languages.forEach(language => {
+                        this.languages.push(language);
+                    });
+                }).catch(() => {
+                this.closeOverlay();
+                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
+            });
+        },
         closeOverlay() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
+            this.$emit("close");
             this.$eventBus.$emit(EventEnum.REFRESH_LANGUAGES_LIST);
             this.$eventBus.$emit(EventEnum.REFRESH_KEYS_LIST);
         },

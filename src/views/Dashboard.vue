@@ -1,18 +1,10 @@
-
 <template>
-
     <v-container fluid class="full-screen-container px-0 py-3">
     <keyboard-events :escape="closePopup"></keyboard-events>
-
         <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
             <project-creation v-if="$store.getters.openCard === CardEnum.CREATE_PROJECT"/>
             <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
-            <project-management v-if="$store.getters.openCard === CardEnum.MANAGE_PROJECT"/>
-            <delete-project v-if="$store.getters.openCard === CardEnum.DELETE_PROJECT"/>
-            <language-management v-if="$store.getters.openCard === CardEnum.MANAGE_LANGUAGE"/>
             <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
-            <leave-project v-if="$store.getters.openCard === CardEnum.LEAVE_PROJECT"/>
-            <!--<user-management v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>-->
             <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
             <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
         </v-overlay>
@@ -21,7 +13,6 @@
 
         <v-card class="card-style-content background-color-white px-6 pt-16 mr-0 ml-auto">
             <v-container class="ma-0 pa-0 full-contain card-container">
-
                 <!-- Header with banner-->
                 <v-row class="ma-0 mb-4 row-header-style">
                     <header-banner/>
@@ -31,15 +22,10 @@
                 <v-row class="ma-0 row-content-style">
                     <my-projects/>
                 </v-row>
-
             </v-container>
         </v-card>
-
     </v-container>
-
 </template>
-
-
 
 <script>
 import { Vue } from "vue-property-decorator";
@@ -47,13 +33,8 @@ import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import CardEnum from "@/data/models/Card.enum";
-import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation";
-import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
-import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
-import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vue";
-import LanguageManagement from "@/components/molecules/cards/overlay/LanguageManagement.vue";
+import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation";import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
-import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
@@ -70,12 +51,8 @@ export default Vue.extend ({
         HeaderBanner,
         LeftNavBar,
         ProjectCreation,
-        ProjectManagement,
         ProfileManager,
-        DeleteProject,
-        LanguageManagement,
         LanguageDelete,
-        LeaveProject,
         UserDelete,
         InvitationCreation,
         KeyboardEvents

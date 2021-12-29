@@ -1,21 +1,14 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
         <!-- Title and close -->
-        <v-icon @click="closeOverlay" color="black" class="float-right">
-            mdi-close
-        </v-icon>
-        <v-card-title class="title-style d-flex justify-space-around">
-            {{ $t("project_delete.title", {name: this.projectName}) }}
-        </v-card-title>
+        <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
+
+        <v-card-title class="title-style d-flex justify-space-around">{{ $t("project_delete.title", {name: this.projectName}) }}</v-card-title>
 
         <!-- Confirmation text -->
         <v-card-text class="pb-0">
-            <div class="field text-center">
-            {{ $t("project_delete.description_1", { "value": this.projectName }) }}
-            </div>
-            <div class="field text-center">
-            {{ $t("project_delete.description_2") }}
-            </div>
+            <div class="field text-center">{{ $t("project_delete.description_1", { "value": this.projectName }) }}</div>
+            <div class="field text-center">{{ $t("project_delete.description_2") }}</div>
         </v-card-text>
 
         <!-- Buttons -->
@@ -39,25 +32,14 @@
 
 <script lang="ts">
 import ProjectList from '@/data/models/api/ProjectList';
-import CardEnum from '@/data/models/Card.enum'
 import Vue from 'vue'
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue"
 import EventEnum from "@/data/enum/event-bus.enum";
 
 export default Vue.extend({
     name: "delete-project",
-    components: {
-        ActionButton
-    },
-    created() {
-        this.$service.projects.getProjectById(this.$store.getters.actualProjectId)
-        .then((project: ProjectList) => {
-            this.project = project;
-            this.projectName = this.project.name;
-        }).catch(() => {
-            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-        });
-    },
+    components: {ActionButton},
+    props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
             loading: false,
@@ -65,16 +47,35 @@ export default Vue.extend({
             projectName: ""
         }
     },
+    watch: {
+        dialogOpened(isOpen) {
+            if(isOpen) {
+                this.project = null;
+                this.projectName = "";
+
+                this.getProject();
+            }
+        }
+    },
     methods: {
+        getProject() {
+            this.$service.projects.getProjectById(this.projectId)
+                .then((project: ProjectList) => {
+                    this.project = project;
+                    this.projectName = this.project.name;
+                }).catch(() => {
+                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
+            });
+        },
         closeOverlay(): void {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
+            this.$emit("close");
         },
         deleteProject() {
             this.loading = true;
-            this.$service.projects.deleteProject(this.$store.getters.actualProjectId)
+            this.$service.projects.deleteProject(this.projectId)
             .then(() => {
                 this.$notify(this.$t("success.project_deleted") as string);
-                this.$eventBus.$emit(EventEnum.BACK_TO_DASHBOARD);
+                this.$router.push("/dashboard");
                 this.closeOverlay();
             }).catch(() => {
                 this.$notify(this.$t("errors.project_deleted") as string);

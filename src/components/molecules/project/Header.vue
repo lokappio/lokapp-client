@@ -10,7 +10,7 @@
                     <div>
                         <span class="title-h2 detail-project-name-title">{{ currentProject.name }}</span>
 
-                        <project-settings-button />
+                        <project-settings-button :project-id="currentProject.id"/>
 
                         <p class="text-2 detail-project-description">{{ currentProject.description }}</p>
                     </div>
@@ -38,10 +38,7 @@ import DownloadProjectCard from "@/components/molecules/cards/overlay/DownloadPr
 
 export default Vue.extend({
     name: 'detail-header',
-    components: {
-        DownloadProjectCard,
-        ProjectSettingsButton
-    },
+    components: {DownloadProjectCard, ProjectSettingsButton},
     data() {
       return {
           dialogOpened: false,

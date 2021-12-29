@@ -38,7 +38,6 @@ export const getRoleClass = (role: Role): RoleProtection => {
         case Role.TRANSLATOR:
             return new RoleTranslator();
         default:
-            break;
+            return new RoleProtection();
     }
-    return new RoleProtection();
 }
