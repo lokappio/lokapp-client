@@ -49,9 +49,7 @@ class ValuesService {
     public static getValuesByKeyId(keyId: number): Promise<Value[]> {
         return ApiService.getAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values")
         .then((response) => {
-            return response.data.map((item: any) => {
-                return Value.map(item);
-            });
+            return response.data.map((item: any) => Value.map(item));
         })
     }
 }

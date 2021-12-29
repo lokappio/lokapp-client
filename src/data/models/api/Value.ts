@@ -14,7 +14,7 @@ export default class Value {
     const value: Value = new Value();
 
     value.id = data.id;
-    value.name = data.name;
+    value.name = data?.name ?? "";
     value.quantityString = data['quantity_string'] != null ? ValueQuantity[data['quantity_string']] : null ;
     value.languageId = data['language_id'];
     value.languageName = data['language_name'];
