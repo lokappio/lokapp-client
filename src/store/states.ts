@@ -27,7 +27,6 @@ export default {
   user: null,
   openCard: CardEnum.NONE,
   actualLanguage: null,
-  actualGroupId: -1,
   targetUser: null,
   invitations: [],
   actualRole: null,

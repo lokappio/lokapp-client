@@ -9,22 +9,21 @@
             @click="redirectToDashboard"
             contain>
         </v-img>
+
         <locale-switcher class="locale-switcher"/>
     </div>
 </template>
 
 <script>
 import LocaleSwitcher from "@/components/molecules/LocaleSwitcher.vue";
-import EventEnum from "@/data/enum/event-bus.enum";
+import Vue from "vue";
 
-export default (
-    'left-nav-bar', {
-    components: {
-        LocaleSwitcher
-    },
+export default Vue.extend({
+    name: 'left-nav-bar',
+    components: {LocaleSwitcher},
     methods: {
         redirectToDashboard() {
-            this.$eventBus.$emit(EventEnum.BACK_TO_DASHBOARD);
+            this.$router.push("/dashboard");
         }
     }
 })

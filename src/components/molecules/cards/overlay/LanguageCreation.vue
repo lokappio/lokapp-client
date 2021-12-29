@@ -1,23 +1,17 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
-
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
         <v-container>
-
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11" class="pl-0">
-                    <p class="title-h2">
-                    {{ $t("language_creation.title") }}
-                    </p>
+                    <p class="title-h2">{{ $t("language_creation.title") }}</p>
                 </v-col>
+
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeLanguageCreation" color="black" class="float-right">
-                        mdi-close
-                    </v-icon>
+                    <v-icon @click="closeLanguageCreation" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
-            <keyboard-events :enter="createNewLanguage"/>
             <v-form ref="formCreateLanguage">
                 <!-- Language name -->
                 <v-row class="mt-4 pb-0 mb-0">
@@ -33,28 +27,24 @@
                 <!-- ValidateButton -->
                 <v-row class="mt-0 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="createNewLanguage" :text="$t('language_creation.confirm_button')"/>
+                        <action-button @keypress.enter="createNewLanguage" block :loading="loading" :handler="createNewLanguage" :text="$t('language_creation.confirm_button')"/>
                     </v-col>
                 </v-row>
             </v-form>
         </v-container>
     </v-card>
-  
 </template>
 
 <script>
 import ActionButton from "@/components/molecules/buttons/ActionButton";
 import {languageNameRules} from "@/data/rules/LanguageRules";
 import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from "@/data/models/Card.enum";
-import KeyboardEvents from "../../KeyboardEvents.vue";
+import Vue from "vue";
 
-export default (
-    'language-creation', {
-    components: {
-        ActionButton,
-        KeyboardEvents
-    },
+export default Vue.extend ({
+    name: 'language-creation',
+    components: {ActionButton},
+    props: {dialogOpened: Boolean},
     data: function() {
         return {
             loading: false,
@@ -63,14 +53,23 @@ export default (
             isBlockButton: true,
         }
     },
+    watch: {
+        dialogOpened(isOpened) {
+            if (isOpened) {
+                //ON RE-OPENED, RESET DATA
+                this.languageName = "";
+                this.$refs.formCreateLanguage.resetValidation();
+            }
+        }
+    },
     methods: {
         createNewLanguage() {
             if (this.$refs.formCreateLanguage.validate() === true) {
                 this.loading = true;
-                this.$service.languages.createLanguage(this.$store.getters.actualProjectId, this.languageName)
+                this.$service.languages.createLanguage(this.languageName)
                 .then(() => {
                     this.loading = false;
-                    this.$notify(this.$t("success.language_created"));
+                    this.$notify(this.$t("success.language_created").toString());
                     this.refreshLanguagesList();
                     this.closeLanguageCreation();
                 }).catch((error) => {
@@ -80,11 +79,11 @@ export default (
                                 this.loadProject();
                                 break;
                             case 403:
-                                this.$notify(this.$t("errors.unauthorized"));
+                                this.$notify(this.$t("errors.unauthorized").toString());
                                 this.loadProject();
                                 break;
                             case 422:
-                                this.$notify(this.$t("errors.language_already_exists"));
+                                this.$notify(this.$t("errors.language_already_exists").toString());
                                 this.refreshLanguagesList();
                                 break;
                         }
@@ -102,7 +101,7 @@ export default (
             this.$eventBus.$emit(EventEnum.REFRESH_KEYS_LIST);
         },
         closeLanguageCreation() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
+            this.$emit("close", false);
         },
         loadProject() {
             this.$eventBus.$emit(EventEnum.ERROR_ACTION);

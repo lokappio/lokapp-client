@@ -1,7 +1,6 @@
 <template>
     <v-card color="white" class="pa-4 pa-md-7 card-style-project">
         <v-container class="pa-0">
-
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11">
@@ -10,14 +9,12 @@
                     </h2>
                 </v-col>
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeManageUsers" color="black" class="float-right">
-                        mdi-close
-                    </v-icon>
+                    <v-icon @click="closeManageUsers" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
             <v-list subheader class="mx-0 users-list" two-line>
-                
+
                 <v-list-item class="px-0" v-for="user in users" :key="user.userId">
                     <v-list-item-content>
                         <template v-if="user.username !== null">
@@ -62,9 +59,8 @@
             </v-list>
 
             <v-card-actions class="mt-0 ml-0 pl-0 pb-0 justify-start" v-if="canCreateInvitation()">
-                <v-btn class="pl-0" x-large color="maincolor" icon @click="createInvitation"><v-icon color="maincolor" x-large>mdi-plus-circle</v-icon></v-btn>                
+                <v-btn class="pl-0" x-large color="maincolor" icon @click="createInvitation"><v-icon color="maincolor" x-large>mdi-plus-circle</v-icon></v-btn>
             </v-card-actions>
-        
         </v-container>
     </v-card>
 </template>
@@ -79,14 +75,13 @@ import Vue from 'vue'
 
 export default Vue.extend({
     name: "user-management",
+    props: {projectId: Number},
     created() {
-        this.projectId = this.$store.getters.actualProjectId;
         this.getMyself();
         this.roles = this.constructRoles();
     },
     data() {
         return {
-            projectId: -1,
             myself: null,
             users: [],
             invitations: [],
@@ -162,7 +157,7 @@ export default Vue.extend({
             });
         },
         getEveryUsersOfProject() {
-            this.$service.projects.getUsersOfProject(this.$store.getters.actualProjectId)
+            this.$service.projects.getUsersOfProject(this.projectId)
             .then((users: ProjectUser[]) => {
                 users.forEach((user: ProjectUser) => {
                     if (user.pending === false) {

@@ -60,10 +60,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import TemplateItemValues from "@/components/molecules/details/template-v-data-table/TemplateItemValues.vue";
-import TemplateItemKeys from "@/components/molecules/details/template-v-data-table/TemplateItemKeys.vue";
-import TemplateGroupHeader from "@/components/molecules/details/template-v-data-table/TemplateGroupHeader.vue";
-import TemplateGroupFooter from "@/components/molecules/details/template-v-data-table/TemplateGroupFooter.vue";
+import TemplateItemValues from "@/components/molecules/project/template-v-data-table/TemplateItemValues.vue";
+import TemplateItemKeys from "@/components/molecules/project/template-v-data-table/TemplateItemKeys.vue";
+import TemplateGroupHeader from "@/components/molecules/project/template-v-data-table/TemplateGroupHeader.vue";
+import TemplateGroupFooter from "@/components/molecules/project/template-v-data-table/TemplateGroupFooter.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Language from "@/data/models/api/Language";
@@ -218,10 +218,7 @@ export default Vue.extend({
                     this.errorGetSomething();
                 })
                 .finally(() => this.loading = false);
-        },
-        /*downloadProject(platform) {
-            this.$eventBus.$emit(EventEnum.DOWNLOAD_IS_FINISHED, platform, this.$service.export.exportDatas(platform, this.headers, this.getItems, this.groups));
-        }*/
+        }
     }
 });
 </script>

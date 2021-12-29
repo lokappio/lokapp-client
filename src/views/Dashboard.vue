@@ -12,7 +12,7 @@
             <language-management v-if="$store.getters.openCard === CardEnum.MANAGE_LANGUAGE"/>
             <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
             <leave-project v-if="$store.getters.openCard === CardEnum.LEAVE_PROJECT"/>
-            <user-management v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>
+            <!--<user-management v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>-->
             <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
             <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
         </v-overlay>
@@ -26,7 +26,7 @@
                 <v-row class="ma-0 mb-4 row-header-style">
                     <header-banner/>
                 </v-row>
-                
+
                 <!-- Content -->
                 <v-row class="ma-0 row-content-style">
                     <my-projects/>
@@ -36,7 +36,7 @@
         </v-card>
 
     </v-container>
-    
+
 </template>
 
 
@@ -54,7 +54,6 @@ import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vu
 import LanguageManagement from "@/components/molecules/cards/overlay/LanguageManagement.vue";
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
 import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
-import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
@@ -77,7 +76,6 @@ export default Vue.extend ({
         LanguageManagement,
         LanguageDelete,
         LeaveProject,
-        UserManagement,
         UserDelete,
         InvitationCreation,
         KeyboardEvents
@@ -89,10 +87,6 @@ export default Vue.extend ({
         }
     },
     methods: {
-        reloadEverything() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            this.$eventBus.$emit(EventEnum.RELOAD_YOURSELF);
-        },
         errorGetSomething() {
             this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
             this.$notify(this.$t("errors.unknown_error"), {timeout: -1, dismissable: true});
@@ -105,15 +99,9 @@ export default Vue.extend ({
     },
     mounted() {
         this.$eventBus.$on(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-        this.$eventBus.$on(EventEnum.RELOAD_PROJECT, this.reloadEverything);
-        this.$eventBus.$on(EventEnum.BACK_TO_DASHBOARD, this.reloadEverything);
-        this.$eventBus.$on(EventEnum.ERROR_ACTION, this.reloadEverything);
     },
     beforeDestroy() {
         this.$eventBus.$off(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-        this.$eventBus.$off(EventEnum.RELOAD_PROJECT, this.reloadEverything);
-        this.$eventBus.$off(EventEnum.BACK_TO_DASHBOARD, this.reloadEverything);
-        this.$eventBus.$off(EventEnum.ERROR_ACTION, this.reloadEverything);
     }
 })
 </script>

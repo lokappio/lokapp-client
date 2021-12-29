@@ -1,25 +1,31 @@
 <template>
+    <div>
+        <v-dialog v-model="dialogOpened" max-width="500px">
+            <LanguageCreation :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false" />
+        </v-dialog>
 
-    <v-tabs class="details-tabs-style" background-color="white" v-model="actualTab">
-        <v-tabs-slider color="#FF1F38"></v-tabs-slider>
-        <v-tab>{{ $t("project_detail.all_languages") }}</v-tab>
-        <v-tab v-for="language in languages" :key="language.id">{{ language.name }}</v-tab>
-        <v-icon v-if="canWriteLanguage()" color="maincolor" class="px-4 icon-style" @click="openLanguageCreation">mdi-plus-circle</v-icon>
-    </v-tabs>
-
+        <v-tabs class="details-tabs-style" background-color="white" v-model="actualTab">
+            <v-tabs-slider color="#FF1F38"></v-tabs-slider>
+            <v-tab>{{ $t("project_detail.all_languages") }}</v-tab>
+            <v-tab v-for="language in languages" :key="language.id">{{ language.name }}</v-tab>
+            <v-icon v-if="canWriteLanguage()" color="maincolor" class="px-4 icon-style" @click="() => this.dialogOpened = true">mdi-plus-circle</v-icon>
+        </v-tabs>
+    </div>
 </template>
 
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from "@/data/models/Card.enum";
 import Vue from "vue";
+import LanguageCreation from "@/components/molecules/cards/overlay/LanguageCreation.vue";
 
 export default Vue.extend({
     name: "languages-group",
+    components: {LanguageCreation},
     data() {
         return {
             languages: [],
-            actualTab: 0
+            actualTab: 0,
+            dialogOpened: false
         };
     },
     mounted() {
@@ -44,9 +50,6 @@ export default Vue.extend({
         },
         setActualLanguage() {
             this.$store.commit("SET_ACTUAL_LANGUAGE", this.actualTab > 0 ? this.languages[this.actualTab - 1].id : null);
-        },
-        openLanguageCreation() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.CREATE_LANGUAGE);
         },
     },
 

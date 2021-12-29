@@ -14,10 +14,10 @@
                     <language-management v-if="$store.getters.openCard === CardEnum.MANAGE_LANGUAGE"/>
                     <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
                     <leave-project v-if="$store.getters.openCard === CardEnum.LEAVE_PROJECT"/>
-                    <user-management v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>
+                    <user-management :project-id="currentProject.id" v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>
                     <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
                     <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
-                    <language-creation v-if="$store.getters.openCard === CardEnum.CREATE_LANGUAGE"/>
+                    <!--<language-creation v-if="$store.getters.openCard === CardEnum.CREATE_LANGUAGE"/>-->
                     <!--<download-project v-if="$store.getters.openCard === CardEnum.DOWNLOAD_PROJECT"/>-->
                     <!--<key-creation v-if="$store.getters.openCard === CardEnum.CREATE_KEY"/>-->
                 </v-overlay>
@@ -53,12 +53,11 @@ import { Vue } from "vue-property-decorator";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
-import LanguagesGroup from "@/components/molecules/details/LanguagesGroup.vue";
-import LanguageCreation from "@/components/molecules/cards/overlay/LanguageCreation.vue";
+import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
 import LanguageManagement from "@/components/molecules/cards/overlay/LanguageManagement.vue";
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
-import Header from "@/components/molecules/details/Header.vue";
-import ContentDetails from "@/components/molecules/details/ContentDetails.vue";
+import Header from "@/components/molecules/project/Header.vue";
+import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
 import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
 import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vue";
 import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
@@ -85,7 +84,6 @@ export default Vue.extend ({
         HeaderBanner,
         ProfileManager,
         LanguagesGroup,
-        LanguageCreation,
         Header,
         ContentDetails,
         ProjectManagement,
@@ -102,12 +100,9 @@ export default Vue.extend ({
       return {
         loading: true as boolean,
         CardEnum,
-        projectId: -1 as number,
       }
     },
     created() {
-        this.$store.commit("SET_ACTUAL_PROJECT_ID", parseInt(this.$route.params.project_id));
-        this.projectId = this.$store.getters.actualProjectId;
         this.loadProject();
     },
     computed: {
@@ -127,7 +122,7 @@ export default Vue.extend ({
             });
         },
         updateMyRole() {
-            this.$service.user.getMyselfInProject(this.projectId)
+            this.$service.user.getMyselfInProject(this.currentProject.id)
             .then((response) => {
                 this.$store.commit("SET_ACTUAL_ROLE", getRoleClass(getRoleEnum(response.data.role)));
             }).catch(() => {
