@@ -5,14 +5,11 @@
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11" class="px-0">
-                    <p class="title-h2">
-                    {{ $t("key_creation.title") }}
-                    </p>
+                    <p class="title-h2">{{ $t("key_creation.title") }}</p>
                 </v-col>
+
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeKeyCreation()" color="black" class="float-right">
-                        mdi-close
-                    </v-icon>
+                    <v-icon @click="closeKeyCreation()" color="black" class="float-right">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
@@ -71,20 +68,6 @@
                     </v-col>
                 </v-row>
 
-                <!-- Language Traduction -->
-                <!--<v-row v-if="currentProject.languages.length > 0" class="mt-0 pb-0 mb-0">
-                    <v-col cols="12" class="pb-0 px-0">
-                        <p class="title-h2">{{ $t('key_creation.traductions_title') }}</p>
-                    </v-col>
-                </v-row>
-                <v-container v-if="currentProject.languages.length > 0" class="pt-4 mt-0 ml-1 overflow-container-languages">
-                    <v-row class="pb-2" v-for="language in currentProject.languages" :key="language.id">
-                        <v-col cols="12" class="pa-0">
-                            <v-text-field class="black-caret" background-color="#F2F3F7" v-model="language.tradValue" :label="language.name" filled flat hide-details="true"></v-text-field>
-                        </v-col>
-                    </v-row>
-                </v-container>-->
-
                 <!-- ValidateButton -->
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
@@ -98,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton";
+import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {keyNameRules} from "@/data/rules/KeyRules";
 import {groupNameRules} from "@/data/rules/GroupRules";
 import EventEnum from "@/data/enum/event-bus.enum";
@@ -119,11 +102,10 @@ export default Vue.extend({
       isOpen: Boolean
     },
     created() {
-        this.projectId = this.$store.getters.actualProjectId;
         this.loadData();
     },
     data: function() {
-        const emptyGroup = Group.empty(this.$t("key_creation.new_group"));
+        const emptyGroup = Group.empty(this.$t("key_creation.new_group").toString());
 
         return {
             //DATA
@@ -131,11 +113,10 @@ export default Vue.extend({
             currentGroup: emptyGroup,
             newKey: Key.empty(),
             groupName: "",
-            projectId: -1,
 
             //RULES
-            keyNameRules: keyNameRules(this.$t("rules.required"), this.$t("rules.key_name_length"), this.$t("rules.snake_case_only")),
-            groupNameRules: groupNameRules(this.$t("rules.required"), this.$t("rules.group_name_length"), this.$t("rules.snake_case_only")),
+            keyNameRules: keyNameRules(this.$t("rules.required").toString(), this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString()),
+            groupNameRules: groupNameRules(this.$t("rules.required").toString(), this.$t("rules.group_name_length").toString(), this.$t("rules.snake_case_only").toString()),
 
             //UI
             loading: false,

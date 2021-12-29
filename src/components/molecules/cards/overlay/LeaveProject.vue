@@ -64,7 +64,7 @@ export default Vue.extend({
         },
         leaveProject() {
             this.loading = true;
-            this.$service.projects.leaveProject(this.$store.getters.actualProjectId)
+            this.$service.projects.leaveProject(this.projectId)
             .then(() => {
                 this.$notify(this.$t("success.project_leave") as string);
                 this.$router.push("/dashboard");

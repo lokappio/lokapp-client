@@ -79,7 +79,7 @@ export default Vue.extend({
                     this.updateMyRole();
                 })
                 .catch(() => {
-                    this.$notify("errors.retrieve_project");
+                    this.$notify(this.$t("errors.retrieve_project").toString());
                     this.backToDashboard();
                 });
         },

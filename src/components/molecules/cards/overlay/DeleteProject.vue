@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import ProjectList from '@/data/models/api/ProjectList';
+import Project from '@/data/models/api/Project';
 import Vue from 'vue'
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue"
 import EventEnum from "@/data/enum/event-bus.enum";
@@ -60,7 +60,7 @@ export default Vue.extend({
     methods: {
         getProject() {
             this.$service.projects.getProjectById(this.projectId)
-                .then((project: ProjectList) => {
+                .then((project) => {
                     this.project = project;
                     this.projectName = this.project.name;
                 }).catch(() => {

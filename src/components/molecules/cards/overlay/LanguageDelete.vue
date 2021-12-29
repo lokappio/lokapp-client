@@ -11,10 +11,10 @@
         <!-- Confirmation text -->
         <v-card-text class="pb-0">
             <div class="field text-center">
-            {{ $t("language_delete.description_1", { "value": language.name }) }}
+                {{ $t("language_delete.description_1", {"value": language.name}) }}
             </div>
             <div class="field text-center">
-            {{ $t("language_delete.description_2") }}
+                {{ $t("language_delete.description_2") }}
             </div>
         </v-card-text>
 
@@ -38,20 +38,21 @@
 
 <script lang="ts">
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
-import Vue from 'vue'
+import Vue from "vue";
 import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
     name: "language-delete",
     components: {ActionButton},
     props: {
-      language: Language,
-      dialogOpened: Boolean,
+        language: Language,
+        projectId: Number,
+        dialogOpened: Boolean
     },
     data() {
         return {
-            loading: false,
-        }
+            loading: false
+        };
     },
     methods: {
         comebackToLanguageManagement() {
@@ -60,11 +61,11 @@ export default Vue.extend({
         deleteLanguage() {
             this.loading = true;
 
-            this.$service.languages.deleteLanguage(this.language.id, this.$store.getters.actualProjectId)
-            .then(() => {
-                this.comebackToLanguageManagement();
-                this.$notify(this.$t("success.language_deleted").toString());
-            }).catch((error) => {
+            this.$service.languages.deleteLanguage(this.language.id, this.projectId)
+                .then(() => {
+                    this.comebackToLanguageManagement();
+                    this.$notify(this.$t("success.language_deleted").toString());
+                }).catch((error) => {
                 if (error.response) {
                     switch (error.response.status) {
                         case 403:
@@ -77,5 +78,5 @@ export default Vue.extend({
             });
         }
     }
-})
+});
 </script>

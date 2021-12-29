@@ -6,7 +6,7 @@ import store from '@/store/index';
 
 class GroupsService {
     static groupsUrl: string = config.baseUrl + "/projects/";
-    static get projectId(): number { return store.getters.actualProjectId}
+    static get projectId(): number { return store.getters.currentProject.id}
 
     public static getGroups(): Promise<Array<Group>> {
         return ApiService.getAPI(GroupsService.groupsUrl + this.projectId + "/groups")

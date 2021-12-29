@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-dialog v-model="dialogOpenedDelete" max-width="500px">
-            <LanguageDelete :dialog-opened="dialogOpenedDelete" :language="languageToDelete" @closeDelete="() => this.dialogOpenedDelete = false"/>
+            <LanguageDelete :dialog-opened="dialogOpenedDelete" :project-id="projectId" :language="languageToDelete" @closeDelete="() => this.dialogOpenedDelete = false"/>
         </v-dialog>
 
         <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">

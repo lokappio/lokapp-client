@@ -1,6 +1,5 @@
 import config from "@/config";
 import { AxiosResponse } from "axios";
-import ProjectList from "../models/api/ProjectList";
 import ProjectUser from "../models/api/ProjectUser";
 import { Role } from "../models/roles/role.enum";
 import ApiService from "./ApiService";
@@ -21,7 +20,7 @@ class ProjectsService {
         .then((response) => response.data.map((item: any) => Project.map(item)))
     }
 
-    public static createProject(project: ProjectList, projectLanguage: string): Promise<AxiosResponse<any>> {
+    public static createProject(project: Project, projectLanguage: string): Promise<AxiosResponse<any>> {
         let bodyParameters: any = {};
         bodyParameters = {
             name: project.name,
@@ -34,31 +33,24 @@ class ProjectsService {
         return ApiService.postAPI(ProjectsService.projectsUrl, bodyParameters);
     }
 
-    /***
-     * @deprecated
-     * Use getEntireProjectById
-     * @param projectId
-     */
-    public static getProjectById(projectId: number): Promise<ProjectList> {
+    public static getProjectById(projectId: number): Promise<Project> {
         return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
         .then((response) => {
-            return ProjectList.map(response.data);
+            return Project.map(response.data);
         })
     }
 
     public static getEntireProjectById(projectId: number): Promise<Project> {
-        return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
+        return this.getProjectById(projectId)
           .then(async (response) => {
-              const currProject: Project = Project.map(response.data);
-              currProject.languages = await LanguagesService.getLanguages();
-
+              response.languages = await LanguagesService.getLanguages();
               const keys: Key[] = await KeysService.getKeys();
 
               //Set values for each keys
               await Promise.all(
                 keys.map(async (key) => {
                   const values: Value[] = await ValuesService.getValuesByKeyId(key.id);
-                  values.forEach((value) => value.languageName = currProject.languages.find((lang) => lang.id == value.languageId).name)
+                  values.forEach((value) => value.languageName = response.languages.find((lang) => lang.id == value.languageId).name)
                   key.values = values;
                 })
               );
@@ -66,14 +58,14 @@ class ProjectsService {
 
               const groups: Group[] = await GroupsService.getGroups();
               groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
-              currProject.groups = groups;
+              response.groups = groups;
 
-              return currProject;
+              return response;
           });
     }
 
 
-    public static changeProjectSettings(projectID: number, projectName: string, projectColor: string, projectDescription: string): Promise<ProjectList> {
+    public static changeProjectSettings(projectID: number, projectName: string, projectColor: string, projectDescription: string): Promise<Project> {
         const bodyParameters = {
             name: projectName,
             color: projectColor,
@@ -81,7 +73,7 @@ class ProjectsService {
         };
         return ApiService.putAPI(ProjectsService.projectsUrl + "/" + projectID, bodyParameters)
         .then((response) => {
-            return ProjectList.map(response.data);
+            return Project.map(response.data);
         })
     }
 

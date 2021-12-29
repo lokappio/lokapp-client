@@ -9,7 +9,7 @@ import store from '@/store/index';
 class ValuesService {
     static valuesUrl: string = config.baseUrl + "/projects/";
     static get languages(): Language[] { return store.getters.currentProject.languages}
-    static get projectId(): number { return store.getters.actualProjectId}
+    static get projectId(): number { return store.getters.currentProject.id}
 
 
     public static async createValue(keyId: number, value: Value): Promise<Value> {

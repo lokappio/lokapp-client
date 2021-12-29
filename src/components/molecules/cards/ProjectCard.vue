@@ -6,14 +6,14 @@
 
         <v-card v-if="project" class="pa-2 card-project-style full-contain background-color-white">
             <v-container class="full-contain full-container pa-0">
-                <v-row class="ma-0 pa-1 full-row round-corner-row full-contain background-color-white">
-                    <v-col cols="3" @click="openProjectView" class="pa-0 full-row set-cursor-pointer">
+                <v-row @click="openProjectView" class="ma-0 pa-1 full-row round-corner-row full-contain background-color-white">
+                    <v-col cols="3" class="pa-0 full-row set-cursor-pointer">
                         <div class="round-corner-row title-h1 full-contain div-text-contain-center" :style="{ 'background-color':'#' + this.project.color }">
                             {{ firstCharProjectName }}
                         </div>
                     </v-col>
 
-                    <v-col cols="8" @click="openProjectView" class="pr-0 full-row set-cursor-pointer">
+                    <v-col cols="8" class="pr-0 full-row set-cursor-pointer">
                         <div class="mb-2 pt-1 text-truncate title-h3">{{ project.name }}</div>
                         <p class="description-style mb-0">{{ project.description }}</p>
                     </v-col>
@@ -25,6 +25,7 @@
             </v-container>
         </v-card>
 
+        <!-- CREATE PROJECT BTN -->
         <v-card v-else elevation="0" class="pa-0 card-project-style full-contain empty set-cursor-pointer no-click-effect" @click="openCreateProject" :ripple="false">
             <v-row align="center" justify="center" class="ma-0 full-row">
                 <v-icon color="maincolor" class="full-contain" large>mdi-plus-circle</v-icon>

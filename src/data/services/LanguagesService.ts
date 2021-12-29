@@ -6,7 +6,7 @@ import store from "@/store/index";
 
 class LanguagesService {
     static languagesUrl: string = config.baseUrl + "/projects/";
-    static get projectId(): number { return store.getters.actualProjectId}
+    static get projectId(): number { return store.getters.currentProject.id}
 
     public static getLanguages(projectId = this.projectId): Promise<Array<Language>> {
         return ApiService.getAPI(LanguagesService.languagesUrl + projectId + "/languages")

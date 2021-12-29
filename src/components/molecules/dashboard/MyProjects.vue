@@ -1,6 +1,5 @@
 <template>
     <v-container class="my-projects-container full-contain">
-
         <!-- Header -->
         <v-row class="ma-0 align-center title-row-style">
             <p class="ma-0 ml-4">
@@ -18,7 +17,7 @@
                     <v-row justify="center" justify-sm="start" class="py-auto project-row-style">
                         <!-- MY PROJECTS -->
                         <v-col
-                            v-for="project in displayedProjects.slice().reverse()"
+                            v-for="project in displayedProjects"
                             :key="project.id"
                             cols="12" sm="6" md="4" lg="3" xl="2"
                             class="project-card-col"
@@ -38,7 +37,7 @@
                     <v-row align-content="end" justify="center" class="middle-row my-0 mx-auto">
                         <p><span class="title-h3">{{ $t("dashboard.no_project_in_dashboard") }}</span></p>
                     </v-row>
-                    <!-- Button -->
+                    <!-- ADD PROJECT -->
                     <ProjectCard />
                 </template>
             </v-container>
@@ -51,6 +50,7 @@ import ProjectCard from "../cards/ProjectCard.vue";
 import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
+import ProjectCompact from "@/data/models/api/ProjectCompact";
 
 export default Vue.extend({
     name: "my-projects",
@@ -82,9 +82,6 @@ export default Vue.extend({
                 .then(projects => {
                     this.projects = projects;
                     this.updateMyTimer();
-                })
-                .catch(() => {
-                    this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
                 });
             },
         updateMyTimer() {

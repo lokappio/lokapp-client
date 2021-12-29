@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import ProjectList from "@/data/models/api/ProjectList";
+import ProjectCompact from "@/data/models/api/ProjectCompact";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
@@ -162,7 +162,7 @@ export default Vue.extend({
                     this.loading = false;
                     this.closeCreationProject();
                     this.$notify(this.$t("success.project_created"));
-                    const newProject = ProjectList.map(response.data);
+                    const newProject = ProjectCompact.map(response.data);
                     this.$router.push(`/projects/${newProject.id}`);
                 }).catch(() => {
                     this.$eventBus.$emit(EventEnum.ERROR_ACTION);

@@ -113,7 +113,7 @@ export default Vue.extend({
         };
     },
     mounted() {
-        this.projectId = this.$store.getters.actualProjectId;
+        this.projectId = this.$store.getters.currentProject.id;
         this.filterDataWithLanguage(null);
     },
     watch: {
