@@ -1,10 +1,5 @@
 <template>
     <v-container fluid class="full-screen-container px-0 py-3">
-    <keyboard-events :escape="closePopup"></keyboard-events>
-        <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
-            <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
-        </v-overlay>
-
         <left-nav-bar/>
 
         <v-card class="card-style-content background-color-white px-6 pt-16 mr-0 ml-auto">
@@ -29,9 +24,6 @@ import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import CardEnum from "@/data/models/Card.enum";
-import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
-import EventEnum from "@/data/enum/event-bus.enum";
-import KeyboardEvents from "@/components/molecules/KeyboardEvents.vue";
 
 export default Vue.extend ({
     data() {
@@ -43,32 +35,14 @@ export default Vue.extend ({
         MyProjects,
         HeaderBanner,
         LeftNavBar,
-        LanguageDelete,
-        KeyboardEvents
     },
     metaInfo() {
         return {
             title: "Lokapp",
             titleTemplate: null
         }
-    },
-    methods: {
-        errorGetSomething() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            this.$notify(this.$t("errors.unknown_error"), {timeout: -1, dismissable: true});
-        },
-        closePopup() {
-            if (this.$store.getters.openCard !== CardEnum.NONE) {
-                this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            }
-        }
-    },
-    mounted() {
-        this.$eventBus.$on(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-    },
-    beforeDestroy() {
-        this.$eventBus.$off(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
     }
+
 })
 </script>
 

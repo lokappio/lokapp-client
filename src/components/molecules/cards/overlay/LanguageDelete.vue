@@ -1,6 +1,5 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
-
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
         <!-- Title and close -->
         <v-icon @click="comebackToLanguageManagement" color="black" class="float-right">
             mdi-close
@@ -34,40 +33,37 @@
                 </v-row>
             </v-container>
         </v-card-actions>
-
     </v-card>
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from '@/data/models/Card.enum';
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from 'vue'
+import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
     name: "language-delete",
-    components: {
-        ActionButton
+    components: {ActionButton},
+    props: {
+      language: Language,
+      dialogOpened: Boolean,
     },
     data() {
         return {
             loading: false,
-            language: this.$store.getters.actualLanguage
         }
     },
     methods: {
         comebackToLanguageManagement() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.MANAGE_LANGUAGE);
+            this.$emit("closeDelete");
         },
         deleteLanguage() {
-            if (this.language.id < 0) {
-                return;
-            }
             this.loading = true;
-            this.$service.languages.deleteLanguage(this.$store.getters.actualProjectId, this.language.id)
+
+            this.$service.languages.deleteLanguage(this.language.id, this.$store.getters.actualProjectId)
             .then(() => {
                 this.comebackToLanguageManagement();
-                this.$notify(this.$t("success.language_deleted") as string);
+                this.$notify(this.$t("success.language_deleted").toString());
             }).catch((error) => {
                 if (error.response) {
                     switch (error.response.status) {
@@ -78,7 +74,6 @@ export default Vue.extend({
                             this.$notify(this.$t("error.unknown_error") as string);
                     }
                 }
-                this.$eventBus.$emit(EventEnum.ERROR_ACTION);
             });
         }
     }

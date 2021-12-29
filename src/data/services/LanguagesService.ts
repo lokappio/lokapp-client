@@ -29,8 +29,8 @@ class LanguagesService {
         });
     }
 
-    public static deleteLanguage(languageId: number): Promise<AxiosResponse<any>> {
-        return ApiService.delAPI(LanguagesService.languagesUrl + this.projectId + "/languages/" + languageId);
+    public static deleteLanguage(languageId: number, projectId = this.projectId): Promise<AxiosResponse<any>> {
+        return ApiService.delAPI(LanguagesService.languagesUrl + projectId + "/languages/" + languageId);
     }
 }
 
