@@ -3,6 +3,8 @@ import { AxiosResponse } from "axios";
 import Language from "../models/api/Language";
 import ApiService from "./ApiService";
 import store from "@/store/index";
+import ValuesService from "@/data/services/ValuesService";
+import Key from "@/data/models/api/Key";
 
 class LanguagesService {
     static languagesUrl: string = config.baseUrl + "/projects/";
@@ -15,11 +17,20 @@ class LanguagesService {
         })
     }
 
-    public static createLanguage(languageName: string): Promise<AxiosResponse<any>> {
+    public static createLanguage(languageName: string): Promise<any> {
         const bodyParameters = {
             name: languageName
         };
+
         return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
+          .then(async (result) => {
+              /*TODO: REMOVE FROM FRONT AND MOVE TO API */
+              const language = Language.map(result.data);
+
+              const keys: Key[] = store.getters.currentProject.groups.map((group) => group.keys).flat();
+
+              return Promise.all(keys.map(async (key) => await ValuesService.createValueForKey(key, [language])));
+        });
     }
 
     public static getLanguage(languageId: number): Promise<Language> {

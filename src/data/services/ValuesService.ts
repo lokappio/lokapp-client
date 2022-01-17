@@ -23,8 +23,8 @@ class ValuesService {
         return Value.map(result.data);
     }
 
-    public static async createValueForKey(key: Key): Promise<Value[]> {
-        const result: Value[] = await Promise.all(this.languages.map(async (language) => {
+    public static async createValueForKey(key: Key, languages: Language[] = this.languages): Promise<Value[]> {
+        const result: Value[] = await Promise.all(languages.map(async (language) => {
             if (key.isPlural) {
                 return await Promise.all(Object.values(ValueQuantity).map(async (quantity) => {
                     const value = Value.map({name: "", 'language_id': language.id, 'quantity_string': quantity})

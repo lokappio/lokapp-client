@@ -50,7 +50,8 @@ class ProjectsService {
               await Promise.all(
                 keys.map(async (key) => {
                   const values: Value[] = await ValuesService.getValuesByKeyId(key.id);
-                  values.forEach((value) => value.languageName = response.languages.find((lang) => lang.id == value.languageId).name)
+
+                  values.forEach((value) => value.languageName = response.languages.find((lang) => lang.id == value.languageId)?.name)
                   key.values = values;
                 })
               );

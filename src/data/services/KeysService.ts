@@ -32,6 +32,7 @@ class KeysService {
     }
 
     public static async createKeyWithGroup(createGroup: boolean, group: Group, key: Key): Promise<{group: Group | null; key: Key}> {
+        /*TODO: REMOVE FROM FRONT AND MOVE TO API */
         const data: {group: Group | null; key: Key} = {} as any;
 
         //IF GROUP DOESN'T EXIST YET IN DB, CREATE IT ...
