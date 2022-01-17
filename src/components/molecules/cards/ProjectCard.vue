@@ -98,13 +98,8 @@ export default Vue.extend(
     overflow: hidden;
 }
 
-.full-contain-icon {
-    width: 100% !important;
-}
-
 .empty {
     box-sizing: border-box;
-    width: 10000px;
     border: 2px dashed rgba(1, 15, 92, 0.3) !important;
     background-color: transparent !important;
 }

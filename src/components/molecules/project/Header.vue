@@ -7,13 +7,18 @@
             <v-row class="full-contain ma-0">
                 <!-- LeftPart -->
                 <v-col cols="6">
-                    <div>
-                        <span class="title-h2 detail-project-name-title">{{ currentProject.name }}</span>
+                    <v-row>
+                      <v-col>
+                        <v-row align="center">
+                          <span class="title-h2 detail-project-name-title">{{ currentProject.name }}</span>
+                          <project-settings-button :project-id="currentProject.id"/>
+                        </v-row>
+                      </v-col>
 
-                        <project-settings-button :project-id="currentProject.id"/>
-
+                      <v-col cols="12">
                         <p class="text-2 detail-project-description">{{ currentProject.description }}</p>
-                    </div>
+                      </v-col>
+                    </v-row>
                 </v-col>
 
                 <v-col cols="1" class="pr-0 pl-auto">
