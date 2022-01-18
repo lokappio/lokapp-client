@@ -1,19 +1,16 @@
-
-
 <template>
-    
     <div class="full-div-center-text">
         <span class="deprecated-button-style set-cursor-pointer" @click="handler">
             {{text}}
         </span>
     </div>
-  
 </template>
 
 <script>
+import Vue from "vue";
 
-export default (
-    'deprecated-button', {
+export default Vue.extend({
+    name: 'deprecated-button',
     props: {
         block: Boolean,
         handler: Function,

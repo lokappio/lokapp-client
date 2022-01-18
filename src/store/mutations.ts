@@ -13,6 +13,9 @@ export default {
     SET_APP_USER(state: State, user: ProjectUser): void {
         state.appUser = user;
     },
+    UPDATE_APP_USER(state: State, user: ProjectUser): void {
+        state.appUser.username = user.username;
+    },
     SET_APPLICATION_READY(state: State): void {
         state.applicationReady = true;
     },
