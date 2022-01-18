@@ -44,7 +44,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import {keyNameRules} from "@/data/rules/KeyRules";
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
@@ -59,12 +58,12 @@ export default Vue.extend({
     return {
       updateKey: Object.assign({}, this.item.key),
       isOpen: false,
-      keyNameRules: keyNameRules(this.$t("rules.required"), this.$t("rules.key_name_length"), this.$t("rules.snake_case_only"))
+      keyNameRules: keyNameRules(this.$t("rules.required").toString(), this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString())
     };
   },
 
   computed: {
-    keyQuantityName() {
+    keyQuantityName(): string {
       return this.item?.quantity ? (this.item.key.name + "[" + this.item.quantity + "]") : this.item.key.name;
     }
   },
@@ -81,19 +80,18 @@ export default Vue.extend({
             }
             switch (error.response.status) {
               case 422:
-                this.notify(this.$t("errors.key_name_already_exists"));
+                this.$notify(this.$t("errors.key_name_already_exists").toString());
                 break;
               case 403:
-                this.$notify(this.$t("errors.unauthorized"));
+                this.$notify(this.$t("errors.unauthorized").toString());
                 break;
               case 404:
-                this.notify(this.$t("errors.not_existing_key"));
+                this.$notify(this.$t("errors.not_existing_key").toString());
                 break;
               default:
-                this.notify(this.$t("errors.unknown_error"));
+                this.$notify(this.$t("errors.unknown_error").toString());
                 break;
             }
-            this.$eventBus.$emit(EventEnum.ERROR_ACTION);
           });
     },
     deleteKey() {
@@ -105,13 +103,13 @@ export default Vue.extend({
         if (error.response) {
           switch (error.response.status) {
             case 404:
-              this.$notify(this.$t("errors.not_existing_key"));
+              this.$notify(this.$t("errors.not_existing_key").toString());
               break;
             case 403:
-              this.$notify(this.$t("errors.unauthorized"));
+              this.$notify(this.$t("errors.unauthorized").toString());
               break;
             default:
-              this.$notify(this.$t("errors.unknown_error"));
+              this.$notify(this.$t("errors.unknown_error").toString());
               break;
           }
         }

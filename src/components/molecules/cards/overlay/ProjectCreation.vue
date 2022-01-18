@@ -161,12 +161,11 @@ export default Vue.extend({
                 .then((response) => {
                     this.loading = false;
                     this.closeCreationProject();
-                    this.$notify(this.$t("success.project_created"));
+                    this.$notify(this.$t("success.project_created").toString());
                     const newProject = ProjectCompact.map(response.data);
                     this.$router.push(`/projects/${newProject.id}`);
                 }).catch(() => {
-                    this.$eventBus.$emit(EventEnum.ERROR_ACTION);
-                    this.$notify(this.$t("errors.unknown_error"));
+                    this.$notify(this.$t("errors.unknown_error").toString());
                 }).finally(() => {
                     this.loading = false;
                 })

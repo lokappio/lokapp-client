@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
 import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";

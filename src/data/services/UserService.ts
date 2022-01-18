@@ -17,6 +17,7 @@ class UserService {
         const bodyParameters = {
             username: username,
         };
+
         return ApiService.patchAPI(UserService.userUrl + "/me", bodyParameters)
         .then((response) => {
             return ProjectUser.map(response.data);

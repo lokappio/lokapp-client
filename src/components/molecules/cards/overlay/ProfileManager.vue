@@ -100,16 +100,9 @@ export default Vue.extend({
               this.closeOverlay();
             })
             .catch(() => {
-              this.$eventBus.$emit(EventEnum.ERROR_ACTION);
+              this.$notify(this.$t("errors.update_user").toString());
             });
       }
-    },
-    logMeOut() {
-      this.$service.auth.logOut()
-          .then(() => {
-            this.$router.push("/login");
-            this.$notify(this.$t("success.logout").toString());
-          });
     },
     resetPassword() {
       this.$service.auth.resetPassword(this.user.email)
@@ -118,7 +111,14 @@ export default Vue.extend({
             this.$service.auth.logOut().then(() => this.$router.push("/login"))
           })
           .catch(() => {
-            this.$eventBus.$emit(EventEnum.ERROR_ACTION);
+            this.$notify(this.$t("errors.reset_password").toString());
+          });
+    },
+    logMeOut() {
+      this.$service.auth.logOut()
+          .then(() => {
+            this.$router.push("/login");
+            this.$notify(this.$t("success.logout").toString());
           });
     },
     closeOverlay() {

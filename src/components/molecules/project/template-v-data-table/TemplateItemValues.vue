@@ -40,7 +40,6 @@ export default Vue.extend({
   methods: {
     reportError(error: string): void {
       this.$notify(error);
-      this.$eventBus.$emit(EventEnum.ERROR_ACTION);
     },
     blurInput(): void {
       document.getElementById(this.inputId).blur();

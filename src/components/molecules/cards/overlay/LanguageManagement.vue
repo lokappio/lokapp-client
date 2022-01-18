@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import Language from "@/data/models/api/Language";
 import Vue from "vue";
 import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
@@ -64,7 +63,7 @@ export default Vue.extend({
                 .then((languages) => this.languages = languages)
                 .catch(() => {
                     this.closeOverlay();
-                    this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
+                    this.$notify(this.$t("errors.retrieve_languages").toString());
                 });
         },
         closeOverlay(): void {
