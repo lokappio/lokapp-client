@@ -30,7 +30,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from 'vue'
 
@@ -40,25 +39,10 @@ export default Vue.extend({
     props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
-            projectName: "",
             loading: false
         }
     },
-    watch: {
-        dialogOpened(isOpen) {
-            if(isOpen) {
-                this.projectName = "";
-
-                this.getProject();
-            }
-        }
-    },
     methods: {
-        getProject() {
-            this.$service.projects.getProjectById(this.projectId)
-                .then(project => this.projectName = project.name)
-                .catch(() => this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING));
-        },
         closeOverlay() {
             this.$emit("close");
         },
@@ -70,7 +54,6 @@ export default Vue.extend({
                 this.$router.push("/dashboard");
             }).catch(() => {
                 this.$notify(this.$t("errors.unknown_error") as string);
-                this.$eventBus.$emit(EventEnum.ERROR_ACTION);
             }).finally(() => {
                 this.closeOverlay();
                 this.loading = false;

@@ -8,18 +8,18 @@
             <v-container class="full-contain full-container pa-0">
                 <v-row @click="openProjectView" class="ma-0 pa-1 full-row round-corner-row full-contain background-color-white">
                     <v-col cols="3" class="pa-0 full-row set-cursor-pointer">
-                        <div class="round-corner-row title-h1 full-contain div-text-contain-center" :style="{ 'background-color':'#' + this.project.color }">
+                        <div class="round-corner-row title-h1 full-contain div-text-contain-center" :style="{ 'background-color':'#' + this.currProject.color }">
                             {{ firstCharProjectName }}
                         </div>
                     </v-col>
 
                     <v-col cols="8" class="pr-0 full-row set-cursor-pointer">
-                        <div class="mb-2 pt-1 text-truncate title-h3">{{ project.name }}</div>
-                        <p class="description-style mb-0">{{ project.description }}</p>
+                        <div class="mb-2 pt-1 text-truncate title-h3">{{ currProject.name }}</div>
+                        <p class="description-style mb-0">{{ currProject.description }}</p>
                     </v-col>
 
                     <v-col cols="1" class="pa-0">
-                        <project-settings-button :projectId="project.id"/>
+                        <project-settings-button :project="currProject" :from-store="false" @update_projects="updateProject"/>
                     </v-col>
                 </v-row>
             </v-container>
@@ -48,12 +48,14 @@ export default Vue.extend(
         props: {project: Project},
         data() {
             return {
+                //  USED TO REFRESH VALUES OF PROJECT WHEN PARAMETERS UPDATED FROM ProjectSettingsButton
+                currProject: this.project,
                 dialogOpened: false,
             }
         },
         computed: {
           firstCharProjectName(): string {
-              return firstChar(this.project?.name);
+              return firstChar(this.currProject?.name);
           }
         },
         methods: {
@@ -63,6 +65,10 @@ export default Vue.extend(
             },
             openCreateProject() {
                 this.dialogOpened = true;
+            },
+            updateProject(project: Project) {
+              //WHEN PROJECT UPDATED FROM ProjectSettingsButton > ProjectManagement
+              this.currProject = Project.map(project);
             }
         }
     });

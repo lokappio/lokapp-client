@@ -84,7 +84,6 @@
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {keyNameRules} from "@/data/rules/KeyRules";
 import {groupNameRules} from "@/data/rules/GroupRules";
-import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "../../KeyboardEvents.vue";
 import Vue from "vue";
 import Key from "@/data/models/api/Key";
@@ -136,19 +135,13 @@ export default Vue.extend({
       }
     },
     methods: {
-        loadData(): Promise<void> {
+        loadData(): void {
             this.loading = true;
             this.currentGroup = this.selectedGroup ?? this.groups[0];
             this.currentProject.groups.forEach((group) => this.groups.push(group));
         },
         closeKeyCreation() {
           this.$emit('closeCreation', false)
-        },
-        errorGetSomething() {
-            this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-        },
-        errorAction() {
-            this.$eventBus.$emit(EventEnum.ERROR_ACTION);
         },
         async createKeyWithGroup(): Promise<void> {
             if (this.$refs.formCreateKey.validate() === true) {
@@ -159,22 +152,17 @@ export default Vue.extend({
                 let data: {group: Group | null; key: Key};
                 try {
                   data = await this.$service.keys.createKeyWithGroup(this.currentGroup.id === -1, this.currentGroup, this.newKey);
-                } catch(e: string) {
-                  this.$notify(this.$t(e));
+                  this.$store.commit("ADD_PROJECT_KEY", data);
+                  this.closeKeyCreation();
+                } catch(e) {
+                  this.$notify(this.$t(e).toString());
                 }
 
-                this.$store.commit("ADD_PROJECT_KEY", data);
-                this.closeKeyCreation();
                 this.loading = false;
             }
-        },
-        setError(error) {
-            this.errorText = error;
-            this.snackbarError = true;
-        },
+        }
     }
 })
-
 </script>
 
 <style lang="scss" scoped>

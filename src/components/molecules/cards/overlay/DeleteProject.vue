@@ -3,11 +3,11 @@
         <!-- Title and close -->
         <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
 
-        <v-card-title class="title-style d-flex justify-space-around">{{ $t("project_delete.title", {name: this.projectName}) }}</v-card-title>
+        <v-card-title class="title-style d-flex justify-space-around">{{ $t("project_delete.title", {name: this.project.name}) }}</v-card-title>
 
         <!-- Confirmation text -->
         <v-card-text class="pb-0">
-            <div class="field text-center">{{ $t("project_delete.description_1", { "value": this.projectName }) }}</div>
+            <div class="field text-center">{{ $t("project_delete.description_1", { "value": this.project.name }) }}</div>
             <div class="field text-center">{{ $t("project_delete.description_2") }}</div>
         </v-card-text>
 
@@ -33,52 +33,30 @@
 <script lang="ts">
 import Vue from 'vue'
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue"
-import EventEnum from "@/data/enum/event-bus.enum";
+import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
     name: "delete-project",
     components: {ActionButton},
-    props: {projectId: Number, dialogOpened: Boolean},
+    props: {project: Project, dialogOpened: Boolean},
     data() {
         return {
             loading: false,
-            project: null,
-            projectName: ""
-        }
-    },
-    watch: {
-        dialogOpened(isOpen) {
-            if(isOpen) {
-                this.project = null;
-                this.projectName = "";
-
-                this.getProject();
-            }
         }
     },
     methods: {
-        getProject() {
-            this.$service.projects.getProjectById(this.projectId)
-                .then((project) => {
-                    this.project = project;
-                    this.projectName = this.project.name;
-                }).catch(() => {
-                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-            });
-        },
         closeOverlay(): void {
             this.$emit("close");
         },
         deleteProject() {
             this.loading = true;
-            this.$service.projects.deleteProject(this.projectId)
+            this.$service.projects.deleteProject(this.project.id)
             .then(() => {
                 this.$notify(this.$t("success.project_deleted") as string);
                 this.$router.push("/dashboard");
                 this.closeOverlay();
             }).catch(() => {
                 this.$notify(this.$t("errors.project_deleted") as string);
-                this.$eventBus.$emit(EventEnum.ERROR_ACTION);
             }).finally(() => {
                 this.loading = false;
             });

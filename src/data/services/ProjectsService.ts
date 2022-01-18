@@ -66,13 +66,13 @@ class ProjectsService {
     }
 
 
-    public static changeProjectSettings(projectID: number, projectName: string, projectColor: string, projectDescription: string): Promise<Project> {
+    public static changeProjectSettings(project: Project): Promise<Project> {
         const bodyParameters = {
-            name: projectName,
-            color: projectColor,
-            description: projectDescription
+            name: project.name,
+            color: project.color,
+            description: project.description
         };
-        return ApiService.putAPI(ProjectsService.projectsUrl + "/" + projectID, bodyParameters)
+        return ApiService.putAPI(ProjectsService.projectsUrl + "/" + project.id, bodyParameters)
         .then((response) => {
             return Project.map(response.data);
         })

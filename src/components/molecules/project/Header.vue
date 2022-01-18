@@ -11,7 +11,7 @@
                       <v-col>
                         <v-row align="center">
                           <span class="title-h2 detail-project-name-title">{{ currentProject.name }}</span>
-                          <project-settings-button :project-id="currentProject.id"/>
+                          <project-settings-button :project="currentProject" :from-store="true"/>
                         </v-row>
                       </v-col>
 

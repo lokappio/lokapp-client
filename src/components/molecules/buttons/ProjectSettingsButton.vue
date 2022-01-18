@@ -1,23 +1,28 @@
 <template>
   <div>
     <v-dialog v-model="dialogOpenedUser" max-width="800px">
-      <user-management :dialog-opened="dialogOpenedUser" :project-id="projectId" @close="() => this.dialogOpenedUser = false"/>
+      <user-management :dialog-opened="dialogOpenedUser" :project-id="project.id" @close="() => this.dialogOpenedUser = false"/>
     </v-dialog>
 
     <v-dialog v-model="dialogOpenedLanguage" width="500px">
-      <language-management :dialog-opened="dialogOpenedLanguage" :project-id="projectId" @close="() => this.dialogOpenedLanguage = false"/>
+      <language-management :dialog-opened="dialogOpenedLanguage" :project-id="project.id" @close="() => this.dialogOpenedLanguage = false"/>
     </v-dialog>
 
     <v-dialog v-model="dialogOpenedProject" width="500px">
-      <project-management :dialog-opened="dialogOpenedProject" :project-id="projectId" @close="() => this.dialogOpenedProject = false"/>
+      <project-management
+          :dialog-opened="dialogOpenedProject"
+          :project="project"
+          @close="() => this.dialogOpenedProject = false"
+          @projectUpdated="projectUpdated"
+      />
     </v-dialog>
 
     <v-dialog v-model="dialogOpenedDelete" width="500px">
-      <delete-project :dialog-opened="dialogOpenedDelete" :project-id="projectId" @close="() => this.dialogOpenedDelete = false"/>
+      <delete-project :dialog-opened="dialogOpenedDelete" :project="project" @close="() => this.dialogOpenedDelete = false"/>
     </v-dialog>
 
     <v-dialog v-model="dialogOpenedLeave" width="500px">
-      <leave-project :dialog-opened="dialogOpenedLeave" :project-id="projectId" @close="() => this.dialogOpenedLeave = false"/>
+      <leave-project :dialog-opened="dialogOpenedLeave" :project-id="project.id" @close="() => this.dialogOpenedLeave = false"/>
     </v-dialog>
 
     <v-menu :nudge-width="200" transition="slide-x-transition">
@@ -37,7 +42,6 @@
 
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
-import {getRoleClass, Role} from "@/data/models/roles/role.enum";
 import Vue from "vue";
 import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
 import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
@@ -45,11 +49,12 @@ import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vu
 import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
 import LanguageManagement from "@/components/molecules/cards/overlay/LanguageManagement.vue";
 import RoleProtection from "@/data/models/roles/RoleProtection";
+import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
   name: "project-settings-button",
   components: {UserManagement, ProjectManagement, DeleteProject, LanguageManagement, LeaveProject},
-  props: {projectId: Number},
+  props: {project: Project, fromStore: Boolean},
   data() {
     return {
       dialogOpenedUser: false,
@@ -104,9 +109,15 @@ export default Vue.extend({
   },
   methods: {
     getMe() {
-      this.$service.user.getMyselfInProject(this.projectId)
-          .then((user) => this.$store.commit("SET_APP_USER", user))
-          .catch(() => this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING));
+      this.$service.user.getMyselfInProject(this.project.id)
+          .then((user) => this.$store.commit("SET_APP_USER", user));
+    },
+    projectUpdated(project: Project) {
+      if(this.fromStore) {
+        this.$store.commit("UPDATE_CURRENT_PROJECT_PARAMETERS", project);
+      } else {
+        this.$emit("update_projects", project);
+      }
     }
   }
 });
