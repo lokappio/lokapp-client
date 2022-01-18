@@ -1,4 +1,4 @@
-import Vue, { PluginFunction } from "vue";
+import { PluginFunction } from "vue";
 
 export interface VuetifyToastUseOptions extends VuetifyToastObject {
   property?: string;

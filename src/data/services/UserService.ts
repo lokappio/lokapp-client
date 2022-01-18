@@ -1,5 +1,4 @@
 import ApiService from "./ApiService";
-import User from "../models/api/User";
 import config from "@/config";
 import ProjectUser from "@/data/models/api/ProjectUser";
 

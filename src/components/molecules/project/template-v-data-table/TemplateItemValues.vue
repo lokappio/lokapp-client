@@ -13,7 +13,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 

@@ -14,7 +14,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import Vue from "vue";
 import LanguageCreation from "@/components/molecules/cards/overlay/LanguageCreation.vue";
 
@@ -46,7 +45,7 @@ export default Vue.extend({
 
             this.$service.languages.getLanguages()
                 .then(languages => this.languages = languages)
-                .catch(() => this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING));
+                .catch(() => this.$notify(this.$t("errors.retrieve_languages").toString()));
         },
         setActualLanguage() {
             this.$store.commit("SET_ACTUAL_LANGUAGE", this.actualTab > 0 ? this.languages[this.actualTab - 1].id : null);

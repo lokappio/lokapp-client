@@ -61,7 +61,6 @@
 
 <script lang="ts">
 import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
-import EventEnum from "@/data/enum/event-bus.enum";
 import {optionalUsernameRules} from "@/data/rules/UserRules";
 import Vue from "vue";
 import ProjectUser from "@/data/models/api/ProjectUser.js";

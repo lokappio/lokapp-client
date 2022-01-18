@@ -104,7 +104,6 @@ import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
 import {optionalLanguageRules} from "@/data/rules/LanguageRules";
-import EventEnum from "@/data/enum/event-bus.enum";
 import KeyboardEvents from "../../KeyboardEvents.vue";
 import Vue from "vue";
 

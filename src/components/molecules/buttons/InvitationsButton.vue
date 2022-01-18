@@ -55,7 +55,6 @@
 </template>
 
 <script lang="ts">
-import EventEnum from '@/data/enum/event-bus.enum';
 import Invitation from '@/data/models/api/Invitation';
 import Vue from 'vue'
 
