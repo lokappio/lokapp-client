@@ -1,6 +1,5 @@
 import Invitation from "@/data/models/api/Invitation";
 import Language from "@/data/models/api/Language";
-import RoleProtection from "@/data/models/roles/RoleProtection";
 import {State} from "@/store/states";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";

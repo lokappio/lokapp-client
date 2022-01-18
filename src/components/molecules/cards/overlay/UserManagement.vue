@@ -85,9 +85,8 @@
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
 import ProjectUser from "@/data/models/api/ProjectUser";
-import {getRoleClass, getRoleEnum, Role} from "@/data/models/roles/role.enum";
+import { getRoleEnum, Role} from "@/data/models/roles/role.enum";
 import Vue from "vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
