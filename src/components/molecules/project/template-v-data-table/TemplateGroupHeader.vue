@@ -60,7 +60,7 @@ export default Vue.extend({
     },
     methods: {
         canUpdateGroup() {
-                this.isActive = this.$store.getters.appUser.role ? this.$store.getters.appUser.role.canWriteGroup : false;
+                this.isActive = this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteGroup : false;
         },
         updateGroup(groupId, items) {
             this.group.name = this.updateName;

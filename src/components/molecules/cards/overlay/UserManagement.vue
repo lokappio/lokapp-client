@@ -146,7 +146,7 @@ export default Vue.extend({
             });
         },
         isUserUpdateRoleDisabled(user: ProjectUser): boolean {
-            if (getRoleClass(this.me.role).canWriteUser === false) {
+            if (this.me.roleAbility.canWriteUser === false) {
                 return true;
             }
 
@@ -156,14 +156,14 @@ export default Vue.extend({
             return false;
         },
         isInvitationDisabled(): boolean {
-            if (this.me.role) {
-                return !(getRoleClass(this.me.role).canWriteInvitation);
+            if (this.me.roleAbility) {
+                return !(this.me.roleAbility.canWriteInvitation);
             }
             return false;
         },
         canCreateInvitation(): boolean {
             if (this.me.role) {
-                return (getRoleClass(this.me.role).canWriteInvitation);
+                return (this.me.roleAbility.canWriteInvitation);
             }
             return false;
         },
@@ -200,7 +200,6 @@ export default Vue.extend({
                     });
                 }).catch(() => {
                 this.$notify(this.$t("errors.unknown_error") as string);
-                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
             });
         },
         refresh() {

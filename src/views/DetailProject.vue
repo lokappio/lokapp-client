@@ -5,7 +5,7 @@
 
             <v-container v-if="!loading" class="ma-0 pa-0 full-contain card-container">
                 <v-row class="ma-0 mb-4 row-header-style">
-                    <header-banner projectDetail="true"/>
+                    <header-banner :projectDetail="true"/>
                 </v-row>
 
                 <v-row class="ma-0 pl-0 pl-md-10  row-languages-style">
@@ -85,8 +85,7 @@ export default Vue.extend({
                 });
         },
         async updateMyRole(projectId: number): Promise<void> {
-            return this.$service.user.getMyselfInProject(projectId)
-                .then((user) => this.$store.commit("SET_APP_USER", user));
+            return this.$service.user.getMyselfInProject(projectId).then((user) => this.$store.commit("SET_APP_USER", user));
         },
         backToDashboard() {
             this.$router.push({path: "/dashboard"});

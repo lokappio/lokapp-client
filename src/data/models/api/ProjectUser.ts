@@ -1,4 +1,5 @@
-import {getRoleEnum, Role} from "../roles/role.enum";
+import {getRoleClass, getRoleEnum, Role} from "../roles/role.enum";
+import RoleProtection from "@/data/models/roles/RoleProtection";
 
 export default class ProjectUser {
     userId: string;
@@ -7,6 +8,10 @@ export default class ProjectUser {
     role: Role;
     pending: boolean;
     invitationId: number | null;
+
+    get roleAbility(): RoleProtection {
+        return getRoleClass(this.role);
+    }
 
     public static map(data: Partial<ProjectUser>): ProjectUser {
         const user: ProjectUser = new ProjectUser();

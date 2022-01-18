@@ -126,7 +126,7 @@ export default Vue.extend({
             return this.$store.state.searchTranslation;
         },
         canUpdateKey(): boolean {
-            return this.$store.getters.appUser.role ? this.$store.getters.appUser.role.canWriteKey : false;
+            return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteKey : false;
         },
         actualLanguage(): number {
             return this.$store.getters.actualLanguage;

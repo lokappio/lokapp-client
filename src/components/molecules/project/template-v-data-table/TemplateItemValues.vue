@@ -34,7 +34,7 @@ export default Vue.extend({
       return id;
     },
     canWriteValue(): boolean {
-      return this.$store.getters.appUser.role ? this.$store.getters.appUser.role.canWriteValue : false;
+      return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteValue : false;
     }
   },
   methods: {
