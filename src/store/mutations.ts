@@ -5,10 +5,14 @@ import {State} from "@/store/states";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
 import Group from "@/data/models/api/Group";
+import ProjectUser from "@/data/models/api/ProjectUser";
 
 export default {
     SET_USER(state: State, user: any): void {
         state.user = user;
+    },
+    SET_APP_USER(state: State, user: ProjectUser): void {
+        state.appUser = user;
     },
     SET_APPLICATION_READY(state: State): void {
         state.applicationReady = true;
@@ -33,9 +37,6 @@ export default {
     },
     SET_INVITATIONS(state: State, invitations: Invitation[]): void {
         state.invitations = invitations;
-    },
-    SET_ACTUAL_ROLE(state: State, role: RoleProtection): void {
-        state.actualRole = role;
     },
     SET_SEARCH_PROJECT(state: State, value: string): void {
         state.searchProject = value;

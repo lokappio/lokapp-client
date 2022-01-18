@@ -43,13 +43,13 @@ class ProjectsService {
     public static getEntireProjectById(projectId: number): Promise<Project> {
         return this.getProjectById(projectId)
           .then(async (response) => {
-              response.languages = await LanguagesService.getLanguages();
-              const keys: Key[] = await KeysService.getKeys();
+              response.languages = await LanguagesService.getLanguages(projectId);
+              const keys: Key[] = await KeysService.getKeys(projectId);
 
               //Set values for each keys
               await Promise.all(
                 keys.map(async (key) => {
-                  const values: Value[] = await ValuesService.getValuesByKeyId(key.id);
+                  const values: Value[] = await ValuesService.getValuesByKeyId(key.id, projectId);
 
                   values.forEach((value) => value.languageName = response.languages.find((lang) => lang.id == value.languageId)?.name)
                   key.values = values;
@@ -57,7 +57,7 @@ class ProjectsService {
               );
 
 
-              const groups: Group[] = await GroupsService.getGroups();
+              const groups: Group[] = await GroupsService.getGroups(projectId);
               groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
               response.groups = groups;
 
@@ -89,9 +89,7 @@ class ProjectsService {
     public static getUsersOfProject(projectId: number): Promise<Array<ProjectUser>> {
         return ApiService.getAPI(`${ProjectsService.projectsUrl}/${projectId}/users`)
         .then((response) => {
-            return response.data.map((item: any) => {
-                return ProjectUser.map(item);
-            })
+            return response.data.map((item) => ProjectUser.map(item))
         });
     }
 

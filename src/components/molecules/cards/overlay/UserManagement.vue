@@ -34,7 +34,7 @@
                                 <v-col cols="5">
                                     <v-select
                                         hide-details="true"
-                                        :disabled="isUserUpdateRoleDisabled(user) || user.userId === myself.userId"
+                                        :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId"
                                         light
                                         solo
                                         v-model="user.role"
@@ -44,7 +44,7 @@
                                         @change="updateRole(user)"
                                     >
                                         <template v-slot:[`append-outer`]>
-                                            <v-btn color="maincolor" icon :disabled="isUserUpdateRoleDisabled(user) || user.userId === myself.userId" @click="deleteUser(user)">
+                                            <v-btn color="maincolor" icon :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId" @click="deleteUser(user)">
                                                 <v-icon color="maincolor">mdi-delete</v-icon>
                                             </v-btn>
                                         </template>
@@ -88,7 +88,6 @@
 import EventEnum from "@/data/enum/event-bus.enum";
 import ProjectUser from "@/data/models/api/ProjectUser";
 import {getRoleClass, getRoleEnum, Role} from "@/data/models/roles/role.enum";
-import RoleProtection from "@/data/models/roles/RoleProtection";
 import Vue from "vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
@@ -99,11 +98,8 @@ export default Vue.extend({
     props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
-            myself: null,
             users: [] as ProjectUser[],
             invitations: [],
-            myrole: null,
-            roles: [],
             userToDelete: null,
             openDialogInvitation: false,
             openDialogDelete: false,
@@ -115,29 +111,22 @@ export default Vue.extend({
             handler: function (isOpened) {
                 if (isOpened) {
                     //ON RE-OPENED, RESET DATA
-                    this.myself = null;
-                    this.users = [];
-                    this.invitations = [];
-                    this.myrole = null;
-                    this.roles = [];
-
-                    this.getMyself();
-                    this.roles = this.constructRoles();
+                    this.refresh();
                 }
             }
         }
     },
+    computed: {
+      me(): ProjectUser {
+        return this.$store.getters.appUser;
+      },
+      roles(): any[] {
+        return  Object.values(Role).map((role: string) => {
+          return {text: this.$t(`users_manage.role_${getRoleEnum(role)}`).toString(), value: role};
+        });
+      }
+    },
     methods: {
-        constructRoles(): any[] {
-            const res: any[] = [];
-            Object.values(Role).forEach((role: string) => {
-                res.push({
-                    text: this.$t(`users_manage.role_${getRoleEnum(role)}`),
-                    value: role
-                });
-            });
-            return res;
-        },
         deleteInvitation(invitation: ProjectUser) {
             this.$service.invitations.deleteInvitation(this.projectId, invitation.invitationId)
                 .then(() => {
@@ -157,50 +146,41 @@ export default Vue.extend({
             });
         },
         isUserUpdateRoleDisabled(user: ProjectUser): boolean {
-            if ((this.myrole as RoleProtection).canWriteUser === false) {
+            if (getRoleClass(this.me.role).canWriteUser === false) {
                 return true;
             }
+
             if (user.role === Role.OWNER) {
                 return true;
             }
             return false;
         },
         isInvitationDisabled(): boolean {
-            if (this.myrole) {
-                return !((this.myrole as RoleProtection).canWriteInvitation);
+            if (this.me.role) {
+                return !(getRoleClass(this.me.role).canWriteInvitation);
             }
             return false;
         },
         canCreateInvitation(): boolean {
-            if (this.myrole) {
-                return ((this.myrole as RoleProtection).canWriteInvitation);
+            if (this.me.role) {
+                return (getRoleClass(this.me.role).canWriteInvitation);
             }
             return false;
         },
         closeManageUsers() {
             this.$emit("close");
         },
-        getMyself() {
-            this.$service.user.getMyselfInProject(this.projectId)
-                .then((response: any) => {
-                    this.myself = ProjectUser.map(response.data);
-                    this.getEveryUsersOfProject();
-                    this.myrole = getRoleClass(this.myself.role);
-                }).catch(() => {
-                this.$notify(this.$t("errors.unknown_error") as string);
-                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-            });
-        },
         getEveryUsersOfProject() {
             this.$service.projects.getUsersOfProject(this.projectId)
-                .then((users: ProjectUser[]) => {
-                    users.forEach((user: ProjectUser) => {
-                        if (user.pending === false) {
+                .then((users) => {
+                    users.forEach((user) => {
+                        if (!user.pending) {
                             this.users.push(user);
                         } else {
                             this.invitations.push(user);
                         }
                     });
+
                     this.users.sort((a: ProjectUser, b: ProjectUser) => {
                         if (a.email < b.email) {
                             return -1;
@@ -209,6 +189,7 @@ export default Vue.extend({
                         }
                         return 0;
                     });
+
                     this.invitations.sort((a: ProjectUser, b: ProjectUser) => {
                         if (a.email < b.email) {
                             return -1;
@@ -225,13 +206,14 @@ export default Vue.extend({
         refresh() {
             this.users = [];
             this.invitations = [];
-            this.getMyself();
+
+            this.getEveryUsersOfProject();
         },
         updateRole(user: ProjectUser) {
             this.$service.projects.updateRoleOfUser(this.projectId, user.userId, user.role)
                 .then((userUpdated: ProjectUser) => {
                     user = userUpdated;
-                    if (this.myself.role === Role.OWNER && user.role === Role.OWNER) {
+                    if (this.me.role === Role.OWNER && user.role === Role.OWNER) {
                         this.refresh();
                     }
                 }).catch((error) => {

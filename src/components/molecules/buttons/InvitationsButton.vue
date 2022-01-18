@@ -83,7 +83,6 @@ export default Vue.extend({
             this.$service.invitations.acceptInvitation(invitation)
             .then(() => {
                 this.$notify(this.$t("success.invitation_accepted") as string);
-                this.$eventBus.$emit(EventEnum.RELOAD_PROJECT);
             }).catch(() => {
                 this.$notify(this.$t("errors.unknown_error") as string);
             }).finally(() => {

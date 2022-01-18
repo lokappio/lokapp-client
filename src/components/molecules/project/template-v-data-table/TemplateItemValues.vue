@@ -2,7 +2,7 @@
   <!-- SAVE VALUE WHEN INPUT IS UNFOCUSED (Blur) -->
   <v-text-field
       :id="inputId"
-      v-if="$store.getters.actualRole.canWriteValue"
+      v-if="canWriteValue"
       v-model="item[header.value].name"
       @blur="saveValue()"
       @keydown.enter="blurInput"
@@ -32,6 +32,9 @@ export default Vue.extend({
       }
 
       return id;
+    },
+    canWriteValue(): boolean {
+      return this.$store.getters.appUser.role ? this.$store.getters.appUser.role.canWriteValue : false;
     }
   },
   methods: {

@@ -94,6 +94,7 @@ export default Vue.extend({
             handler: function(isOpen) {
                 if(isOpen) {
                     this.getMe();
+                    this.modificationActivated = false;
                 }
             }
         }

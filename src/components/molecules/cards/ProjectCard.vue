@@ -58,7 +58,7 @@ export default Vue.extend(
         },
         methods: {
             openProjectView() {
-                this.$store.commit("SET_CURRENT_PROJECT", this.project);
+                //this.$store.commit("SET_CURRENT_PROJECT", this.project);
                 this.$router.push(`/projects/${this.project.id}`);
             },
             openCreateProject() {

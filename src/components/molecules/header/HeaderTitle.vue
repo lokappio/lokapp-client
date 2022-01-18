@@ -14,9 +14,10 @@
 
 <script>
 import EventEnum from "@/data/enum/event-bus.enum";
+import Vue from "vue";
 
-export default (
-    'header-title', {
+export default Vue.extend({
+    name: 'header-title',
     created() {
         this.refreshEverything();
     },
@@ -43,11 +44,9 @@ export default (
         }
     },
     mounted() {
-        this.$eventBus.$on(EventEnum.RELOAD_YOURSELF, this.refreshEverything);
         this.$eventBus.$on(EventEnum.REFRESH_BANNER_TITLE, this.refreshUsername);
     },
     beforeDestroy() {
-        this.$eventBus.$off(EventEnum.RELOAD_YOURSELF, this.refreshEverything);
         this.$eventBus.$off(EventEnum.REFRESH_BANNER_TITLE, this.refreshUsername);
     }
 })

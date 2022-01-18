@@ -38,7 +38,6 @@ import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
 import Header from "@/components/molecules/project/Header.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
 import {MetaInfo} from "vue-meta";
-import {getRoleClass, getRoleEnum} from "@/data/models/roles/role.enum";
 import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
@@ -72,20 +71,22 @@ export default Vue.extend({
     methods: {
         loadProject() {
             this.loading = true;
+
             this.$service.projects.getEntireProjectById(parseInt(this.$route.params.project_id))
-                .then((project: Project) => {
-                    this.loading = false;
+                .then(async (project: Project) => {
                     this.$store.commit("SET_CURRENT_PROJECT", project);
-                    this.updateMyRole();
+                    await this.updateMyRole(project.id);
+                    this.loading = false;
                 })
                 .catch(() => {
                     this.$notify(this.$t("errors.retrieve_project").toString());
+                    this.$store.commit("SET_CURRENT_PROJECT", null);
                     this.backToDashboard();
                 });
         },
-        updateMyRole() {
-            this.$service.user.getMyselfInProject(this.currentProject.id)
-                .then((response) => this.$store.commit("SET_ACTUAL_ROLE", getRoleClass(getRoleEnum(response.data.role))));
+        async updateMyRole(projectId: number): Promise<void> {
+            return this.$service.user.getMyselfInProject(projectId)
+                .then((user) => this.$store.commit("SET_APP_USER", user));
         },
         backToDashboard() {
             this.$router.push({path: "/dashboard"});

@@ -1,4 +1,4 @@
-import { getRoleEnum, Role } from "../roles/role.enum";
+import {getRoleEnum, Role} from "../roles/role.enum";
 
 export default class ProjectUser {
     userId: string;
@@ -8,26 +8,16 @@ export default class ProjectUser {
     pending: boolean;
     invitationId: number | null;
 
-    constructor(
-        userId: string,
-        username: string,
-        email: string,
-        role: Role,
-        pending: boolean,
-        invitationId: number | null) {
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
-        this.role = role;
-        this.pending = pending;
-        if (this.pending === false) {
-            this.invitationId = null;
-        } else {
-            this.invitationId = invitationId;
-        }
-    }
+    public static map(data: Partial<ProjectUser>): ProjectUser {
+        const user: ProjectUser = new ProjectUser();
 
-    public static map(json: any): ProjectUser {
-        return new ProjectUser(json.userId, json.username, json.email, getRoleEnum(json.role), json.pending, json.invitationId);
+        user.userId = data.userId ?? data.id;
+        user.username = data.username;
+        user.email = data.email;
+        user.role = getRoleEnum(data.role);
+        user.pending = data.pending;
+        user.invitationId = data.invitationId;
+
+        return user;
     }
 }

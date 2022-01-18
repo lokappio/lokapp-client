@@ -11,8 +11,8 @@ class KeysService {
     static keysUrl: string = config.baseUrl + "/projects/";
     static get projectId(): number { return store.getters.currentProject.id}
 
-    public static getKeys(): Promise<Array<Key>> {
-        return ApiService.getAPI(KeysService.keysUrl + this.projectId + "/translations")
+    public static getKeys(projectId = this.projectId): Promise<Array<Key>> {
+        return ApiService.getAPI(KeysService.keysUrl + projectId + "/translations")
         .then((response) => {
             return response.data.map((item: any) => {
                 return Key.map(item);

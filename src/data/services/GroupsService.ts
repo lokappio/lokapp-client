@@ -8,8 +8,8 @@ class GroupsService {
     static groupsUrl: string = config.baseUrl + "/projects/";
     static get projectId(): number { return store.getters.currentProject.id}
 
-    public static getGroups(): Promise<Array<Group>> {
-        return ApiService.getAPI(GroupsService.groupsUrl + this.projectId + "/groups")
+    public static getGroups(projectId = this.projectId): Promise<Array<Group>> {
+        return ApiService.getAPI(GroupsService.groupsUrl + projectId + "/groups")
         .then((response) => {
             return response.data.map((item: any) => {
                 return Group.map(item);

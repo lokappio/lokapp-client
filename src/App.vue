@@ -24,8 +24,9 @@ export default Vue.extend({
   },
   methods: {
     observeCurrentUser() {      
-      firebase.auth().onAuthStateChanged(user =>  {
+      firebase.auth().onAuthStateChanged(async user =>  {
         this.$store.commit("SET_USER", user);
+        this.$store.commit('SET_APP_USER', user != null ? await this.$service.user.getMe() : null);
         this.$store.commit("SET_APPLICATION_READY");
       });      
     }

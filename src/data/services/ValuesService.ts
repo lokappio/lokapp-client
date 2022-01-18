@@ -46,8 +46,8 @@ class ValuesService {
         return ApiService.patchAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
-    public static getValuesByKeyId(keyId: number): Promise<Value[]> {
-        return ApiService.getAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values")
+    public static getValuesByKeyId(keyId: number, projectId = this.projectId): Promise<Value[]> {
+        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
         .then((response) => {
             return response.data.map((item: any) => Value.map(item));
         })

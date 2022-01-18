@@ -16,10 +16,7 @@
 
           <!-- Inscription/Login -->
           <v-row class="row-form">
-            <v-col v-if="$vuetify.breakpoint.mdAndUp" align-self="center" offset="0" cols="12" offset-sm="2" sm="8" class="col-form">
-              <login-form/>
-            </v-col>
-            <v-col v-if="$vuetify.breakpoint.smAndDown" align-self="start" offset="0" cols="12" offset-sm="2" sm="8" class="mt-2 col-form">
+            <v-col offset="0" cols="12" offset-sm="2" sm="8" class="col-form">
               <login-form/>
             </v-col>
           </v-row>
@@ -34,8 +31,6 @@
     
   </v-container>
 </template>
-
-
 
 <script>
 import { Component, Vue } from "vue-property-decorator";

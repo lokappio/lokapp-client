@@ -38,7 +38,7 @@ export default Vue.extend({
     },
     methods: {
         canWriteLanguage() {
-            return this.$store.getters.actualRole ? this.$store.getters.actualRole.canWriteLanguage : false;
+            return this.$store.getters.appUser.role ? this.$store.getters.appUser.role.canWriteLanguage : false;
         },
         refreshLanguagesList() {
             this.actualTab = 0;

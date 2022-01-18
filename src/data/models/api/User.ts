@@ -1,5 +1,5 @@
 
-export default class UserInfo {
+export default class User {
     id: string;
     username: string;
     email: string;
@@ -10,7 +10,7 @@ export default class UserInfo {
         this.email = email
     }
     
-    public static map(json: any): UserInfo {
+    public static map(json: any): User {
         return new this(json.id, json.username, json.email);
     }
 }

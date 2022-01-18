@@ -22,7 +22,7 @@
 
         <v-menu :nudge-width="200" transition="slide-x-transition">
             <template v-slot:[`activator`]="{on, attrs}">
-                <v-btn color="black" class="full-contain-icon" v-bind="attrs" v-on="on" @click="askRoleToBackend" icon>
+                <v-btn color="black" class="full-contain-icon" v-bind="attrs" v-on="on" @click="getMe" icon>
                     <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
             </template>
@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import EventEnum from "@/data/enum/event-bus.enum";
-import {getRoleClass, getRoleEnum, Role} from "@/data/models/roles/role.enum";
+import {getRoleClass, Role} from "@/data/models/roles/role.enum";
 import Vue from "vue";
 import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
 import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
@@ -62,7 +62,7 @@ export default Vue.extend({
         }
     },
     created() {
-        this.askRoleToBackend();
+        this.getMe();
     },
     methods: {
         setupItemsWithRole(role: Role) {
@@ -101,9 +101,12 @@ export default Vue.extend({
                 });
             }
         },
-        askRoleToBackend() {
+        getMe() {
             this.$service.user.getMyselfInProject(this.projectId)
-                .then((response) => this.setupItemsWithRole(getRoleEnum(response.data.role)))
+                .then((user) => {
+                  this.$store.commit("SET_APP_USER", user);
+                  this.setupItemsWithRole(user.role);
+                })
                 .catch(() => this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING));
         }
     }
