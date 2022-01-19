@@ -100,7 +100,6 @@
 
 <script>
 import ProjectCompact from "@/data/models/api/ProjectCompact";
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
 import {optionalLanguageRules} from "@/data/rules/LanguageRules";
@@ -109,7 +108,7 @@ import Vue from "vue";
 
 export default Vue.extend({
     name: 'project-creation',
-    components: {ActionButton, KeyboardEvents},
+    components: {KeyboardEvents},
     props: {dialogOpened: Boolean},
     data: function () {
         return {

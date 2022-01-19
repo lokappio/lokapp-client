@@ -32,12 +32,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue"
 import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
     name: "delete-project",
-    components: {ActionButton},
     props: {project: Project, dialogOpened: Boolean},
     data() {
         return {

@@ -30,12 +30,10 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from 'vue'
 
 export default Vue.extend({
     name: "leave-project",
-    components: {ActionButton},
     props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {

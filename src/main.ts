@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
-import './plugins/event-bus/index'
+import './plugins/custom-components';
 import i18n from './i18n';
 import './assets/main.scss';
 import './data/di/index.ts';

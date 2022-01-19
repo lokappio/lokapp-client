@@ -60,14 +60,12 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {optionalUsernameRules} from "@/data/rules/UserRules";
 import Vue from "vue";
 import ProjectUser from "@/data/models/api/ProjectUser.js";
 
 export default Vue.extend({
   name: "profile-manager",
-  components: {ActionButton},
   props: {dialogOpened: Boolean},
   data() {
     return {

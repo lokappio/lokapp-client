@@ -38,13 +38,11 @@
 </template>
 
 <script>
-import ActionButton from "@/components/molecules/buttons/ActionButton";
 import {languageNameRules} from "@/data/rules/LanguageRules";
 import Vue from "vue";
 
 export default Vue.extend({
     name: "language-creation",
-    components: {ActionButton},
     props: {dialogOpened: Boolean},
     data: function () {
         return {

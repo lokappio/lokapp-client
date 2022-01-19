@@ -87,7 +87,6 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
 import Vue from "vue";
@@ -95,7 +94,6 @@ import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
   name: "project-management",
-  components: {ActionButton},
   props: {project: Project, dialogOpened: Boolean},
   data() {
     return {

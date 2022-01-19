@@ -65,7 +65,6 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from "vue";
 import {FileData, TranslationFile} from "@/data/models/types/export";
 import {Platform} from "@/data/models/enums/project";
@@ -73,7 +72,6 @@ import Export from "@/data/helpers/export";
 
 export default Vue.extend({
     name: "download-project-card",
-    components: {ActionButton},
     props: {
         dialogOpened: Boolean
     },

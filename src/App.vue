@@ -17,8 +17,6 @@ export default Vue.extend({
     title: '',
     titleTemplate: 'Lokapp'
   },
-  data: () => ({
-  }),
   mounted() {
     this.observeCurrentUser()
   },

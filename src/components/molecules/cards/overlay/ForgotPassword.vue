@@ -35,11 +35,9 @@
 <script lang="ts">
 import { userEmailRules } from '@/data/rules/UserRules';
 import Vue from 'vue'
-import ActionButton from '@/components/molecules/buttons/ActionButton.vue'
 
 export default Vue.extend({
     name: "forgot-password",
-    components: {ActionButton},
     created() {
         this.sendEmail = this.email;
     },

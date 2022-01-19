@@ -81,7 +81,6 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import {keyNameRules} from "@/data/rules/KeyRules";
 import {groupNameRules} from "@/data/rules/GroupRules";
 import KeyboardEvents from "../../KeyboardEvents.vue";
@@ -93,7 +92,6 @@ import Group from "@/data/models/api/Group";
 export default Vue.extend({
     name: 'key-creation',
     components: {
-        ActionButton,
         KeyboardEvents
     },
     props: {

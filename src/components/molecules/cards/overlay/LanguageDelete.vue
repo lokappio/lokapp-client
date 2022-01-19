@@ -37,13 +37,11 @@
 </template>
 
 <script lang="ts">
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
 import Vue from "vue";
 import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
     name: "language-delete",
-    components: {ActionButton},
     props: {
         language: Language,
         projectId: Number,
