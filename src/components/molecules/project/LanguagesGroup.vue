@@ -8,7 +8,7 @@
             <v-tabs-slider color="#FF1F38"></v-tabs-slider>
             <v-tab>{{ $t("project_detail.all_languages") }}</v-tab>
             <v-tab v-for="language in languages" :key="language.id">{{ language.name }}</v-tab>
-            <v-icon v-if="canWriteLanguage()" color="maincolor" class="px-4 icon-style" @click="() => this.dialogOpened = true">mdi-plus-circle</v-icon>
+            <v-icon v-if="canWriteLanguage" color="maincolor" class="px-4 icon-style" @click="() => this.dialogOpened = true">mdi-plus-circle</v-icon>
         </v-tabs>
     </div>
 </template>
@@ -31,14 +31,14 @@ export default Vue.extend({
         this.refreshLanguagesList()
     },
     watch: {
-        actualTab: function () {
-            this.setActualLanguage();
-        }
+        actualTab() {this.setActualLanguage()}
+    },
+    computed: {
+      canWriteLanguage(): boolean {
+        return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteLanguage : false;
+      },
     },
     methods: {
-        canWriteLanguage() {
-            return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteLanguage : false;
-        },
         refreshLanguagesList() {
             this.actualTab = 0;
             this.languages = [];

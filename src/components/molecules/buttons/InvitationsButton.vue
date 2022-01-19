@@ -1,25 +1,21 @@
 <template>
     <v-dialog v-if="nbOfInvitations > 0" v-model="opened" scrollable transition="dialog-bottom-transition" max-width="600px">
-        <template v-slot:activator="{ on, attrs }"> 
-    
+        <template v-slot:activator="{ on, attrs }">
             <v-badge avatar color="red" offset-x="15" offset-y="15">
                     <v-btn v-on="on" v-bind="attrs" class="rounded-button-style icon-color" icon>
-                        <v-icon class="icon-color">
-                            mdi-bell-ring
-                        </v-icon>
+                        <v-icon class="icon-color">mdi-bell-ring</v-icon>
                     </v-btn>
             </v-badge>
-
         </template>
         <v-card>
             <v-card-title>
                 {{ $t("invitations.title") }}
                 <v-spacer></v-spacer>
-                <v-icon @click="opened = !opened" color="black">
-                    mdi-close
-                </v-icon>
+                <v-icon @click="opened = !opened" color="black">mdi-close</v-icon>
             </v-card-title>
+
             <v-divider></v-divider>
+
             <v-card-text class="list-invitations-style">
                 <v-list>
                     <v-list-item class="px-0" v-for="invitation in invitations" :key="invitation.id">
@@ -32,16 +28,12 @@
                                 <v-row>
                                     <v-col class="pa-0 pr-1" cols="6">
                                         <v-btn @click="acceptInvitation(invitation)" color="success">
-                                            <v-icon>
-                                                mdi-check
-                                            </v-icon>
+                                            <v-icon>mdi-check</v-icon>
                                         </v-btn>
                                     </v-col>
                                     <v-col class="pa-0 pl-1" cols="6">
                                         <v-btn @click="declineInvitation(invitation)" color="error">
-                                            <v-icon>
-                                                mdi-close
-                                            </v-icon>
+                                            <v-icon>mdi-close</v-icon>
                                         </v-btn>
                                     </v-col>
                                 </v-row>
