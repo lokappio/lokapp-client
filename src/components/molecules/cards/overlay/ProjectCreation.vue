@@ -12,7 +12,6 @@
                 </v-col>
             </v-row>
 
-            <keyboard-events :enter="createNewProject" />
             <v-form ref="formCreateProject">
                 <!-- ProjectName -->
                 <v-row class="mt-2 pb-0 mb-0">
@@ -89,7 +88,7 @@
                 <!-- ValidateButton -->
                 <v-row class="mt-0 pb-0">
                     <v-col cols="12" class="py-0 px-0">
-                        <action-button block :loading="loading" :handler="createNewProject" :text="$t('project_creation.confirm_button')"/>
+                        <action-button block :loading="loading" :handler="createNewProject" :text="$t('project_creation.confirm_button').toString()"/>
                     </v-col>
                 </v-row>
             </v-form>
@@ -103,20 +102,18 @@ import ProjectCompact from "@/data/models/api/ProjectCompact";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
 import {optionalLanguageRules} from "@/data/rules/LanguageRules";
-import KeyboardEvents from "../../KeyboardEvents.vue";
 import Vue from "vue";
 
 export default Vue.extend({
     name: 'project-creation',
-    components: {KeyboardEvents},
     props: {dialogOpened: Boolean},
     data: function () {
         return {
             loading: false,
             projectName: "",
-            projectNameRules: projectNameRules(this.$t("rules.required"), this.$t("rules.project_name_length")),
-            languageRules: optionalLanguageRules(this.$t("rules.language_name_length"), this.$t("rules.only_aphabetic_characters")),
-            colorRules: colorRules(this.$t("rules.required"), this.$t("rules.color_length"), this.$t("rules.not_hexa_value")),
+            projectNameRules: projectNameRules(this.$t("rules.required").toString(), this.$t("rules.project_name_length").toString()),
+            languageRules: optionalLanguageRules(this.$t("rules.language_name_length").toString(), this.$t("rules.only_aphabetic_characters").toString()),
+            colorRules: colorRules(this.$t("rules.required").toString(), this.$t("rules.color_length").toString(), this.$t("rules.not_hexa_value").toString()),
             isBlockButton: true,
             colorPicker: false,
             colors: [

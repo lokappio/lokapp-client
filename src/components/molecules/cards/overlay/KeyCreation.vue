@@ -13,7 +13,6 @@
                 </v-col>
             </v-row>
 
-            <keyboard-events :enter="createKeyWithGroup"/>
             <v-form ref="formCreateKey">
                 <!-- Key name -->
                 <v-row class="mt-2 pb-0 mb-0">
@@ -83,7 +82,6 @@
 <script lang="ts">
 import {keyNameRules} from "@/data/rules/KeyRules";
 import {groupNameRules} from "@/data/rules/GroupRules";
-import KeyboardEvents from "../../KeyboardEvents.vue";
 import Vue from "vue";
 import Key from "@/data/models/api/Key";
 import Project from "@/data/models/api/Project";
@@ -91,7 +89,6 @@ import Group from "@/data/models/api/Group";
 
 export default Vue.extend({
     name: 'key-creation',
-    components: {KeyboardEvents},
     props: {
       selectedGroup: Group,
       isOpen: Boolean

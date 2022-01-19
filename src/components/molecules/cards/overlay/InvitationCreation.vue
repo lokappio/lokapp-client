@@ -13,7 +13,6 @@
                 </v-col>
             </v-row>
 
-            <keyboard-events :enter="inviteUser"/>
             <v-form ref="formCreateInvitation" onSubmit="return false;">
                 <!-- Email -->
                 <v-row class="ma-0">
@@ -57,7 +56,7 @@
                     </v-col>
                 </v-row>
 
-                <action-button :text="$t('invitation_creation.confirm_button')" :handler="inviteUser" block/>
+                <action-button :text="$t('invitation_creation.confirm_button').toString()" :handler="inviteUser" block/>
             </v-form>
         </v-container>
     </v-card>
@@ -67,11 +66,9 @@
 import {getRoleEnum, Role} from "@/data/models/roles/role.enum";
 import {userEmailRules} from "@/data/rules/UserRules";
 import Vue from "vue";
-import KeyboardEvents from "../../KeyboardEvents.vue";
 
 export default Vue.extend({
     name: "invitation-creation",
-    components: {KeyboardEvents},
     props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
