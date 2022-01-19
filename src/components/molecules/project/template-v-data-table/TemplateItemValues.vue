@@ -3,12 +3,16 @@
   <v-text-field
       :id="inputId"
       v-if="canWriteValue"
-      v-model="item[header.value].name"
+      v-model="updatedValue.name"
       @blur="saveValue()"
       @keydown.enter="blurInput"
       @keydown.tab="blurInput"
       single-line
   >
+    <template v-slot:append>
+      <v-progress-circular v-if="loading" size="20" indeterminate color="primary"></v-progress-circular>
+      <v-icon v-else color="primary" size="20">{{ inputIcon }}</v-icon>
+    </template>
   </v-text-field>
 </template>
 
@@ -22,6 +26,13 @@ export default Vue.extend({
     header: {},
     item: translationItem,
     projectId: Number,
+  },
+  data() {
+    return {
+      inputIcon: "",
+      loading: false,
+      updatedValue: Object.assign({}, this.item[this.header.value])
+    }
   },
   computed: {
     inputId(): string {
@@ -37,17 +48,24 @@ export default Vue.extend({
     }
   },
   methods: {
-    reportError(error: string): void {
-      this.$notify(error);
-    },
     blurInput(): void {
       document.getElementById(this.inputId).blur();
     },
-    saveValue(): Promise<void> {
-      return this.$service.values.updateValue(this.item[this.header.value])
+    saveValue(): Promise<any> {
+      this.loading = true;
+
+      return this.$service.values.updateValue(this.updatedValue)
+          .then(() => {
+            this.item[this.header.value] = Object.assign({},this.updatedValue);
+            this.loading = false;
+            this.inputIcon = "mdi-check";
+            setTimeout(() => this.inputIcon = "", 1000);
+          })
           .catch(() => {
-            this.reportError(this.$t("errors.unknown_error"));
-          });
+            this.updatedValue = Object.assign({}, this.item[this.header.value]);
+            this.loading = false;
+            this.$notify(this.$t("errors.update_value").toString());
+          })
     }
   }
 });

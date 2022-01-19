@@ -69,7 +69,8 @@
         "user_not_found": "L'utilisateur n'existe pas",
         "wrong_password": "Mauvais mot de passe",
         "update_user": "La mise à jour de l'utilisateur a échouée",
-        "reset_password": "Une erreur est survenue"
+        "reset_password": "Une erreur est survenue",
+        "update_value": "Une erreur est survenue lors de la traduction"
     },
     "forgot_password": {
         "email_label": "Entrer mon email",

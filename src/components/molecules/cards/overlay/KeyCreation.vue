@@ -136,7 +136,6 @@ export default Vue.extend({
     },
     methods: {
         loadData(): void {
-            this.loading = true;
             this.currentGroup = this.selectedGroup ?? this.groups[0];
             this.currentProject.groups.forEach((group) => this.groups.push(group));
         },
