@@ -45,9 +45,7 @@
 .trad-text-field .v-label--active {
     transform: translateY(-18px) scale(0.90);
 }
-.trad-text-field.v-text-field.v-text-field--enclosed .v-input__slot {
-    padding: 12px !important;
-}
+
 .trad-text-field {
     caret-color: black !important;
     color: black !important;
@@ -63,6 +61,11 @@
     line-height: 18px;
     letter-spacing: 0.05em;
     color: rgba(0, 0, 0, 0.3);
+}
+
+.v-text-field {
+    padding-top: 0px;
+    margin-top: 0px;
 }
 
 .title-h1 {

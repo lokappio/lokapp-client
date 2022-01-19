@@ -91,9 +91,7 @@ import Group from "@/data/models/api/Group";
 
 export default Vue.extend({
     name: 'key-creation',
-    components: {
-        KeyboardEvents
-    },
+    components: {KeyboardEvents},
     props: {
       selectedGroup: Group,
       isOpen: Boolean
@@ -134,8 +132,8 @@ export default Vue.extend({
     },
     methods: {
         loadData(): void {
-            this.currentGroup = this.selectedGroup ?? this.groups[0];
             this.currentProject.groups.forEach((group) => this.groups.push(group));
+            this.currentGroup = this.selectedGroup ?? this.groups[0];
         },
         closeKeyCreation() {
           this.$emit('closeCreation', false)

@@ -2,7 +2,7 @@
   <v-container class="full-contain my-table">
     <v-row v-if="getItems.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
       <v-col cols="4">
-        <action-button v-if="canUpdateKey" block :handler="creationIsOpen = true" :text="''" addIcon/>
+        <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
       </v-col>
     </v-row>
 
@@ -14,7 +14,7 @@
         :loading="loading"
         item-class="text-3 data-table-key-style"
         disable-pagination
-        group-by="group"
+        group-by="group.id"
         elevation="0"
         class="my-custom-table">
 
@@ -41,20 +41,19 @@
       <template v-slot:group.header="{group, items, isOpen, toggle}">
         <template-group-header
             :headers="headers"
-            :group="group"
+            :groupId="group"
             :items="items"
             :isOpen="isOpen"
             :toggle="toggle"
-            :projectId="projectId"/>
+        />
       </template>
 
       <!-- Custom footer on groups -->
-      <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group }">
-        <template-group-footer :isOpen="isOpen" :group="group"/>
+      <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
+        <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
       </template>
     </v-data-table>
 
-    <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => this.isOpenCreation = false"></key-creation>
   </v-container>
 </template>
 
@@ -69,13 +68,11 @@ import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
 import {ValueQuantity} from "@/data/models/api/Value";
 import {translationItem} from "@/data/models/types/TranslationTypes";
-import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import {DataTableHeader} from "vuetify";
 
 export default Vue.extend({
   name: "content-details",
   components: {
-    KeyCreation,
     TemplateItemValues,
     TemplateGroupHeader,
     TemplateGroupFooter,
@@ -84,15 +81,6 @@ export default Vue.extend({
   data() {
     return {
       basicHeaders: [
-        {
-          text: "Groupe",
-          value: "group",
-          align: "start",
-          width: "400px",
-          sortable: false,
-          filterable: false,
-          groupable: true
-        },
         {
           text: this.$t("project_detail.keys").toString(),
           align: "start",
@@ -103,7 +91,6 @@ export default Vue.extend({
         }
       ] as DataTableHeader[],
       headers: [],
-      id: 0,
       loading: false,
       projectId: -1,
       isOpenCreation: false
