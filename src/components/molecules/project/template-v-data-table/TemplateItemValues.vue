@@ -24,21 +24,21 @@ export default Vue.extend({
   name: "template-item-values",
   props: {
     header: {},
-    item: translationItem,
+    item: {},
     projectId: Number,
   },
   data() {
     return {
       inputIcon: "",
       loading: false,
-      updatedValue: Object.assign({}, this.item[this.header.value])
+      updatedValue: Object.assign({}, (this.item as translationItem)[this.header.value])
     }
   },
   computed: {
     inputId(): string {
-      let id: string = this.item.key.id + this.header.value.toString();
-      if (this.item.quantity) {
-        id += this.item.quantity;
+      let id: string = (this.item as translationItem).key.id + this.header.value.toString();
+      if ((this.item as translationItem).quantity) {
+        id += (this.item as translationItem).quantity;
       }
 
       return id;
@@ -52,20 +52,24 @@ export default Vue.extend({
       document.getElementById(this.inputId).blur();
     },
     saveValue(): Promise<any> {
-      this.loading = true;
+      const previousWasEmpty = (this.item as translationItem)[this.header.value].name == "" ? this.updatedValue.name !== "" : true;
 
-      return this.$service.values.updateValue(this.updatedValue)
-          .then(() => {
-            this.item[this.header.value] = Object.assign({},this.updatedValue);
-            this.loading = false;
-            this.inputIcon = "mdi-check";
-            setTimeout(() => this.inputIcon = "", 1000);
-          })
-          .catch(() => {
-            this.updatedValue = Object.assign({}, this.item[this.header.value]);
-            this.loading = false;
-            this.$notify(this.$t("errors.update_value").toString());
-          })
+      if(this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem)[this.header.value].name) {
+        this.loading = true;
+
+        return this.$service.values.updateValue(this.updatedValue)
+            .then(() => {
+              (this.item as translationItem)[this.header.value] = Object.assign({},this.updatedValue);
+              this.loading = false;
+              this.inputIcon = "mdi-check";
+              setTimeout(() => this.inputIcon = "", 1000);
+            })
+            .catch(() => {
+              this.updatedValue = Object.assign({}, (this.item as translationItem)[this.header.value]);
+              this.loading = false;
+              this.$notify(this.$t("errors.update_value").toString());
+            });
+      }
     }
   }
 });
