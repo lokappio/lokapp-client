@@ -54,6 +54,7 @@
       </template>
     </v-data-table>
 
+    <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => this.isOpenCreation = false"></key-creation>
   </v-container>
 </template>
 
@@ -63,6 +64,7 @@ import TemplateItemValues from "@/components/molecules/project/template-v-data-t
 import TemplateItemKeys from "@/components/molecules/project/template-v-data-table/TemplateItemKeys.vue";
 import TemplateGroupHeader from "@/components/molecules/project/template-v-data-table/TemplateGroupHeader.vue";
 import TemplateGroupFooter from "@/components/molecules/project/template-v-data-table/TemplateGroupFooter.vue";
+import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
@@ -77,6 +79,7 @@ export default Vue.extend({
     TemplateGroupHeader,
     TemplateGroupFooter,
     TemplateItemKeys,
+    KeyCreation
   },
   data() {
     return {

@@ -1,46 +1,27 @@
 <template>
-  <v-menu offset-y :close-on-content-click="false" :value="isOpen">
-    <template v-slot:activator="{ on }">
-      <p v-on="on" @click="isOpen = true" class="pa-0 ma-0 span-keys-with-overflow"> {{ keyQuantityName }}</p>
-    </template>
+  <v-row align="center">
+    <v-btn color="maincolor" icon @click="deleteKey()" class="white--text mr-1">
+      <v-icon>mdi-delete</v-icon>
+    </v-btn>
 
-    <v-card class="pa-2">
-      <v-text-field
-          v-model="updateKey.name"
-          single-line
-          :rules="keyNameRules"
-          @keydown.enter="saveKey"
-      >
-        <template v-slot:append-outer>
-          <v-container>
-            <v-row>
-              <v-col cols="12" class="pa-0">
-                <!-- Button plural -->
-                <v-btn color="maincolor" @click="updateKey.isPlural = !updateKey.isPlural" class="mb-2 white--text">
-                  {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
-                </v-btn>
+    <v-btn color="maincolor" small @click="switchQuantity" class="white--text mx-2">
+      {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
+    </v-btn>
 
-                <!-- ButtonValid -->
-                <v-btn v-if="updateKey.isPlural !== item.key.isPlural" @click="() => saveKey()" color="maincolor" class="mb-2 ml-1">
-                  <v-icon color="white">
-                    mdi-check
-                  </v-icon>
-                </v-btn>
-              </v-col>
-
-              <v-col cols="12" class="pa-0">
-                <!-- ButtonDelete -->
-                <v-btn color="maincolor" @click="deleteKey()" class="mb-2 white--text">
-                  {{ $t("project_detail.delete_key_button") }}
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </template>
-      </v-text-field>
-    </v-card>
-
-  </v-menu>
+    <v-text-field
+        v-model="updateKey.name"
+        single-line
+        :rules="keyNameRules"
+        @keydown.enter="saveKey"
+        class="mx-2"
+    >
+      <template v-slot:append>
+        <v-progress-circular v-if="loading" size="20" indeterminate color="primary"></v-progress-circular>
+        <v-icon v-else color="primary" size="20">{{ inputIcon }}</v-icon>
+      </template>
+    </v-text-field>
+    <p>{{ keyQuantityName }}</p>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -51,28 +32,37 @@ import {translationItem} from "@/data/models/types/TranslationTypes";
 export default Vue.extend({
   name: "template-item-keys",
   props: {
-    item: translationItem,
+    item: {},
     projectId: Number,
   },
   data() {
     return {
-      updateKey: Object.assign({}, this.item.key),
-      isOpen: false,
+      updateKey: Object.assign({}, (this.item as translationItem).key),
+      loading: false,
+      inputIcon: "",
       keyNameRules: keyNameRules(this.$t("rules.required").toString(), this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString())
     };
   },
 
   computed: {
     keyQuantityName(): string {
-      return this.item?.quantity ? (this.item.key.name + "[" + this.item.quantity + "]") : this.item.key.name;
+      return  (this.item as translationItem)?.quantity ? `[${(this.item as translationItem).quantity}]` : '';
     }
   },
   methods: {
-    saveKey() {
-      this.$service.keys.updateKey(this.updateKey)
+    switchQuantity(): Promise<void> {
+      this.updateKey.isPlural = !this.updateKey.isPlural;
+      return this.saveKey();
+    },
+    saveKey(): Promise<void> {
+      this.loading = true;
+
+      return this.$service.keys.updateKey(this.updateKey)
           .then(() => {
-            this.isOpen = false
+            this.loading = false;
+            this.inputIcon = "mdi-check";
             this.$emit("saveKey", this.updateKey);
+            setTimeout(() => this.inputIcon = "", 1000);
           })
           .catch((error) => {
             if (!error.response) {
@@ -95,9 +85,8 @@ export default Vue.extend({
           });
     },
     deleteKey() {
-      this.$service.keys.deleteKey(this.item.key.id)
+      this.$service.keys.deleteKey((this.item as translationItem).key.id)
           .then(() => {
-            this.isOpen = false
             this.$emit("deleteKey", this.updateKey);
           }).catch((error) => {
         if (error.response) {

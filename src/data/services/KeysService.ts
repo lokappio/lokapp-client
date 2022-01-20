@@ -98,6 +98,7 @@ class KeysService {
             name: key.name,
             "is_plural": key.isPlural
         };
+
         return ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters);
     }
 }
