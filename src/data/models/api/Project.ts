@@ -97,7 +97,7 @@ export default class Project {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
     const currKeyIndex: number = this.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);
 
-    this.groups[currGroupIndex].keys[currKeyIndex] = Object.assign({}, key);
+    this.groups[currGroupIndex].keys[currKeyIndex] = Object.assign(Key.map({}), key);
   }
 
   deleteKey(key: Key): void {

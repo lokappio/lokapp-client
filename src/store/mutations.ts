@@ -33,11 +33,11 @@ export default {
     },
     UPDATE_PROJECT_KEY(state: State, key: Key): void {
         state.currentProject.updateKey(key);
-        state.currentProject = Object.assign<Project, Project>(Project.map({}), state.currentProject);
+        state.currentProject = Object.assign(Project.map({}), state.currentProject);
     },
     DELETE_PROJECT_KEY(state: State, key: Key): void {
         state.currentProject.deleteKey(key);
-        state.currentProject = Object.assign({}, state.currentProject);
+        state.currentProject = Object.assign(Project.map({}), state.currentProject);
     },
     SET_ACTUAL_LANGUAGE(state: State, language: Language): void {
         state.actualLanguage = language;

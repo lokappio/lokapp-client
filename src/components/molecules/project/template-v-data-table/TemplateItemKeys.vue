@@ -19,6 +19,7 @@
         <v-progress-circular v-if="loading" size="20" indeterminate color="primary"></v-progress-circular>
         <v-icon v-else color="primary" size="20">{{ inputIcon }}</v-icon>
       </template>
+
     </v-text-field>
     <p>{{ keyQuantityName }}</p>
   </v-row>
