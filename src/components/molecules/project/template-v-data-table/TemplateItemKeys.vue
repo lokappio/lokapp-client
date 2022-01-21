@@ -96,21 +96,7 @@ export default Vue.extend({
       this.$service.keys.deleteKey((this.item as translationItem).key.id)
           .then(() => {
             this.$emit("deleteKey", this.updateKey);
-          }).catch((error) => {
-        if (error.response) {
-          switch (error.response.status) {
-            case 404:
-              this.$notify(this.$t("errors.not_existing_key").toString());
-              break;
-            case 403:
-              this.$notify(this.$t("errors.unauthorized").toString());
-              break;
-            default:
-              this.$notify(this.$t("errors.unknown_error").toString());
-              break;
-          }
-        }
-      });
+          }).catch((error) => this.$notify(this.$t(error).toString()));
     }
   }
 });
