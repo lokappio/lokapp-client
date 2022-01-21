@@ -29,6 +29,7 @@
 import {keyNameRules} from "@/data/rules/KeyRules";
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
+import Key from "@/data/models/api/Key";
 
 export default Vue.extend({
   name: "template-item-keys",
@@ -38,13 +39,19 @@ export default Vue.extend({
   },
   data() {
     return {
-      updateKey: Object.assign({}, (this.item as translationItem).key),
+      updateKey: Object.assign(Key.map({}), (this.item as translationItem).key),
       loading: false,
       inputIcon: "",
       keyNameRules: keyNameRules(this.$t("rules.required").toString(), this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString())
     };
   },
-
+  watch: {
+    item: {
+      handler: function() {
+        this.updateKey = Object.assign(Key.map({}), (this.item as translationItem).key);
+      }
+    }
+  },
   computed: {
     keyQuantityName(): string {
       return  (this.item as translationItem)?.quantity ? `[${(this.item as translationItem).quantity}]` : '';
