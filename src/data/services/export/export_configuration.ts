@@ -105,6 +105,5 @@ const generateStringFiles = (platform: string, languagesParsed: Language[], loca
 export const exportProject = (platform: string): FileData[] => {
     const project: Project = store.getters.currentProject;
 
-    const localizedProject: LocalizedGroup[] = project.toLocalizedProject();
-    return generateStringFiles(platform, project.languages, localizedProject);
+    return generateStringFiles(platform, project.languages, project.toLocalizedProject);
 };

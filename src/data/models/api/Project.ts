@@ -45,7 +45,7 @@ export default class Project {
     return project;
   }
 
-  toLocalizedProject(): LocalizedGroup[] {
+  get toLocalizedProject(): LocalizedGroup[] {
     const localized: LocalizedGroup[] = [];
 
     this.groups.forEach((group) => {
