@@ -1,14 +1,15 @@
 <template>
   <v-container class="full-contain my-table">
-    <v-row v-if="getItems.length === 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
+    <v-row v-if="getItems.length <= 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
       <v-col cols="4">
         <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
       </v-col>
     </v-row>
 
     <v-data-table
-        v-show="getItems.length > 0"
+        v-else
         hide-default-footer
+        fixed-header
         :headers="headers"
         :items="getItems"
         :loading="loading"
@@ -208,24 +209,22 @@ export default Vue.extend({
 
 .my-table {
   max-width: 100%;
-  overflow-y: scroll;
+}
+.v-data-table--fixed-header thead th {
+  background: #FAF8F9 !important;
 }
 
 .my-custom-table {
   background-color: transparent !important;
-}
+  height: 100% !important;
 
-.my-custom-table > .v-data-table__wrapper > table {
-  border-spacing: 0px 16px !important;
-}
+  .v-data-table__wrapper {
+    height: 100% !important;
+  }
 
-.data-table-key-style {
-  background-color: transparent;
-}
-
-.data-table-key-style > td {
-  background-color: white;
-  max-width: 50vw;
+  table {
+    border-spacing: 0px 16px !important;
+  }
 }
 
 .v-row-group__summary {
