@@ -59,10 +59,10 @@ export default Vue.extend({
       this.loading = true;
 
       return this.$service.keys.updateKey(this.updateKey)
-          .then(() => {
+          .then((result) => {
             this.loading = false;
             this.inputIcon = "mdi-check";
-            this.$emit("saveKey", this.updateKey);
+            this.$emit("saveKey", result);
             setTimeout(() => this.inputIcon = "", 1000);
           })
           .catch((error) => {

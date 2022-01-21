@@ -93,13 +93,15 @@ class KeysService {
         return ApiService.delAPI(KeysService.keysUrl + this.projectId + "/translations/" + keyId);
     }
 
-    public static updateKey(key: Key): Promise<AxiosResponse> {
+    public static async updateKey(key: Key): Promise<Key> {
         const bodyParameters = {
             name: key.name,
             "is_plural": key.isPlural
         };
 
-        return ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters);
+        await ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters);
+        key.values = await ValuesService.getValuesByKeyId(key.id);
+        return key;
     }
 }
 

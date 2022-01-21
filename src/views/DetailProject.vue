@@ -44,7 +44,7 @@ export default Vue.extend({
     name: "DetailProject",
     metaInfo(): MetaInfo {
         return {
-            title: this.currentProject.name ?? "",
+            title: this.currentProject?.name ?? "",
             titleTemplate: `Lokapp - %s`
         };
     },

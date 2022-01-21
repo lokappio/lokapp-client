@@ -29,7 +29,7 @@ export default {
     },
     ADD_PROJECT_KEY(state: State, data: {group: Group | null; key: Key}): void {
         state.currentProject.addKey(data.group, data.key);
-        state.currentProject = Object.assign({}, state.currentProject);
+        state.currentProject = Object.assign(Project.map({}), state.currentProject);
     },
     UPDATE_PROJECT_KEY(state: State, key: Key): void {
         state.currentProject.updateKey(key);
