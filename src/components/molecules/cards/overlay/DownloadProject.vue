@@ -12,53 +12,50 @@
                 </v-col>
             </v-row>
 
-            <template>
-                <v-row class="mt-4 pb-0 mb-0">
+            <v-row class="mt-4 pb-0 mb-0">
+                <v-col cols="12" class="pb-0 px-0">
+                    <span class="title-h3">{{ $t("download_project.platform_target") }}</span>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" class="pb-0 pt-0 px-0">
+                    <v-select
+                        solo
+                        background-color="primary"
+                        dark
+                        :items="platforms"
+                        item-text="name"
+                        v-model="selectedPlatform"
+                    ></v-select>
+                </v-col>
+            </v-row>
+
+            <template v-if="isGenerated">
+                <v-row v-if="files.length === 0" class="mt-4 pb-0 mb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <span class="title-h3">{{ $t("download_project.platform_target") }}</span>
+                        <p class="title-h3">{{ $t("download_project.no_file_to_download") }}</p>
                     </v-col>
                 </v-row>
 
-                <v-row>
-                    <v-col cols="12" class="pb-0 pt-0 px-0">
-                        <v-select
-                            solo
-                            background-color="primary"
-                            dark
-                            :items="platforms"
-                            item-text="name"
-                            v-model="selectedPlatform"
-                        ></v-select>
+                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0 file-list-style">
+                    <v-col cols="auto" class="py-0 px-0">
+                        <span class="text-2">{{ file.name }}</span>
+                    </v-col>
+
+                    <v-col cols="auto">
+                        <v-icon @click="() => copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
+                        <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
                     </v-col>
                 </v-row>
 
-                <template v-if="isGenerated">
-                    <v-row v-if="files.length === 0" class="mt-4 pb-0 mb-0">
-                        <v-col cols="12" class="pb-0 px-0">
-                            <p class="title-h3">{{ $t("download_project.no_file_to_download") }}</p>
-                        </v-col>
-                    </v-row>
 
-                    <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0 file-list-style">
-                        <v-col cols="auto" class="py-0 px-0">
-                            <span class="text-2">{{ file.name }}</span>
-                        </v-col>
-
-                        <v-col cols="auto">
-                            <v-icon @click="() => copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
-                            <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
-                        </v-col>
-                    </v-row>
-
-
-                    <v-row class="mt-2 pb-0">
-                        <v-col cols="12" class="pb-0 px-0">
-                            <action-button block :handler="downloadEverything" :text="$t('download_project.download_everything')"/>
-                        </v-col>
-                    </v-row>
-                </template>
+                <v-row class="mt-2 pb-0">
+                    <v-col cols="12" class="pb-0 px-0">
+                        <action-button block :handler="downloadEverything" :text="$t('download_project.download_everything')"/>
+                    </v-col>
+                </v-row>
             </template>
-
         </v-container>
     </v-card>
 
