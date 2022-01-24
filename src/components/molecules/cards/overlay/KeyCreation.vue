@@ -1,5 +1,5 @@
 <template>
-  <v-overlay v-if="isOpen">
+  <v-dialog :value="isOpen" @click:outside="closeKeyCreation" max-width="400px">
     <v-card color="white" class="pa-4 pa-md-7 card-style-key-creation">
         <v-container>
             <!-- Title -->
@@ -76,7 +76,7 @@
             </v-form>
         </v-container>
     </v-card>
-  </v-overlay>
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -161,7 +161,7 @@ export default Vue.extend({
 @import '~vuetify/src/styles/styles.sass';
     .card-style-key-creation {
         border-radius: 20px !important;
-        width: 400px;
+        width: 100%;
     }
     .overflow-container-languages {
         max-height: 250px;
