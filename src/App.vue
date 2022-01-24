@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import firebase from "firebase/app";
+import {FirebaseHelper} from "@/data/helpers/firebase";
 
 export default Vue.extend({
   name: "App",
@@ -18,16 +18,7 @@ export default Vue.extend({
     titleTemplate: 'Lokapp'
   },
   mounted() {
-    this.observeCurrentUser()
+    FirebaseHelper.onAuthStateChanged();
   },
-  methods: {
-    observeCurrentUser() {      
-      firebase.auth().onAuthStateChanged(async user =>  {
-        this.$store.commit("SET_USER", user);
-        this.$store.commit('SET_APP_USER', user != null ? await this.$service.user.getMe() : null);
-        this.$store.commit("SET_APPLICATION_READY");
-      });      
-    }
-  }
 });
 </script>
