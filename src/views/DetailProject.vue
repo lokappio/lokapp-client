@@ -35,7 +35,7 @@ import {Vue} from "vue-property-decorator";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
-import Header from "@/components/molecules/project/Header.vue";
+import Header from "@/components/molecules/project/DetailHeader.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
 import {MetaInfo} from "vue-meta";
 import Project from "@/data/models/api/Project";

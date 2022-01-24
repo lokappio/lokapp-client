@@ -21,15 +21,15 @@
                     </v-row>
                 </v-col>
 
-                <v-col cols="1" class="pr-0 pl-auto">
-                    <v-btn @click="() => this.dialogOpened = true" color="maincolor" class="download-button">
+                <v-col cols="auto" class="pr-0 pl-auto">
+                    <v-btn @click="() => this.dialogOpened = true" height="50" color="maincolor">
                         <v-icon color="white">mdi-download</v-icon>
                     </v-btn>
                 </v-col>
 
                 <!-- RightPart -->
                 <v-col cols="5">
-                    <v-text-field clearable solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
+                    <v-text-field clearable solo v-model="searchValue" height="50" :label="$t('common.search_label')"></v-text-field>
                 </v-col>
             </v-row>
         </v-container>
@@ -78,12 +78,5 @@ export default Vue.extend({
         color: grey;
         max-height: calc(16px * 3);
         overflow: hidden;
-    }
-    .download-button {
-        width: 50px !important;
-        min-width: 50px !important;
-        height: 50px !important;
-        max-height: 50px !important;
-        float: right;
     }
 </style>
