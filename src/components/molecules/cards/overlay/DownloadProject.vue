@@ -111,7 +111,7 @@ export default Vue.extend({
                 case Platform.ANDROID:
                     this.files = filesData.map((file) => {
                         return {
-                            name: "strings_" + file.language + ".xml",
+                            name: `strings_${file.language}.xml`,
                             content: file.content
                         };
                     });
@@ -119,7 +119,7 @@ export default Vue.extend({
                 case Platform.IOS:
                     this.files = filesData.map((file) => {
                         return {
-                            name: file.plural ? "Localizable_" + file.language + ".stringsdict" : "Localizable_" + file.language + ".strings",
+                            name: file.plural ? `Localizable_${file.language}.stringsdict` : `Localizable_${file.language}.strings`,
                             content: file.content
                         };
                     });
@@ -127,7 +127,7 @@ export default Vue.extend({
                 case Platform.WEB:
                     this.files = filesData.map((file) => {
                         return {
-                            name: file.language + ".json",
+                            name: `${file.language}.json`,
                             content: file.content
                         };
                     });

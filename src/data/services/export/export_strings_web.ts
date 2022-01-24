@@ -6,7 +6,9 @@ import {KeyType, Platform} from "@/data/models/enums/project";
 
 const generateWebStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
     let exportedString = `{\n`;
+
     const platform = Platform.WEB;
+    const jsonFile = {};
 
     localizedProject.forEach((localizedGroup, index) => {
         //Check if some keys inside group
