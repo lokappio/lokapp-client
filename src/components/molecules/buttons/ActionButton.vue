@@ -1,10 +1,7 @@
 <template>
-    <v-btn class="button-action-style" height="55" :block="block" color="maincolor" @click="handler">
-        <v-progress-circular v-if="loading" color="white" indeterminate></v-progress-circular>
-        <div v-else>
+    <v-btn :loading="loading" dark class="button-action-style" height="55" :block="block" color="maincolor" @click="handler">
           <div class="title-h3 button-action-text">{{ text }}</div>
           <v-icon v-if="addIcon" color="white" class="pl-2">mdi-plus-circle</v-icon>
-        </div>
     </v-btn>
 </template>
 
