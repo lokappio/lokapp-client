@@ -1,28 +1,21 @@
 <template>
   <div>
-    <v-dialog v-model="dialogOpenedUser" max-width="800px">
-      <user-management :dialog-opened="dialogOpenedUser" :project-id="project.id" @close="() => this.dialogOpenedUser = false"/>
-    </v-dialog>
+    <v-dialog v-model="dialogOpened" max-width="800px">
+      <user-management v-if="dialogOpenedUser" :dialog-opened="dialogOpenedUser" :project-id="project.id" @close="() => this.dialogOpenedUser = false"/>
 
-    <v-dialog v-model="dialogOpenedLanguage" width="500px">
-      <language-management :dialog-opened="dialogOpenedLanguage" :project-id="project.id" @close="() => this.dialogOpenedLanguage = false"/>
-    </v-dialog>
+      <language-management v-if="dialogOpenedLanguage" :dialog-opened="dialogOpenedLanguage" :project-id="project.id" @close="() => this.dialogOpenedLanguage = false"/>
 
-    <v-dialog v-model="dialogOpenedProject" width="500px">
       <project-management
+          v-if="dialogOpenedProject"
           :dialog-opened="dialogOpenedProject"
           :project="project"
           @close="() => this.dialogOpenedProject = false"
           @projectUpdated="projectUpdated"
       />
-    </v-dialog>
 
-    <v-dialog v-model="dialogOpenedDelete" width="500px">
-      <delete-project :dialog-opened="dialogOpenedDelete" :project="project" @close="() => this.dialogOpenedDelete = false"/>
-    </v-dialog>
+      <delete-project v-if="dialogOpenedDelete" :dialog-opened="dialogOpenedDelete" :project="project" @close="() => this.dialogOpenedDelete = false"/>
 
-    <v-dialog v-model="dialogOpenedLeave" width="500px">
-      <leave-project :dialog-opened="dialogOpenedLeave" :project-id="project.id" @close="() => this.dialogOpenedLeave = false"/>
+      <leave-project v-if="dialogOpenedLeave" :dialog-opened="dialogOpenedLeave" :project-id="project.id" @close="() => this.dialogOpenedLeave = false"/>
     </v-dialog>
 
     <v-menu :nudge-width="200" transition="slide-x-transition">
@@ -104,6 +97,18 @@ export default Vue.extend({
       }
 
       return items;
+    },
+    dialogOpened: {
+      get(): boolean {
+        return this.dialogOpenedUser || this.dialogOpenedLanguage || this.dialogOpenedProject || this.dialogOpenedDelete || this.dialogOpenedLeave;
+      },
+      set(): void {
+        this.dialogOpenedUser= false;
+        this.dialogOpenedLanguage= false;
+        this.dialogOpenedProject= false;
+        this.dialogOpenedDelete= false;
+        this.dialogOpenedLeave= false;
+      }
     }
   },
   methods: {
