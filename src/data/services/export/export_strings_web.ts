@@ -1,81 +1,42 @@
 import Language from "@/data/models/api/Language";
-import { replaceMarkers } from "./export_configuration";
+import {replaceMarkers} from "./export_configuration";
 import {LocalizedGroup, Plural} from "@/data/models/api/Project";
 import {FileData} from "@/data/models/types/export";
 import {KeyType, Platform} from "@/data/models/enums/project";
 
 const generateWebStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
-    let exportedString = `{\n`;
+  const platform = Platform.WEB;
+  const jsonFile: any = {};
 
-    const platform = Platform.WEB;
-    const jsonFile = {};
+  localizedProject.forEach((localizedGroup) => {
+    jsonFile[localizedGroup.name] = {};
+    const currGroup = jsonFile[localizedGroup.name];
 
-    localizedProject.forEach((localizedGroup, index) => {
-        //Check if some keys inside group
-        if (localizedGroup.localizations.length === 0) {
-            return;
+    if (localizedGroup.localizations.length !== 0) {
+      localizedGroup.localizations.forEach((localization) => {
+        if (localization.type === KeyType.SINGULAR) {
+          const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
+          currGroup[localization?.key] = replaceMarkers(value, platform);
+        } else {
+          const values: Plural = localization[language.name] as Plural;
+          let jsonValues = "";
+
+          if (values) {
+            Object.entries(values).forEach((value, index) => {
+              jsonValues += replaceMarkers(value[1].replace(/"/g, "\\\""), platform);
+              if (index < 2) {jsonValues += " | "}
+            });
+          }
+
+          currGroup[localization?.key] = jsonValues;
         }
+      });
+    }
+  });
 
-        let indentationKey = "    ";
-        let isInAGroup = false;
-
-        //Group without name = key at root of json
-        if (localizedGroup.name != null) {
-            indentationKey = "        ";
-            isInAGroup = true;
-            exportedString += `    "${localizedGroup.name}": {\n`;
-        }
-
-        localizedGroup.localizations.forEach((localization: any, indexKey: number) => {
-            if (localization.type === KeyType.SINGULAR) {
-                const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
-                exportedString += `${indentationKey}"${localization.key}": "${replaceMarkers(value, platform)}"`;
-            } else {
-                exportedString += `${indentationKey}"${localization.key}": "`;
-                const values: Plural = localization[language.name] as Plural;
-
-                if (values) {
-                    Object.entries(values).forEach((value, index) => {
-                        exportedString += `${replaceMarkers(value[1].replace(/"/g, "\\\""), platform)}`;
-                        if (index < 2) {
-                            exportedString += " | ";
-                        } else {
-                            exportedString += `"`;
-                        }
-                    });
-                }
-            }
-
-            //Is there data after or not
-            if (isInAGroup) {
-                if (indexKey < localizedGroup.localizations.length - 1) {
-                    exportedString += `,\n`;
-                } else {
-                    exportedString += `\n`;
-                }
-            } else {
-                if (indexKey < localizedGroup.localizations.length - 1 || index < localizedProject.length - 1) {
-                    exportedString += `,\n`;
-                } else {
-                    exportedString += `\n`;
-                }
-            }
-        });
-
-        //Close group
-        if (isInAGroup) {
-            if (index === localizedProject.length - 1) {
-                exportedString += `    }\n`;
-            } else {
-                exportedString += `    },\n`;
-            }
-        }
-    });
-
-    exportedString += "}";
-    return {language: language.name.toUpperCase(), content: exportedString};
+  return {language: language.name.toUpperCase(), content: JSON.stringify(jsonFile, null, "\t")};
 };
 
 export const generateWebStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
-    return languages.map((language: Language) => generateWebStringFile(language, localizedObjects));
+  return languages.map((language: Language) => generateWebStringFile(language, localizedObjects));
 };
