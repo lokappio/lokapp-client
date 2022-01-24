@@ -9,7 +9,7 @@
         </v-col>
 
         <v-col>
-          <span v-if="isActive === false" @click="!currGroup.isDefault ? canUpdateGroup() : null">{{ currGroup.name }}</span>
+          <span v-if="isActive === false" @click="canUpdateGroup">{{ currGroup.name }}</span>
 
           <v-text-field
               v-else
@@ -67,7 +67,7 @@ export default Vue.extend({
   },
   methods: {
     canUpdateGroup() {
-      this.isActive = this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteGroup : false;
+      if(!this.currGroup.isDefault) this.isActive = this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteGroup : false;
     },
     updateGroup() {
       this.currGroup.name = this.updateName;

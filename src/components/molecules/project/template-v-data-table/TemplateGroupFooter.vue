@@ -1,7 +1,6 @@
 <template>
     <tr v-if="isOpen" class="background-color-transparent">
         <v-icon color="maincolor" class="mx-4 icon-style-big" @click="isOpenCreation = true" :ripple="false">mdi-plus-circle</v-icon>
-
         <key-creation :selected-group="currGroup" :isOpen="isOpenCreation" v-on:closeCreation="close"></key-creation>
     </tr>
 </template>
