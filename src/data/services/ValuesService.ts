@@ -46,10 +46,15 @@ class ValuesService {
         return ApiService.patchAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
-    public static getValuesByKeyId(keyId: number, projectId = this.projectId): Promise<Value[]> {
+    public static getValuesByKeyId(keyId: number, projectId = this.projectId, languages = this.languages): Promise<Value[]> {
         return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
         .then((response) => {
-            return response.data.map((item: any) => Value.map(item));
+            return response.data.map((item: any) => {
+                const value = Value.map(item);
+                // ADD LANGUAGE NAME TO VALUE
+                value.languageName = languages.find((lang) => lang.id == value.languageId)?.name;
+                return value;
+            });
         })
     }
 }
