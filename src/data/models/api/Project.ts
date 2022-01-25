@@ -100,6 +100,20 @@ export default class Project {
     this.groups[currGroupIndex].keys[currKeyIndex] = Object.assign(Key.map({}), key);
   }
 
+  updateValue(value: Value): void {
+    this.groups.forEach((group, index) => {
+      const associatedGroupIndex = index;
+      const associatedKeyIndex = group.keys.findIndex((key) => key.id == value.keyId);
+
+      if(associatedKeyIndex != -1) {
+        const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
+        const associatedValueIndex = associatedKey.values.findIndex((valueProject) => valueProject.id === value.id);
+
+        associatedKey.values[associatedValueIndex] = Object.assign(Value.map({}), value);
+      }
+    })
+  }
+
   deleteKey(key: Key): void {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
     const currKeyIndex: number = this.groups[currGroupIndex].keys.findIndex((currKey) => currKey.id === key.id);

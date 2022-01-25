@@ -35,6 +35,7 @@
             :item="item"
             :header="header"
             :projectId="projectId"
+            @valueSaved="valueSaved"
         />
       </template>
 
@@ -69,7 +70,7 @@ import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
-import {ValueQuantity} from "@/data/models/api/Value";
+import Value, {ValueQuantity} from "@/data/models/api/Value";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
 
@@ -165,6 +166,9 @@ export default Vue.extend({
     keyDeleted(value: Key): void {
       //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
       this.$store.commit("DELETE_PROJECT_KEY", value);
+    },
+    valueSaved(value: Value) {
+      this.$store.commit("UPDATE_PROJECT_VALUE", value);
     },
     filterDataWithLanguage(languageId: number): void {
       const languages = this.$store.getters.currentProject.languages;

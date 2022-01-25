@@ -59,7 +59,7 @@ export default Vue.extend({
 
         return this.$service.values.updateValue(this.updatedValue)
             .then(() => {
-              (this.item as translationItem)[this.header.value] = Object.assign({},this.updatedValue);
+              this.$emit("valueSaved", this.updatedValue);
               this.loading = false;
               this.inputIcon = "mdi-check";
               setTimeout(() => this.inputIcon = "", 1000);

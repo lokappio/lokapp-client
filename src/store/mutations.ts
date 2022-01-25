@@ -5,6 +5,7 @@ import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
 import Group from "@/data/models/api/Group";
 import ProjectUser from "@/data/models/api/ProjectUser";
+import Value from "@/data/models/api/Value";
 
 export default {
     SET_USER(state: State, user: any): void {
@@ -33,6 +34,10 @@ export default {
     },
     UPDATE_PROJECT_KEY(state: State, key: Key): void {
         state.currentProject.updateKey(key);
+        state.currentProject = Object.assign(Project.map({}), state.currentProject);
+    },
+    UPDATE_PROJECT_VALUE(state: State, value: Value): void {
+        state.currentProject.updateValue(value);
         state.currentProject = Object.assign(Project.map({}), state.currentProject);
     },
     DELETE_PROJECT_KEY(state: State, key: Key): void {
