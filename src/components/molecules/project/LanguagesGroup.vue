@@ -16,19 +16,16 @@
 <script lang="ts">
 import Vue from "vue";
 import LanguageCreation from "@/components/molecules/cards/overlay/LanguageCreation.vue";
+import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
     name: "languages-group",
     components: {LanguageCreation},
     data() {
         return {
-            languages: [],
             actualTab: 0,
             dialogOpened: false
         };
-    },
-    mounted() {
-        this.refreshLanguagesList()
     },
     watch: {
         actualTab() {this.setActualLanguage()}
@@ -37,16 +34,11 @@ export default Vue.extend({
       canWriteLanguage(): boolean {
         return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteLanguage : false;
       },
+      languages(): Language[] {
+        return this.$store.getters.currentProject.languages;
+      }
     },
     methods: {
-        refreshLanguagesList() {
-            this.actualTab = 0;
-            this.languages = [];
-
-            this.$service.languages.getLanguages()
-                .then(languages => this.languages = languages)
-                .catch(() => this.$notify(this.$t("errors.retrieve_languages").toString()));
-        },
         setActualLanguage() {
             this.$store.commit("SET_ACTUAL_LANGUAGE", this.actualTab > 0 ? this.languages[this.actualTab - 1].id : null);
         },

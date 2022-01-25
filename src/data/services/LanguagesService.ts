@@ -5,6 +5,7 @@ import ApiService from "./ApiService";
 import store from "@/store/index";
 import ValuesService from "@/data/services/ValuesService";
 import Key from "@/data/models/api/Key";
+import Value from "@/data/models/api/Value";
 
 class LanguagesService {
     static languagesUrl: string = config.baseUrl + "/projects/";
@@ -17,19 +18,18 @@ class LanguagesService {
         })
     }
 
-    public static createLanguage(languageName: string): Promise<any> {
-        const bodyParameters = {
-            name: languageName
-        };
+    public static createLanguage(languageName: string): Promise<{language: Language; values: Value[]}> {
+        const bodyParameters = {name: languageName};
 
         return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
           .then(async (result) => {
-              /*TODO: REMOVE FROM FRONT AND MOVE TO API */
               const language = Language.map(result.data);
 
+              //INSERT EACH VALUES IN DB FOR THE NEWLY CREATED LANGUAGE
               const keys: Key[] = store.getters.currentProject.groups.map((group) => group.keys).flat();
+              const values = await Promise.all(keys.map(async (key) => await ValuesService.createValueForKey(key, [language])));
 
-              return Promise.all(keys.map(async (key) => await ValuesService.createValueForKey(key, [language])));
+              return {language: language, values: values.flat(2)};
         });
     }
 

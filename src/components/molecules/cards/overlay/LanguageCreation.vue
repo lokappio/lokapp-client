@@ -29,7 +29,7 @@
                 <!-- ValidateButton -->
                 <v-row class="mt-0 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button @keypress.enter="createNewLanguage" block :loading="loading" :handler="createNewLanguage" :text="$t('language_creation.confirm_button')"/>
+                        <action-button @keydown.enter="createNewLanguage" block :loading="loading" :handler="createNewLanguage" :text="$t('language_creation.confirm_button')"/>
                     </v-col>
                 </v-row>
             </v-form>
@@ -67,8 +67,9 @@ export default Vue.extend({
                 this.loading = true;
 
                 this.$service.languages.createLanguage(this.languageName)
-                    .then(() => {
+                    .then((result) => {
                         this.loading = false;
+                        this.$store.commit("UPDATE_PROJECT_LANGUAGES", result);
                         this.$notify(this.$t("success.language_created").toString());
                         this.closeLanguageCreation();
                     })

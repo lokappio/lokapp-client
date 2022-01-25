@@ -20,18 +20,31 @@ class ValuesService {
         };
 
         const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values", bodyParameters)
-        return Value.map(result.data);
+        const resultValue = Value.map(result.data);
+        resultValue.languageName = value.languageName;
+
+        return resultValue;
     }
 
     public static async createValueForKey(key: Key, languages: Language[] = this.languages): Promise<Value[]> {
         const result: Value[] = await Promise.all(languages.map(async (language) => {
             if (key.isPlural) {
                 return await Promise.all(Object.values(ValueQuantity).map(async (quantity) => {
-                    const value = Value.map({name: "", 'language_id': language.id, 'quantity_string': quantity})
+                    const value = Value.map({
+                        name: "",
+                        'language_id': language.id,
+                        'quantity_string': quantity,
+                        'language_name': language.name
+                    })
                     return await this.createValue(key.id, value);
                 }));
             } else {
-                const value = Value.map({name: "", 'language_id': language.id, quantityString: null})
+                const value = Value.map({
+                    name: "",
+                    'language_id': language.id,
+                    quantityString: null,
+                    'language_name': language.name
+                })
                 return await this.createValue(key.id, value);
             }
         }).flat());

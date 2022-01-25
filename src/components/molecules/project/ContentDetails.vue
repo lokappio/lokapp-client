@@ -106,8 +106,14 @@ export default Vue.extend({
     this.filterDataWithLanguage(null);
   },
   watch: {
-    "actualLanguage": function (value) {
-      this.filterDataWithLanguage(value);
+    "actualLanguage": function () {
+      this.filterDataWithLanguage(this.actualLanguage);
+    },
+    "$store.state.currentProject": {
+      deep: true,
+      handler: function () {
+        this.filterDataWithLanguage(this.actualLanguage);
+      }
     }
   },
   computed: {

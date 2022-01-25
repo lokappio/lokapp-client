@@ -4,6 +4,7 @@ import Key from "@/data/models/api/Key";
 import {KeyType} from "@/data/models/enums/project";
 import {groupBy} from "@/data/helpers/utils";
 import Value from "@/data/models/api/Value";
+import store from "@/store";
 
 export class Plural {
   other = "";
@@ -112,6 +113,22 @@ export default class Project {
         associatedKey.values[associatedValueIndex] = Object.assign(Value.map({}), value);
       }
     })
+  }
+
+  updateLanguages(data: {language: Language; values: Value[]}) {
+    this.languages.push(data.language);
+
+    this.groups.forEach((group, index) => {
+      data.values.forEach((value) => {
+        const associatedGroupIndex = index;
+        const associatedKeyIndex = group.keys.findIndex((key) => key.id == value.keyId);
+
+        if(associatedKeyIndex != -1) {
+          const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
+          associatedKey.values.push(value);
+        }
+      });
+    });
   }
 
   deleteKey(key: Key): void {
