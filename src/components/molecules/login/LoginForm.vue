@@ -49,7 +49,7 @@
 
 <script>
 import {optionalString} from "@/data/helpers/stringFormatting";
-import {userEmailRules, userPasswordLoginRules, userPasswordRules} from "@/data/rules/UserRules";
+import {userEmailRules, userPasswordCopyRules, userPasswordLoginRules, userPasswordRules} from "@/data/rules/UserRules";
 import ForgotPassword from "@/components/molecules/cards/overlay/ForgotPassword.vue";
 import Vue from "vue";
 
@@ -67,19 +67,16 @@ export default Vue.extend({
 
             //Login/Inscription
             email: "",
-            emailRules: userEmailRules(this.$t("rules.required").toString(), this.$t("rules.mail_valid").toString()),
+            emailRules: userEmailRules(this.$t("rules.mail_valid").toString()),
 
             passwordLogin: "",
-            passwordLoginRules: userPasswordLoginRules(this.$t("rules.required").toString()),
+            passwordLoginRules: userPasswordLoginRules(),
 
             password: "",
-            passwordRules: userPasswordRules(this.$t("rules.required").toString(), this.$t("rules.password_length").toString(), this.$t("rules.password_strong").toString()),
+            passwordRules: userPasswordRules(this.$t("rules.password_length").toString(), this.$t("rules.password_strong").toString()),
 
             passwordCopy: "",
-            passwordCopyRules: [
-                v => !!v || this.$t("rules.required"),
-                v => v === this.password || this.$t("rules.password_identical")
-            ],
+            passwordCopyRules: userPasswordCopyRules(this.password, this.$t("rules.password_identical").toString()),
 
             pseudo: null,
 

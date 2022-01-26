@@ -1,21 +1,22 @@
+import i18n from "@/i18n";
 
-export const userEmailRules = (required: string, notValid: string) => [
-    (v: string) => !!v || required,
+export const userEmailRules = (notValid: string) => [
+    (v: string) => !!v || i18n.tc('rules.required'),
     (v: string) => /.+@.+\..+/.test(v) || notValid,
 ];
 
-export const userPasswordLoginRules = (required: string) => [
-    (v: string) => !!v || required
+export const userPasswordLoginRules = () => [
+    (v: string) => !!v || i18n.tc('rules.required')
 ];
 
-export const userPasswordRules = (required: string, length: string, strong: string) => [
-    (v: string) => !!v || required,
+export const userPasswordRules = (length: string, strong: string) => [
+    (v: string) => !!v || i18n.tc('rules.required'),
     (v: string) => v.length >= 6 || length,
     (v: string) => /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{6}/.test(v) || strong
 ];
 
-export const userPasswordCopyRules = (userPassword: string, required: string, identical: string) => [
-    (v: string) => !!v || required,
+export const userPasswordCopyRules = (userPassword: string, identical: string) => [
+    (v: string) => !!v || i18n.tc('rules.required'),
     (v: string) => v === userPassword || identical
 ];
 

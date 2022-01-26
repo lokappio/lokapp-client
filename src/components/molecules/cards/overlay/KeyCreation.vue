@@ -107,8 +107,8 @@ export default Vue.extend({
             groupName: "",
 
             //RULES
-            keyNameRules: keyNameRules(this.$t("rules.required").toString(), this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString()),
-            groupNameRules: groupNameRules(this.$t("rules.required").toString(), this.$t("rules.group_name_length").toString(), this.$t("rules.snake_case_only").toString()),
+            keyNameRules: keyNameRules(this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString()),
+            groupNameRules: groupNameRules(this.$t("rules.group_name_length").toString(), this.$t("rules.snake_case_only").toString()),
 
             //UI
             loading: false,
