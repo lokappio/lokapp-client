@@ -4,7 +4,6 @@ import Key from "@/data/models/api/Key";
 import {KeyType} from "@/data/models/enums/project";
 import {groupBy} from "@/data/helpers/utils";
 import Value from "@/data/models/api/Value";
-import store from "@/store";
 
 export class Plural {
   other = "";

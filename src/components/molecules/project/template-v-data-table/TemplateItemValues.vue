@@ -19,6 +19,8 @@
 <script lang="ts">
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
+import Value from "@/data/models/api/Value";
+import {DataTableHeader} from "vuetify";
 
 export default Vue.extend({
   name: "template-item-values",
@@ -31,12 +33,12 @@ export default Vue.extend({
     return {
       inputIcon: "",
       loading: false,
-      updatedValue: Object.assign({}, (this.item as translationItem)[this.header.value])
+      updatedValue: Object.assign(Value.map({}), (this.item as translationItem)[(this.header as DataTableHeader).value])
     }
   },
   computed: {
     inputId(): string {
-      let id: string = (this.item as translationItem).key.id + this.header.value.toString();
+      let id: string = (this.item as translationItem).key.id + (this.header as DataTableHeader).value.toString();
       if ((this.item as translationItem).quantity) {
         id += (this.item as translationItem).quantity;
       }
@@ -52,9 +54,9 @@ export default Vue.extend({
       document.getElementById(this.inputId).blur();
     },
     saveValue(): Promise<any> {
-      const previousWasEmpty = (this.item as translationItem)[this.header.value].name == "" ? this.updatedValue.name !== "" : true;
+      const previousWasEmpty = (this.item as translationItem)[(this.header as DataTableHeader).value].name == "" ? this.updatedValue.name !== "" : true;
 
-      if(this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem)[this.header.value].name) {
+      if(this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem)[(this.header as DataTableHeader).value].name) {
         this.loading = true;
 
         return this.$service.values.updateValue(this.updatedValue)
@@ -65,7 +67,7 @@ export default Vue.extend({
               setTimeout(() => this.inputIcon = "", 1000);
             })
             .catch(() => {
-              this.updatedValue = Object.assign({}, (this.item as translationItem)[this.header.value]);
+              this.updatedValue = Object.assign(Value.map({}), (this.item as translationItem)[(this.header as DataTableHeader).value]);
               this.loading = false;
               this.$notify(this.$t("errors.update_value").toString());
             });

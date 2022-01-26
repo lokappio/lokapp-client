@@ -95,7 +95,7 @@ export default Vue.extend({
           groupable: false
         }
       ] as DataTableHeader[],
-      headers: [],
+      headers: [] as DataTableHeader[],
       loading: false,
       projectId: -1,
       isOpenCreation: false
@@ -177,7 +177,7 @@ export default Vue.extend({
       this.$store.commit("UPDATE_PROJECT_VALUE", value);
     },
     filterDataWithLanguage(languageId: number): void {
-      const languages = this.$store.getters.currentProject.languages;
+      const languages: Language[] = this.$store.getters.currentProject.languages;
       this.headers = Array.from(this.basicHeaders);
 
       if (languageId == null) {

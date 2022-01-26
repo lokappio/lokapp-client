@@ -2,11 +2,11 @@ export enum ValueQuantity {
   zero = "zero", one = "one", other = "other"
 }
 
-type partialValue = Partial<Value> &
+export type partialValue = Partial<Value> &
   {
-    'quantity_string': ValueQuantity;
-    'language_id': number;
-    'language_name': string;
+    'quantity_string'?: ValueQuantity;
+    'language_id'?: number;
+    'language_name'?: string;
     'key_id'?: number;
   };
 

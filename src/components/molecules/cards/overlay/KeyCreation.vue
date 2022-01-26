@@ -136,7 +136,7 @@ export default Vue.extend({
           this.$emit('closeCreation', false)
         },
         async createKeyWithGroup(): Promise<void> {
-            if (this.$refs.formCreateKey.validate() === true) {
+            if ((this.$refs.formCreateKey as Vue & { validate: () => boolean }).validate() === true) {
                 this.loading = true;
 
                 if(this.currentGroup.id === -1) this.currentGroup.name = this.groupName;
