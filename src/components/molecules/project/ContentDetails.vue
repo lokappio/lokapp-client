@@ -31,7 +31,7 @@
 
         <template-item-values
             v-else
-            :key="`${item.key.id}_${item[header.value].id}_${header.value}`"
+            :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
             :item="item"
             :header="header"
             :projectId="projectId"
@@ -137,11 +137,12 @@ export default Vue.extend({
               const item: translationItem = {
                 "key": key,
                 "group": group,
-                "quantity": quantity
+                "quantity": quantity,
+                languages: {}
               };
 
               key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
-                item[value.languageId] = value;
+                item.languages[value.languageId] = value;
               });
 
               items.push(item);
@@ -149,11 +150,12 @@ export default Vue.extend({
           } else {
             const item: translationItem = {
               "key": key,
-              "group": group
+              "group": group,
+              languages: {}
             };
 
             key.values?.forEach((value) => {
-              item[value.languageId] = value;
+              item.languages[value.languageId] = value;
             });
 
             items.push(item);

@@ -33,7 +33,7 @@ export default Vue.extend({
     return {
       inputIcon: "",
       loading: false,
-      updatedValue: Object.assign(Value.map({}), (this.item as translationItem)[(this.header as DataTableHeader).value])
+      updatedValue: Object.assign(Value.map({}), (this.item as translationItem).languages[(this.header as DataTableHeader).value])
     }
   },
   computed: {
@@ -54,9 +54,9 @@ export default Vue.extend({
       document.getElementById(this.inputId).blur();
     },
     saveValue(): Promise<any> {
-      const previousWasEmpty = (this.item as translationItem)[(this.header as DataTableHeader).value].name == "" ? this.updatedValue.name !== "" : true;
+      const previousWasEmpty = (this.item as translationItem).languages[(this.header as DataTableHeader).value].name == "" ? this.updatedValue.name !== "" : true;
 
-      if(this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem)[(this.header as DataTableHeader).value].name) {
+      if(this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem).languages[(this.header as DataTableHeader).value].name) {
         this.loading = true;
 
         return this.$service.values.updateValue(this.updatedValue)
@@ -67,7 +67,7 @@ export default Vue.extend({
               setTimeout(() => this.inputIcon = "", 1000);
             })
             .catch(() => {
-              this.updatedValue = Object.assign(Value.map({}), (this.item as translationItem)[(this.header as DataTableHeader).value]);
+              this.updatedValue = Object.assign(Value.map({}), (this.item as translationItem).languages[(this.header as DataTableHeader).value]);
               this.loading = false;
               this.$notify(this.$t("errors.update_value").toString());
             });
