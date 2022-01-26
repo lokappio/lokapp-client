@@ -47,6 +47,10 @@ export default {
         state.currentProject.deleteKey(key);
         state.currentProject = Object.assign(Project.map({}), state.currentProject);
     },
+    DELETE_PROJECT_LANGUAGE(state: State, language: Language): void {
+        state.currentProject.deleteLanguage(language);
+        state.currentProject = Object.assign(Project.map({}), state.currentProject);
+    },
     SET_ACTUAL_LANGUAGE(state: State, language: Language): void {
         state.actualLanguage = language;
     },

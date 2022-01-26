@@ -137,4 +137,15 @@ export default class Project {
 
     this.groups[currGroupIndex].keys.splice(currKeyIndex, 1);
   }
+
+  deleteLanguage(language: Language): void {
+    const languageIndex = this.languages.indexOf(language);
+    this.languages.splice(languageIndex, 1);
+
+    this.groups.forEach((group) => {
+      group.keys.forEach((key) => {
+        key.values = key.values.filter((value) => value.languageId != language.id);
+      });
+    });
+  }
 }

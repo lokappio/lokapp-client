@@ -41,31 +41,16 @@ export default Vue.extend({
     props: {projectId: Number, dialogOpened: Boolean},
     data() {
         return {
-            languages: [],
             dialogOpenedDelete: false,
             languageToDelete: null as Language
         };
     },
-    watch: {
-        dialogOpened: {
-            immediate: true,
-            handler: function (isOpened) {
-                if (isOpened) {
-                    //ON RE-OPENED, RESET DATA
-                    this.getLanguages();
-                }
-            }
-        }
+    computed: {
+      languages(): Language[] {
+        return this.$store.getters.currentProject.languages;
+      }
     },
     methods: {
-        getLanguages(): void {
-            this.$service.languages.getLanguages(this.projectId)
-                .then((languages) => this.languages = languages)
-                .catch(() => {
-                    this.closeOverlay();
-                    this.$notify(this.$t("errors.retrieve_languages").toString());
-                });
-        },
         closeOverlay(): void {
             this.$emit("close");
         },

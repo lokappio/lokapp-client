@@ -61,6 +61,7 @@ export default Vue.extend({
 
             this.$service.languages.deleteLanguage(this.language.id, this.projectId)
                 .then(() => {
+                    this.$store.commit("DELETE_PROJECT_LANGUAGE", this.language);
                     this.comebackToLanguageManagement();
                     this.$notify(this.$t("success.language_deleted").toString());
                 }).catch((error) => {
