@@ -48,7 +48,7 @@ export default Vue.extend({
         return {
             loading: false,
             languageName: "",
-            languageNameRules: languageNameRules(this.$t("rules.required").toString(), this.$t("rules.language_name_length").toString(), this.$t("rules.only_aphabetic_characters").toString()),
+            languageNameRules: languageNameRules(),
             isBlockButton: true
         };
     },

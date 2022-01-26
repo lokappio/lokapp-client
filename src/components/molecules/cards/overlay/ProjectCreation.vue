@@ -53,7 +53,7 @@
                 <!-- ProjectLanguage -->
                 <v-row class="mt-2">
                     <v-col cols="12" class="pb-0 px-0">
-                        <span class="title-h3">{{ $t('project_creation.language_name_title') }} <span class="text-2 grey-color"> {{ $t('common.optional') }}</span></span>
+                        <span class="title-h3">{{ $t('project_creation.language_name_title') }}</span>
                     </v-col>
                 </v-row>
 
@@ -101,7 +101,7 @@
 import ProjectCompact from "@/data/models/api/ProjectCompact";
 import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
-import {optionalLanguageRules} from "@/data/rules/LanguageRules";
+import {languageNameRules, optionalLanguageRules} from "@/data/rules/LanguageRules";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -112,7 +112,7 @@ export default Vue.extend({
             loading: false,
             projectName: "",
             projectNameRules: projectNameRules(this.$t("rules.required").toString(), this.$t("rules.project_name_length").toString()),
-            languageRules: optionalLanguageRules(this.$t("rules.language_name_length").toString(), this.$t("rules.only_aphabetic_characters").toString()),
+            languageRules: languageNameRules(),
             colorRules: colorRules(this.$t("rules.required").toString(), this.$t("rules.color_length").toString(), this.$t("rules.not_hexa_value").toString()),
             isBlockButton: true,
             colorPicker: false,
@@ -152,7 +152,7 @@ export default Vue.extend({
                     name: this.projectName, 
                     color: this.actualColor, 
                     description: this.projectDescription},
-                    this.projectLanguage)
+                )
                 .then((response) => {
                     this.loading = false;
                     this.closeCreationProject();
