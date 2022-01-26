@@ -66,7 +66,7 @@ export default Vue.extend({
         deleteUser(): void {
             this.$service.projects.removeUserFromProject(this.projectId, this.user.userId)
             .then(() => {
-                this.$notify(this.$t("success.user_delete") as string);
+                this.$notify(this.$t("success.user_delete").toString());
             }).catch((error) => {
                 if (error.response) {
                     switch (error.response.status) {

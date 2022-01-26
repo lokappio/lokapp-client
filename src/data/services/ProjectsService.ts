@@ -86,9 +86,7 @@ class ProjectsService {
 
     public static getUsersOfProject(projectId: number): Promise<Array<ProjectUser>> {
         return ApiService.getAPI(`${ProjectsService.projectsUrl}/${projectId}/users`)
-        .then((response) => {
-            return response.data.map((item) => ProjectUser.map(item))
-        });
+        .then((response) => response.data.map((item: Partial<ProjectUser>) => ProjectUser.map(item)));
     }
 
     public static updateRoleOfUser(projectId: number, targetId: string, role: Role): Promise<ProjectUser> {
@@ -96,12 +94,10 @@ class ProjectsService {
             "role": role as string
         };
         return ApiService.patchAPI(`${ProjectsService.projectsUrl}/${projectId}/users/${targetId}`, bodyParameters)
-        .then((response) => {
-            return ProjectUser.map(response.data);
-        });
+        .then((response) => ProjectUser.map(response.data));
     }
 
-    public static removeUserFromProject(projectId: number, targetId: string): Promise<AxiosResponse<any>> {
+    public static removeUserFromProject(projectId: number, targetId: string): Promise<any> {
         return ApiService.delAPI(`${ProjectsService.projectsUrl}/${projectId}/users/${targetId}`);
     }
 }

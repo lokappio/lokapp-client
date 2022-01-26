@@ -36,6 +36,7 @@
     "success": {
         "copy": "Texte copié",
         "files_generated": "Fichiers générés avec succès",
+        "user_delete": "L'utilisateur a été supprimé du projet",
         "invitation_accepted": "Invitation acceptée",
         "invitation_created": "Invitation envoyée",
         "invitation_declined": "Invitation déclinée",

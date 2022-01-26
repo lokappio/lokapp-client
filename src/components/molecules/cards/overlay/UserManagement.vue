@@ -5,7 +5,7 @@
         </v-dialog>
 
         <v-dialog v-model="openDialogDelete" width="500px">
-            <UserDelete :project-id="projectId" :user="userToDelete" :dialog-opened="openDialogDelete" @closeDelete="() => this.openDialogDelete = false"/>
+            <UserDelete :project-id="projectId" :user="userToDelete" :dialog-opened="openDialogDelete" @closeDelete="closeDelete"/>
         </v-dialog>
 
         <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
@@ -34,7 +34,7 @@
                                 <v-col cols="5">
                                     <v-select
                                         hide-details="true"
-                                        :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId"
+                                        :disabled="isUserUpdateRoleDisabled(user)"
                                         light
                                         solo
                                         v-model="user.role"
@@ -65,7 +65,7 @@
                                 </v-col>
 
                                 <v-col cols="auto">
-                                    <v-btn color="error" :disabled="isInvitationDisabled()" @click="deleteInvitation(invitation)">
+                                    <v-btn color="error" :disabled="isInvitationDisabled" @click="deleteInvitation(invitation)">
                                         {{ $t("users_manage.delete_invitation") }}
                                     </v-btn>
                                 </v-col>
@@ -74,7 +74,7 @@
                     </v-list-item>
                 </v-list>
 
-                <v-card-actions class="mt-0 ml-0 pl-0 pb-0 justify-start" v-if="canCreateInvitation()">
+                <v-card-actions class="mt-0 ml-0 pl-0 pb-0 justify-start" v-if="canCreateInvitation">
                     <v-btn class="pl-0" x-large color="maincolor" icon @click="() => this.openDialogInvitation = true">
                         <v-icon color="maincolor" x-large>mdi-plus-circle</v-icon>
                     </v-btn>
@@ -123,48 +123,33 @@ export default Vue.extend({
         return  Object.values(Role).map((role: string) => {
           return {text: this.$t(`users_manage.role_${getRoleEnum(role)}`).toString(), value: role};
         });
-      }
+      },
+      isInvitationDisabled(): boolean {
+        return this.me.roleAbility ? !(this.me.roleAbility.canWriteInvitation): false;
+      },
+      canCreateInvitation(): boolean {
+        return this.me.role ? this.me.roleAbility.canWriteInvitation : false;
+      },
     },
     methods: {
         deleteInvitation(invitation: ProjectUser) {
             this.$service.invitations.deleteInvitation(this.projectId, invitation.invitationId)
-                .then(() => {
-                    this.refresh();
-                }).catch((error) => {
-                if (error.response) {
-                    switch (error.response.status) {
-                        case 403:
-                            this.$notify(this.$t("errors.unauthorized") as string);
-                            break;
-                        default:
-                            this.$notify(this.$t("errors.unknown_error") as string);
-                            break;
-                    }
-                    this.refresh();
-                }
-            });
+                .then(() => this.refresh())
+                .catch((error) => {
+                  if (error.response) {
+                      switch (error.response.status) {
+                          case 403:
+                              this.$notify(this.$t("errors.unauthorized") as string);
+                              break;
+                          default:
+                              this.$notify(this.$t("errors.unknown_error") as string);
+                              break;
+                      }
+                  }
+                });
         },
         isUserUpdateRoleDisabled(user: ProjectUser): boolean {
-            if (this.me.roleAbility.canWriteUser === false) {
-                return true;
-            }
-
-            if (user.role === Role.OWNER) {
-                return true;
-            }
-            return false;
-        },
-        isInvitationDisabled(): boolean {
-            if (this.me.roleAbility) {
-                return !(this.me.roleAbility.canWriteInvitation);
-            }
-            return false;
-        },
-        canCreateInvitation(): boolean {
-            if (this.me.role) {
-                return (this.me.roleAbility.canWriteInvitation);
-            }
-            return false;
+            return (!this.me.roleAbility.canWriteUser ? true : user.role === Role.OWNER) || user.userId === this.me.userId;
         },
         closeManageUsers() {
             this.$emit("close");
@@ -231,6 +216,10 @@ export default Vue.extend({
         deleteUser(user: ProjectUser) {
             this.userToDelete = user;
             this.openDialogDelete = true;
+        },
+        closeDelete() {
+          this.openDialogDelete = false;
+          this.refresh();
         }
     }
 });
