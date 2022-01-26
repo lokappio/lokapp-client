@@ -49,7 +49,7 @@ export default Vue.extend({
     return {
       isActive: false,
       updateName: "",
-      groupNameRules: groupNameRules(this.$t("rules.group_name_length").toString(), this.$t("rules.snake_case_only").toString())
+      groupNameRules: groupNameRules()
     };
   },
   computed: {

@@ -73,7 +73,7 @@ export default Vue.extend({
     data() {
         return {
             email: "",
-            emailRules: userEmailRules(this.$t("rules.mail_valid") as string),
+            emailRules: userEmailRules(),
             roles: [],
             role: null,
             loading: false,

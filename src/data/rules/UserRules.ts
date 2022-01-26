@@ -1,25 +1,25 @@
 import i18n from "@/i18n";
 
-export const userEmailRules = (notValid: string) => [
+export const userEmailRules = () => [
     (v: string) => !!v || i18n.tc('rules.required'),
-    (v: string) => /.+@.+\..+/.test(v) || notValid,
+    (v: string) => /.+@.+\..+/.test(v) || i18n.tc("rules.mail_valid"),
 ];
 
 export const userPasswordLoginRules = () => [
     (v: string) => !!v || i18n.tc('rules.required')
 ];
 
-export const userPasswordRules = (length: string, strong: string) => [
+export const userPasswordRules = () => [
     (v: string) => !!v || i18n.tc('rules.required'),
-    (v: string) => v.length >= 6 || length,
-    (v: string) => /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{6}/.test(v) || strong
+    (v: string) => v.length >= 6 || i18n.tc("rules.password_length"),
+    (v: string) => /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{6}/.test(v) || i18n.tc("rules.password_strong")
 ];
 
-export const userPasswordCopyRules = (userPassword: string, identical: string) => [
+export const userPasswordCopyRules = (userPassword: string) => [
     (v: string) => !!v || i18n.tc('rules.required'),
-    (v: string) => v === userPassword || identical
+    (v: string) => v === userPassword || i18n.tc("rules.password_identical")
 ];
 
-export const optionalUsernameRules = (length: string) => [
-    (v: string) => (!v || v.length === 0 ||(/(?=.*[a-z]).{3}/.test(v))) || length
+export const optionalUsernameRules = () => [
+    (v: string) => (!v || v.length === 0 ||(/(?=.*[a-z]).{3}/.test(v))) || i18n.tc("rules.username_length")
 ];

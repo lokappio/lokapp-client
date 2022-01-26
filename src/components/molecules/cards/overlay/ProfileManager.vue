@@ -71,7 +71,7 @@ export default Vue.extend({
     return {
       user: null as ProjectUser,
       username: "",
-      usernameRules: optionalUsernameRules(this.$t("rules.username_length").toString()),
+      usernameRules: optionalUsernameRules(),
       loading: false
     };
   },

@@ -42,7 +42,7 @@ export default Vue.extend({
       updateKey: Object.assign(Key.map({}), (this.item as translationItem).key),
       loading: false,
       inputIcon: "",
-      keyNameRules: keyNameRules(this.$t("rules.key_name_length").toString(), this.$t("rules.snake_case_only").toString())
+      keyNameRules: keyNameRules()
     };
   },
   watch: {

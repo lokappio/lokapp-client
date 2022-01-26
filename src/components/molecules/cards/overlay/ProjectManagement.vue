@@ -108,8 +108,8 @@ export default Vue.extend({
         {color: "B662D3"}
       ],
 
-      projectNameRules: projectNameRules(this.$t("rules.project_name_length").toString()),
-      colorRules: colorRules(this.$t("rules.color_length").toString(), this.$t("rules.not_hexa_value").toString()),
+      projectNameRules: projectNameRules(),
+      colorRules: colorRules(),
       loading: false
     };
   },

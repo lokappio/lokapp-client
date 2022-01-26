@@ -50,7 +50,7 @@ export default Vue.extend({
     data() {
         return {
             sendEmail: "",
-            emailRules: userEmailRules(this.$t("rules.mail_valid").toString()),
+            emailRules: userEmailRules(),
             loading: false
         }
     },

@@ -67,16 +67,16 @@ export default Vue.extend({
 
             //Login/Inscription
             email: "",
-            emailRules: userEmailRules(this.$t("rules.mail_valid").toString()),
+            emailRules: userEmailRules(),
 
             passwordLogin: "",
             passwordLoginRules: userPasswordLoginRules(),
 
             password: "",
-            passwordRules: userPasswordRules(this.$t("rules.password_length").toString(), this.$t("rules.password_strong").toString()),
+            passwordRules: userPasswordRules(),
 
             passwordCopy: "",
-            passwordCopyRules: userPasswordCopyRules(this.password, this.$t("rules.password_identical").toString()),
+            passwordCopyRules: userPasswordCopyRules(this.password),
 
             pseudo: null,
 

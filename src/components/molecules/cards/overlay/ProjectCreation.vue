@@ -111,9 +111,9 @@ export default Vue.extend({
         return {
             loading: false,
             projectName: "",
-            projectNameRules: projectNameRules(this.$t("rules.project_name_length").toString()),
+            projectNameRules: projectNameRules(),
             languageRules: languageNameRules(),
-            colorRules: colorRules(this.$t("rules.color_length").toString(), this.$t("rules.not_hexa_value").toString()),
+            colorRules: colorRules(),
             isBlockButton: true,
             colorPicker: false,
             colors: [
