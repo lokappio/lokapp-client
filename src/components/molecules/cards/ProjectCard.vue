@@ -1,7 +1,7 @@
 <template>
     <div class="full-contain">
         <v-dialog v-model="dialogOpened" max-width="500px">
-            <ProjectCreation :dialog-opened="dialogOpened" @closeDelete="() => this.dialogOpened = false"/>
+            <ProjectManagement :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
         </v-dialog>
 
         <v-card v-if="project" class="pa-2 card-project-style full-contain background-color-white">
@@ -39,12 +39,12 @@ import {firstChar} from "@/data/helpers/stringFormatting";
 import ProjectSettingsButton from "@/components/molecules/buttons/ProjectSettingsButton.vue";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
-import ProjectCreation from "@/components/molecules/cards/overlay/ProjectCreation.vue";
+import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
 
 export default Vue.extend(
     {
         name: "project-card",
-        components: {ProjectCreation, ProjectSettingsButton},
+        components: {ProjectManagement, ProjectSettingsButton},
         props: {project: Project},
         data() {
             return {

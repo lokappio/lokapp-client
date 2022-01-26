@@ -29,16 +29,16 @@ export default class Project {
   createdAt: Date;
   updatedAt: Date;
   description: string;
-  languages: Language[];
+  languages: Language[] = [];
   groups: Group[];
 
   static map(data: Partial<Project>): Project {
     const project: Project = new Project();
 
     project.id = data.id;
-    project.name = data.name;
-    project.color = data.color;
-    project.description = data.description;
+    project.name = data?.name ?? "";
+    project.color = data?.color ?? "";
+    project.description = data?.description ?? "";
     project.createdAt = data.createdAt;
     project.updatedAt = data.updatedAt;
 
@@ -146,5 +146,13 @@ export default class Project {
         key.values = key.values.filter((value) => value.languageId != language.id);
       });
     });
+  }
+
+  toCreate(): {} {
+    return {
+      name: this.name,
+      color: this.color,
+      description: this.description,
+    }
   }
 }

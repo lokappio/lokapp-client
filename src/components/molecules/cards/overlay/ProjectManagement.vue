@@ -23,8 +23,16 @@
 
         <v-row class="mt-0">
           <v-col cols="12" class="pa-0">
-            <v-text-field class="custom-text-field" background-color="#F2F3F7" v-model="updatedProject.name" :rules="projectNameRules" :label="$t('project_creation.project_name_label')" solo flat
-                          required></v-text-field>
+            <v-text-field
+                class="custom-text-field"
+                background-color="#F2F3F7"
+                v-model="updatedProject.name"
+                :rules="projectNameRules"
+                :label="$t('project_creation.project_name_label')"
+                solo
+                flat
+                required
+            ></v-text-field>
           </v-col>
         </v-row>
 
@@ -42,15 +50,40 @@
         </v-row>
 
         <v-row class="pt-4" justify="space-between">
-          <v-col v-for="color in colors" :key="color.color" cols="2" class="pb-0 pt-0 px-0">
-            <v-btn class="button-color-picker" :color="'#' + `${color.color}`" width="100%" height="100%" @click="() => {updatedProject.color = color.color; this.writtenColor = color.color;}"
-                   depressed></v-btn>
+          <v-col v-for="color in colors" :key="color" cols="2" class="pb-0 pt-0 px-0">
+            <v-btn
+                class="button-color-picker"
+                :color="'#' + `${color}`"
+                width="100%"
+                height="100%"
+                @click="writtenColor = color"
+                depressed
+            ></v-btn>
           </v-col>
         </v-row>
 
         <v-row class="pt-3" justify="space-between">
           <v-col cols="12" class="pa-0">
             <v-text-field :rules="colorRules" class="custom-text-field" background-color="#F2F3F7" v-model="writtenColor" solo flat prefix="#"></v-text-field>
+          </v-col>
+        </v-row>
+
+        <!-- LANGUAGE -->
+        <v-row class="mt-2" v-if="isCreating">
+          <v-col cols="12" class="pb-0 px-0">
+            <span class="title-h3">{{ $t('project_creation.language_name_title') }}</span>
+          </v-col>
+
+          <v-col cols="12" class="py-0 px-0">
+            <v-text-field
+                class="custom-text-field"
+                background-color="#F2F3F7"
+                v-model="languageName"
+                :rules="languageRules"
+                :label="$t('project_creation.language_name_label')"
+                solo
+                flat
+            ></v-text-field>
           </v-col>
         </v-row>
 
@@ -77,9 +110,12 @@
 
         <!-- ValidateButton -->
         <v-row class="mt-0 pb-0">
-          <v-col cols="12" class="pb-0 px-0">
-            <action-button block :loading="loading" :handler="update" :text="$t('project_manage.change_settings_button')"/>
-          </v-col>
+            <action-button
+                block
+                :loading="loading"
+                :handler="isCreating ? createNewProject : update"
+                :text="isCreating ? $tc('project_creation.confirm_button') : $tc('project_manage.change_settings_button')"
+            />
         </v-row>
       </v-form>
     </v-container>
@@ -91,6 +127,7 @@ import {projectNameRules} from "@/data/rules/ProjectRules";
 import {colorRules} from "@/data/rules/ColorRules";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
+import {languageNameRules} from "@/data/rules/LanguageRules";
 
 export default Vue.extend({
   name: "project-management",
@@ -99,17 +136,13 @@ export default Vue.extend({
     return {
       updatedProject: null as Project,
       writtenColor: "",
+      languageName: "",
 
-      colors: [
-        {color: "EA1B32"},
-        {color: "183BB6"},
-        {color: "67DA97"},
-        {color: "FDC24E"},
-        {color: "B662D3"}
-      ],
+      colors: ["EA1B32", "183BB6","67DA97","FDC24E","B662D3"],
 
       projectNameRules: projectNameRules(),
       colorRules: colorRules(),
+      languageRules: languageNameRules(),
       loading: false
     };
   },
@@ -123,10 +156,16 @@ export default Vue.extend({
       immediate: true,
       handler: function (isOpened) {
         if (isOpened) {
-          this.updatedProject = Project.map(this.project);
-          this.writtenColor = this.project.color;
+          this.updatedProject = Project.map(this.project ?? {color: this.colors[0]});
+          this.writtenColor = this.project?.color ?? this.colors[0];
+          this.languageName = "";
         }
       }
+    }
+  },
+  computed: {
+    isCreating(): boolean {
+      return !this.project;
     }
   },
   methods: {
@@ -152,6 +191,23 @@ export default Vue.extend({
             .finally(() => {
               this.loading = false;
             });
+      }
+    },
+    createNewProject() {
+      if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
+        this.loading = true;
+        this.$service.projects.createProject(this.updatedProject, this.languageName)
+            .then((project) => {
+              this.loading = false;
+              this.closeManageProject();
+              this.$notify(this.$t("success.project_created").toString());
+
+              this.$router.push(`/projects/${project.id}`);
+            }).catch(() => {
+          this.$notify(this.$t("errors.unknown_error").toString());
+        }).finally(() => {
+          this.loading = false;
+        })
       }
     },
     closeManageProject() {

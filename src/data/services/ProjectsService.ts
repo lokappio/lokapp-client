@@ -20,17 +20,9 @@ class ProjectsService {
         .then((response) => response.data.map((item: any) => Project.map(item)))
     }
 
-    public static createProject(project: Project, projectLanguage: string): Promise<AxiosResponse> {
-        let bodyParameters: any = {};
-        bodyParameters = {
-            name: project.name,
-            color: project.color,
-            description: project.description
-        };
-        if (projectLanguage) {
-            bodyParameters["language"] = projectLanguage;
-        }
-        return ApiService.postAPI(ProjectsService.projectsUrl, bodyParameters);
+    public static async createProject(project: Project, language: string): Promise<Project> {
+        const result = await ApiService.postAPI(ProjectsService.projectsUrl, {...project.toCreate(), language});
+        return Project.map(result.data);
     }
 
     public static getProjectById(projectId: number): Promise<Project> {
