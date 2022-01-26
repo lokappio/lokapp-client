@@ -20,7 +20,7 @@ class ProjectsService {
         .then((response) => response.data.map((item: any) => Project.map(item)))
     }
 
-    public static createProject(project: Project, projectLanguage: string): Promise<AxiosResponse<any>> {
+    public static createProject(project: Project, projectLanguage: string): Promise<AxiosResponse> {
         let bodyParameters: any = {};
         bodyParameters = {
             name: project.name,
@@ -72,11 +72,11 @@ class ProjectsService {
         .then((response) => Project.map(response.data))
     }
 
-    public static deleteProject(projectID: number): Promise<AxiosResponse<any>>{
+    public static deleteProject(projectID: number): Promise<AxiosResponse>{
         return ApiService.delAPI(ProjectsService.projectsUrl + "/" + projectID);
     }
 
-    public static leaveProject(projectId: number): Promise<AxiosResponse<any>> {
+    public static leaveProject(projectId: number): Promise<AxiosResponse> {
         return ApiService.postAPI(`${ProjectsService.projectsUrl}/${projectId}/leave`, {});
     }
 

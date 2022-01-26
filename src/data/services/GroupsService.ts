@@ -26,7 +26,7 @@ class GroupsService {
         return Group.map(result.data);
     }
 
-    public static updateGroup(groupId: number, groupName: string): Promise<AxiosResponse<any>> {
+    public static updateGroup(groupId: number, groupName: string): Promise<AxiosResponse> {
         const bodyParameters = {
             name: groupName
         };

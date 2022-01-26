@@ -7,14 +7,14 @@ import ApiService from "./ApiService";
 class InvitationsService {
     static invitationsUrl: string = config.baseUrl + "/invitations";
 
-    public static deleteInvitation(projectId: number, invitationId: number): Promise<AxiosResponse<any>> {
+    public static deleteInvitation(projectId: number, invitationId: number): Promise<AxiosResponse> {
         const bodyParameters = {
             "project_id": projectId
         };
         return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`, bodyParameters);
     }
 
-    public static createInvitation(projectId: number, email: string, role: Role): Promise<AxiosResponse<any>> {
+    public static createInvitation(projectId: number, email: string, role: Role): Promise<AxiosResponse> {
         const bodyParameters = {
             "project_id": projectId,
             "email": email,
@@ -32,11 +32,11 @@ class InvitationsService {
         })
     }
 
-    public static acceptInvitation(invitation: Invitation): Promise<AxiosResponse<any>> {
+    public static acceptInvitation(invitation: Invitation): Promise<AxiosResponse> {
         return ApiService.postAPI(`${InvitationsService.invitationsUrl}/${invitation.id}/accept`, {});
     }
 
-    public static declineInvitation(invitation: Invitation): Promise<AxiosResponse<any>> {
+    public static declineInvitation(invitation: Invitation): Promise<AxiosResponse> {
         return ApiService.postAPI(`${InvitationsService.invitationsUrl}/${invitation.id}/decline`, {});
     }
 }
