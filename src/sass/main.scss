@@ -16,7 +16,7 @@
     src: local("Nobile"), url("../../public/fonts/Nobile/Nobile-Medium.ttf") format("truetype");
 }
 * {
-    font-family: Nobile;
+    font-family: Nobile, serif;
     font-style: normal;
     font-weight: normal;
     text-transform: none !important;
@@ -33,7 +33,6 @@
     font-size: 18px !important;
     line-height: 20px;
     letter-spacing: 0.05em;
-    color: #000000;
     margin-bottom: 16px;
 }
 .trad-text-field input {
@@ -112,34 +111,9 @@
     color: rgba(0, 0, 0, 0.3);
 }
 
-.theme--dark.v-input input, .theme--dark.v-input textarea {
-    font-size: 16px;
-    line-height: 18px;
-    letter-spacing: 0.05em;
-    color: black;
-}
-
 //Setup Colors
-.background-color-red {
-    background-color: red !important;
-}
-.background-color-yellow {
-    background-color: yellow !important;
-}
-.background-color-green {
-    background-color: green !important;
-}
-.background-color-blue {
-    background-color: blue !important;
-}
-.background-color-orange {
-    background-color: orange !important;
-}
 .background-color-white {
     background-color: white !important;
-}
-.background-color-black {
-    background-color: black !important;
 }
 
 //Setup Size
@@ -167,28 +141,4 @@
 .custom-text-field {
     caret-color: black !important;
     color: black !important;
-}
-
-@media #{map-get($display-breakpoints, 'xs-only')} {
-    .theme--dark.v-input input, .theme--dark.v-input textarea {
-        font-size: 14px;
-    }
-    .title-h1 {
-        font-size: 22px;
-    }
-    .title-h3 {
-        font-size: 16px;
-    }
-    
-}
-@media #{map-get($display-breakpoints, 'xl-only')} {
-    .theme--dark.v-input input, .theme--dark.v-input textarea {
-        font-size: 1rem;
-    }
-    .title-h1 {
-        font-size: 2rem;
-    }
-    .title-h3 {
-        font-size: 1rem;
-    }
 }

@@ -7,11 +7,12 @@ Vue.use(Notify, { $vuetify: new Vuetify().framework });
 
 export default new Vuetify({
     theme: {
+        options: { customProperties: true },
         themes: {
             light: {
                 primary: '#02188C',
                 maincolor: '#02188C',
             },
-        }
+        },
     }
 });

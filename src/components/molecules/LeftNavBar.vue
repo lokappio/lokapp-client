@@ -1,11 +1,12 @@
 <template>
-    <div class="left-nav-bar mt-10">
+    <div class="left-nav-bar">
         <v-img
             class="logo-style set-cursor-pointer"
             src="/assets/img/logo-white.svg"
             :min-height=20
             :min-width=20
             :max-height=50
+            :max-width="50"
             @click="redirectToDashboard"
             contain>
         </v-img>
@@ -32,16 +33,9 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~vuetify/src/styles/styles.sass';
     .left-nav-bar {
-        width: 8vw;
-        height: 94vh;
-        float: left;
-        position: relative;
+        height: 100%;
     }
     .set-cursor-pointer {
         cursor: pointer;
-    }
-    .locale-switcher {
-        position: absolute;
-        bottom: 0;
     }
 </style>

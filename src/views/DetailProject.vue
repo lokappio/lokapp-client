@@ -95,10 +95,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-
 .full-screen-container {
-    background-color: #02188C;
+    background-color: var(--primary-base);
     width: 100vw;
     height: 100vh;
 }
@@ -106,10 +104,7 @@ export default Vue.extend({
 .card-style-content {
     width: 92vw;
     height: 100%;
-    border-top-left-radius: 15px !important;
-    border-bottom-left-radius: 15px !important;
-    border-top-right-radius: 0px !important;
-    border-bottom-right-radius: 0px !important;
+  border-radius: 15px 0 0 15px;
 }
 
 .card-container {
@@ -145,14 +140,4 @@ export default Vue.extend({
     height: 85%;
 }
 
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .card-style-content {
-        width: 100vw;
-        border-top-left-radius: 0px !important;
-        border-bottom-left-radius: 0px !important;
-    }
-    .search-bar-height {
-        height: 40%;
-    }
-}
 </style>

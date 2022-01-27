@@ -13,6 +13,10 @@ export default class ProjectUser {
         return getRoleClass(this.role);
     }
 
+    get name(): string {
+        return this?.username ?? this?.email ?? "";
+    }
+
     public static map(data: Partial<ProjectUser> & {id: string}): ProjectUser {
         const user: ProjectUser = new ProjectUser();
 

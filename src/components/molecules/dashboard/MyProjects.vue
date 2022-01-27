@@ -126,9 +126,7 @@ export default Vue.extend({
 
 .project-card-col {
     height: 120px;
-    padding: 0px;
-    padding-right: 10px;
-    padding-left: 10px;
+    padding: 0 10px;
     margin-bottom: 10px;
     margin-top: 15px;
     border-radius: 5px;
