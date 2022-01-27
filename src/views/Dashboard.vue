@@ -1,15 +1,15 @@
 <template>
-  <v-container fluid class="full-screen-container px-0 py-3">
+  <v-container fluid class="full-screen-container px-0">
     <v-row class="fill-height">
       <v-col class="fill-height" cols="auto">
         <left-nav-bar/>
       </v-col>
 
       <v-col class="fill-height">
-        <v-card class="card-style-content background-color-white fill-height my-2">
-          <v-row>
+        <v-card class="card-style-content background-color-white fill-height">
+          <v-row no-gutters>
             <v-col cols="12">
-              <header-banner class="ma-5"/>
+              <header-banner/>
             </v-col>
 
             <v-col cols="12">

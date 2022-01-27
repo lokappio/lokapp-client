@@ -4,7 +4,7 @@
       <ProfileManager :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
     </v-dialog>
 
-    <div>
+    <div class="pa-5">
       <v-row>
         <v-col cols="12" md="6">
           <v-row>
