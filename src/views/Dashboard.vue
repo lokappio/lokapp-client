@@ -1,21 +1,19 @@
 <template>
   <v-container fluid class="full-screen-container px-0">
-    <v-row class="fill-height">
+    <v-row class="fill-height" no-gutters>
       <v-col class="fill-height" cols="auto">
         <left-nav-bar/>
       </v-col>
 
       <v-col class="fill-height">
-        <v-card class="card-style-content background-color-white fill-height">
-          <v-row no-gutters>
-            <v-col cols="12">
-              <header-banner/>
-            </v-col>
+        <v-card class="box card-style-content background-color-white fill-height px-5 pt-5">
+            <div class="row header">
+              <header-banner />
+            </div>
 
-            <v-col cols="12">
+            <div class="row content">
               <my-projects/>
-            </v-col>
-          </v-row>
+            </div>
         </v-card>
       </v-col>
     </v-row>
@@ -49,6 +47,23 @@ export default Vue.extend({
   background-color: var(--v-primary-base);
   width: 100vw;
   height: 100vh;
+}
+
+.box {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.row {
+  margin: 0 !important;
+}
+
+.row.header {
+  flex: 0 1 auto;
+}
+.row.content {
+  flex: 1 1 auto;
 }
 
 .card-style-content {

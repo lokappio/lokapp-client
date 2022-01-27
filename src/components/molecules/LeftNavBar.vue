@@ -1,5 +1,5 @@
 <template>
-  <div class="left-nav-bar mx-2">
+  <div class="left-nav-bar mx-5">
     <v-img
         class="logo-style set-cursor-pointer"
         src="/assets/img/logo-white.svg"

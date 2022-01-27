@@ -1,13 +1,12 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-dialog v-model="dialogOpened" max-width="500px">
       <ProfileManager :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
     </v-dialog>
 
-    <div class="pa-5">
-      <v-row>
+      <v-row no-gutters>
         <v-col cols="12" md="6">
-          <v-row>
+          <v-row >
             <v-col cols="auto">
               <v-btn @click="() => this.dialogOpened = true" color="primary" fab depressed>
                 <v-icon large>mdi-account</v-icon>
@@ -43,8 +42,7 @@
           </v-row>
         </v-col>
       </v-row> -->
-    </div>
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">

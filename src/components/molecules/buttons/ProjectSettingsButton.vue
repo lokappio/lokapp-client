@@ -19,8 +19,8 @@
     </v-dialog>
 
     <v-menu :nudge-width="200" transition="slide-x-transition">
-      <template v-slot:[`activator`]="{on, attrs}">
-        <v-btn color="black" class="full-contain-icon" v-bind="attrs" v-on="on" @click="getMe" icon>
+      <template v-slot:[`activator`]="{on}">
+        <v-btn color="black" v-on="on" @click="getMe" icon>
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>

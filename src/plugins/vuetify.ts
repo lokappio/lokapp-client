@@ -12,6 +12,8 @@ export default new Vuetify({
             light: {
                 primary: '#02188C',
                 maincolor: '#02188C',
+                background:'#FAF8F9',
+                inputBackground: '#F2F3F7'
             },
         },
     }
