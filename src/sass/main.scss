@@ -63,8 +63,8 @@
 }
 
 //Setup .v-text-field
-.custom-text-field.v-text-field .input {
-    padding-left: 2px;
+.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat) > .v-input__control > .v-input__slot {
+    box-shadow: 0 4px 4px rgba(203, 203, 203, 0.25) !important;
 }
 .custom-text-field.v-text-field.v-text-field--enclosed .v-input__slot {
     padding-left: 12px !important;
