@@ -8,20 +8,19 @@
       <!-- LeftPart -->
       <v-col cols="12" md="6" class="pr-3">
           <span class="title-h2 primary--text">{{ currentProject.name }}</span>
-          <project-settings-button :project="currentProject" :from-store="true"/>
+          <project-settings-button class="d-inline" :project="currentProject" :from-store="true"/>
 
           <p class="text-2 description-style">{{ currentProject.description }}</p>
-
       </v-col>
 
       <!-- RightPart -->
       <v-col cols="12" md="6">
-        <v-row no-gutters>
-          <v-col cols="10">
+        <v-row no-gutters justify="space-between">
+          <v-col cols="9">
             <v-text-field clearable solo v-model="searchValue" height="50" :label="$t('common.search_label')"></v-text-field>
           </v-col>
 
-          <v-col cols="2">
+          <v-col cols="auto" class="mr-4">
             <v-btn @click="() => this.dialogOpened = true" height="50" color="primary"><v-icon color="white">mdi-download</v-icon></v-btn>
           </v-col>
         </v-row>

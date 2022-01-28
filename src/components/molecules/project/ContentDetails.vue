@@ -226,6 +226,7 @@ export default Vue.extend({
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   background-color: var(--v-background-base);
+  height: 100%;
 }
 
 @mixin styling($base-height) {
@@ -244,15 +245,16 @@ export default Vue.extend({
   @include styling($base-height: 200px);
 }
 
+@media #{map-get($display-breakpoints, 'md-and-up')} {
+  @include styling($base-height: 120px);
+}
+
 .no-data-button {
   margin-left: 45%;
 }
 
-.my-table {
-  width: 100%;
-}
 .v-data-table--fixed-header thead th {
-  background: #FAF8F9 !important;
+  background: var(--v-background-base) !important;
 }
 
 .my-custom-table {
@@ -261,6 +263,7 @@ export default Vue.extend({
 
   .v-data-table__wrapper {
     height: 100% !important;
+    overflow-y: scroll;
   }
 
   table {
@@ -268,6 +271,7 @@ export default Vue.extend({
   }
 }
 
+//.v-data-table--fixed-header > .v-data-table__wrapper {overflow-y: scroll;}
 .v-row-group__summary {
   background-color: transparent !important;
 }
