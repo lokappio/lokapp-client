@@ -24,7 +24,7 @@
     </v-card>
 
     <!-- CREATE PROJECT BTN -->
-    <v-card v-else class="fill-height custom-cards empty set-cursor-pointer" @click="openCreateProject">
+    <v-card v-else class="fill-height custom-cards-project empty set-cursor-pointer" @click="openCreateProject">
       <v-row no-gutters align="center" justify="center" class="fill-height">
         <v-icon color="primary" large>mdi-plus-circle</v-icon>
       </v-row>
