@@ -1,33 +1,34 @@
 <template>
-    <v-container fluid class="full-screen-container px-0 py-0 py-md-3">
-        <left-nav-bar v-if="$vuetify.breakpoint.mdAndUp"/>
-        <v-card class="card-style-content background-color-white px-6 pt-16 mr-0 ml-auto">
+  <v-container fluid class="full-screen-container px-0">
+    <v-row class="fill-height" no-gutters>
+      <v-col cols="auto">
+        <left-nav-bar/>
+      </v-col>
 
-            <v-container v-if="!loading" class="ma-0 pa-0 full-contain card-container">
-                <v-row class="ma-0 mb-4 row-header-style">
-                    <header-banner projectDetail/>
-                </v-row>
+      <v-col>
+        <v-card class="box card-style-content background-color-white fill-height px-5 pt-5">
+          <template v-if="!loading">
+            <div class="row header">
+              <header-banner projectDetail/>
+              <languages-group/>
+            </div>
 
-                <v-row class="ma-0 pl-0 pl-md-10  row-languages-style">
-                    <languages-group/>
-                </v-row>
+            <div class="row content">
+              <content-details/>
+            </div>
+          </template>
 
-                <v-row class="ma-0 px-8 pt-8 row-content-style">
-
-                    <!-- Header -->
-                    <v-row class="ma-0 header-row-detail-style">
-                        <Header/>
-                    </v-row>
-
-                    <!-- Keys/Values -->
-                    <v-row class="ma-0 keys-row-detail-style">
-                        <content-details/>
-                    </v-row>
-                </v-row>
-
-            </v-container>
+          <template v-else>
+            <v-row no-gutters>
+              <v-col cols="12" class="text-center">
+                <v-progress-circular color="primary" indeterminate></v-progress-circular>
+              </v-col>
+            </v-row>
+          </template>
         </v-card>
-    </v-container>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -35,7 +36,6 @@ import {Vue} from "vue-property-decorator";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
-import Header from "@/components/molecules/project/DetailHeader.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
 import {MetaInfo} from "vue-meta";
 import Project from "@/data/models/api/Project";
@@ -52,7 +52,6 @@ export default Vue.extend({
         LeftNavBar,
         HeaderBanner,
         LanguagesGroup,
-        Header,
         ContentDetails
     },
     data() {
@@ -95,49 +94,46 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+@import '~vuetify/src/styles/settings/_variables';
+
 .full-screen-container {
-    background-color: var(--primary-base);
+    background-color: var(--v-primary-base);
     width: 100vw;
     height: 100vh;
 }
 
+.row {
+  margin-bottom: 0 !important;
+  margin-left: 12px;
+}
+
+@mixin styling($base-height) {
+  .row.header {
+    height: $base-height;
+  }
+  .row.content {
+    position: absolute;
+    top: $base-height;
+    bottom: 0;
+    width: 100%;
+    padding-right: 12px;
+  }
+}
+
+@media #{map-get($display-breakpoints, 'sm-only')} {
+  @include styling($base-height: 200px);
+}
+
+@media #{map-get($display-breakpoints, 'xs-only')} {
+  @include styling($base-height: 270px);
+}
+
+@media #{map-get($display-breakpoints, 'md-and-up')} {
+  @include styling($base-height: 170px);
+}
+
 .card-style-content {
-    width: 92vw;
-    height: 100%;
-  border-radius: 15px 0 0 15px;
-}
-
-.card-container {
-    border-bottom-left-radius: 0px !important;
-    max-width: 100%;
-}
-
-.row-header-style {
-    height: 10%;
-    width: 100%;
-}
-
-.row-content-style {
-    background-color: #FAF8F9;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
-    height: calc(85% - 4 * 4px);
-    width: 100%;
-}
-
-.row-languages-style {
-    width: 100%;
-    height: 5%;
-}
-
-.header-row-detail-style {
-    width: 100%;
-    height: 15%;
-}
-
-.keys-row-detail-style {
-    width: 100%;
-    height: 85%;
+  border-radius: 15px 0 0 15px !important;
 }
 
 </style>
