@@ -97,6 +97,7 @@ export default Vue.extend({
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   background-color: var(--v-background-base);
+  height: 100%;
 }
 
 .header {

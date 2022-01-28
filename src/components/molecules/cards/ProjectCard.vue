@@ -102,10 +102,6 @@ export default Vue.extend(
   height: 70%;
 }
 
-.set-cursor-pointer {
-  cursor: pointer;
-}
-
 .v-card--link:before {
   border-radius: 20px;
 }

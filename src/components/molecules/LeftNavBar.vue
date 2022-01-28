@@ -59,10 +59,6 @@ export default Vue.extend({
   margin-left: 10px;
 }
 
-.set-cursor-pointer {
-  cursor: pointer;
-}
-
 .custom-select {
   position: absolute;
   bottom: 0;

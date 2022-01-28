@@ -126,11 +126,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-
-.set-cursor-pointer {
-  cursor: pointer;
-}
-</style>

@@ -8,7 +8,7 @@
                 </v-col>
 
                 <v-col cols="1" class="pr-0">
-                    <v-icon @click="() => closeDialog()" color="black" class="float-right">mdi-close</v-icon>
+                    <v-icon @click="() => closeDialog()" color="black">mdi-close</v-icon>
                 </v-col>
             </v-row>
 
@@ -38,7 +38,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0 file-list-style">
+                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0">
                     <v-col cols="auto" class="py-0 px-0">
                         <span class="text-2">{{ file.name }}</span>
                     </v-col>
@@ -152,16 +152,3 @@ export default Vue.extend({
     }
 });
 </script>
-
-<style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-
-.card-project-style.v-sheet.v-card {
-    border-radius: 20px;
-}
-
-.file-list-style {
-    max-height: 300px;
-    overflow-y: auto;
-}
-</style>
