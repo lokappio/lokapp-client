@@ -1,15 +1,8 @@
 <template>
   <v-container fluid class="my-projects-container pa-5">
     <!-- Header -->
-    <v-row no-gutters>
-      <v-col cols="12">
-        <h2 class="title-h2">{{ this.$t("dashboard.all_projects_title") }}</h2>
-      </v-col>
-
-      <v-col cols="12">
-        <p class="text-2 grey-color">{{ this.$tc("dashboard.last_update", timerUpdate, {count: timerUpdate}) }}</p>
-      </v-col>
-    </v-row>
+    <h2 class="title-h2">{{ this.$t("dashboard.all_projects_title") }}</h2>
+    <p class="text-2 grey-color d-block">{{ this.$tc("dashboard.last_update", timerUpdate, {count: timerUpdate}) }}</p>
 
     <!-- Projects -->
     <v-row no-gutters class="mt-3">
@@ -18,7 +11,7 @@
       </v-col>
 
       <v-col v-else cols="12">
-        <v-row v-if="displayedProjects.length">
+        <v-row class="projects-container-style ma-0 mr-5" v-if="displayedProjects.length">
           <v-col
               v-for="project in displayedProjects"
               :key="project.id"
@@ -110,12 +103,4 @@ export default Vue.extend({
   overflow-y: scroll;
   overflow-x: hidden;
 }
-
-/*.project-card-col {
-  height: 120px;
-  padding: 0 10px;
-  margin-bottom: 10px;
-  margin-top: 15px;
-  border-radius: 5px;
-}*/
 </style>

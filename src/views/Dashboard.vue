@@ -5,7 +5,7 @@
         <left-nav-bar/>
       </v-col>
 
-      <v-col class="fill-height">
+      <v-col>
         <v-card class="box card-style-content background-color-white fill-height px-5 pt-5">
             <div class="row header">
               <header-banner />
@@ -43,27 +43,41 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+@import '~vuetify/src/styles/settings/_variables';
+
 .full-screen-container {
   background-color: var(--v-primary-base);
   width: 100vw;
   height: 100vh;
 }
 
-.box {
-  display: flex;
-  flex-flow: column;
-  height: 100%;
-}
-
 .row {
-  margin: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 12px;
 }
 
-.row.header {
-  flex: 0 1 auto;
+@mixin styling($base-height) {
+  .row.header {
+    height: $base-height;
+  }
+  .row.content {
+    position: absolute;
+    top: $base-height;
+    bottom: 0;
+    width: 100%;
+  }
 }
-.row.content {
-  flex: 1 1 auto;
+
+@media #{map-get($display-breakpoints, 'sm-only')} {
+  @include styling($base-height: 200px);
+}
+
+@media #{map-get($display-breakpoints, 'xs-only')} {
+  @include styling($base-height: 270px);
+}
+
+@media #{map-get($display-breakpoints, 'md-and-up')} {
+  @include styling($base-height: 150px);
 }
 
 .card-style-content {

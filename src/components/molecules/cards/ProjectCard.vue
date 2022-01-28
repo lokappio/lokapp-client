@@ -4,7 +4,7 @@
       <ProjectManagement :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
     </v-dialog>
 
-    <v-card v-if="project" height="150px" class="py-2 pl-2 pr-3 custom-cards">
+    <v-card v-if="project" class="py-2 pl-2 pr-3 custom-cards">
       <v-row no-gutters @click="openProjectView" class="fill-height">
         <v-col cols="3" class="set-cursor-pointer fill-height">
           <div class="title-h1 div-text-contain-center" :style="{ 'background-color':'#' + this.currProject.color }">
@@ -73,6 +73,11 @@ export default Vue.extend(
 </script>
 
 <style lang="scss" scoped>
+.custom-cards {
+  @extend .custom-cards;
+  height: 120px;
+}
+
 .empty {
   border: 2px dashed var(--v-primary-base) !important;
 }
@@ -81,7 +86,7 @@ export default Vue.extend(
     text-align: center;
     vertical-align: middle;
     height: 100%;
-    line-height: 150px;
+    line-height: 120px;
     color: white;
     font-size: 40px;
     border-radius: 15px;
