@@ -43,10 +43,5 @@ export default Vue.extend({
             this.$store.commit("SET_ACTUAL_LANGUAGE", this.actualTab > 0 ? this.languages[this.actualTab - 1].id : null);
         },
     },
-
 });
 </script>
-
-<style lang="scss">
-
-</style>

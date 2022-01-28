@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="header ml-5">
       <h2 class="title-h2">{{ this.$t("dashboard.all_projects_title") }}</h2>
-      <p class="text-2 grey-color d-block">{{ this.$tc("dashboard.last_update", timerUpdate, {count: timerUpdate}) }}</p>
+      <p class="text-2 grey--text d-block">{{ this.$tc("dashboard.last_update", timerUpdate, {count: timerUpdate}) }}</p>
     </div>
 
     <!-- Projects -->

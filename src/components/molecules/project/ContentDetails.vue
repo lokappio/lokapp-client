@@ -1,68 +1,70 @@
 <template>
-  <v-container fluid class="my-table my-projects-container">
+  <div class="my-projects-container">
     <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => this.isOpenCreation = false"></key-creation>
+    <v-container fluid>
 
-    <Header class="header"/>
+      <Header class="header"/>
 
-    <v-row no-gutters v-if="getItems.length <= 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
-      <v-col cols="4">
-        <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
-      </v-col>
-    </v-row>
+      <v-row no-gutters v-if="getItems.length <= 0" align-content="start" justify="center">
+        <v-col cols="4">
+          <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
+        </v-col>
+      </v-row>
 
-    <v-row no-gutters v-else class="content">
-      <v-col cols="12" class="fill-height">
-        <v-data-table
-            hide-default-footer
-            fixed-header
-            :headers="headers"
-            :items="getItems"
-            :loading="loading"
-            item-class="text-3"
-            disable-pagination
-            group-by="group.id"
-            elevation="0"
-            class="my-custom-table">
+      <v-row no-gutters v-else class="content">
+        <v-col cols="12" class="fill-height">
+          <v-data-table
+              hide-default-footer
+              fixed-header
+              :headers="headers"
+              :items="getItems"
+              :loading="loading"
+              item-class="text-3"
+              disable-pagination
+              group-by="group.id"
+              elevation="0"
+              class="my-custom-table">
 
-          <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
-            <template-item-keys
-                v-if="header.value === 'keys'"
-                :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
-                :item="item"
-                :projectId="projectId"
-                v-on:saveKey="(value) => keySaved(value)"
-                v-on:deleteKey="(value) => keyDeleted(value)"
-            />
+            <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
+              <template-item-keys
+                  v-if="header.value === 'keys'"
+                  :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
+                  :item="item"
+                  :projectId="projectId"
+                  v-on:saveKey="(value) => keySaved(value)"
+                  v-on:deleteKey="(value) => keyDeleted(value)"
+              />
 
-            <template-item-values
-                v-else
-                :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
-                :item="item"
-                :header="header"
-                :projectId="projectId"
-                @valueSaved="valueSaved"
-            />
-          </template>
+              <template-item-values
+                  v-else
+                  :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
+                  :item="item"
+                  :header="header"
+                  :projectId="projectId"
+                  @valueSaved="valueSaved"
+              />
+            </template>
 
-          <!-- Custom header for groups -->
-          <template v-slot:group.header="{group, items, isOpen, toggle}">
-            <template-group-header
-                :headers="headers"
-                :groupId="group"
-                :items="items"
-                :isOpen="isOpen"
-                :toggle="toggle"
-            />
-          </template>
+            <!-- Custom header for groups -->
+            <template v-slot:group.header="{group, items, isOpen, toggle}">
+              <template-group-header
+                  :headers="headers"
+                  :groupId="group"
+                  :items="items"
+                  :isOpen="isOpen"
+                  :toggle="toggle"
+              />
+            </template>
 
-          <!-- Custom footer on groups -->
-          <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
-            <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-  </v-container>
+            <!-- Custom footer on groups -->
+            <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
+              <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -227,6 +229,7 @@ export default Vue.extend({
   border-top-right-radius: 20px;
   background-color: var(--v-background-base);
   height: 100%;
+  width: 100%;
 }
 
 @mixin styling($base-height) {
@@ -238,6 +241,7 @@ export default Vue.extend({
     position: absolute;
     top: calc($base-height + 20px);
     bottom: 0;
+    width: 100%;
   }
 }
 
@@ -271,7 +275,6 @@ export default Vue.extend({
   }
 }
 
-//.v-data-table--fixed-header > .v-data-table__wrapper {overflow-y: scroll;}
 .v-row-group__summary {
   background-color: transparent !important;
 }
