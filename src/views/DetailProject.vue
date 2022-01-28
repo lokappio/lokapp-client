@@ -41,55 +41,55 @@ import {MetaInfo} from "vue-meta";
 import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
-    name: "DetailProject",
-    metaInfo(): MetaInfo {
-        return {
-            title: this.currentProject?.name ?? "",
-            titleTemplate: `Lokapp - %s`
-        };
-    },
-    components: {
-        LeftNavBar,
-        HeaderBanner,
-        LanguagesGroup,
-        ContentDetails
-    },
-    data() {
-        return {
-            loading: true
-        };
-    },
-    created() {
-        this.loadProject();
-    },
-    computed: {
-        currentProject(): Project {
-            return this.$store.state.currentProject;
-        }
-    },
-    methods: {
-        loadProject() {
-            this.loading = true;
-
-            this.$service.projects.getEntireProjectById(parseInt(this.$route.params.project_id))
-                .then(async (project: Project) => {
-                    this.$store.commit("SET_CURRENT_PROJECT", project);
-                    await this.updateMyRole(project.id);
-                    this.loading = false;
-                })
-                .catch(() => {
-                    this.$notify(this.$t("errors.retrieve_project").toString());
-                    this.$store.commit("SET_CURRENT_PROJECT", null);
-                    this.backToDashboard();
-                });
-        },
-        async updateMyRole(projectId: number): Promise<void> {
-            return this.$service.user.getMyselfInProject(projectId).then((user) => this.$store.commit("SET_APP_USER", user));
-        },
-        backToDashboard() {
-            this.$router.push({path: "/dashboard"});
-        }
+  name: "DetailProject",
+  metaInfo(): MetaInfo {
+    return {
+      title: this.currentProject?.name ?? "",
+      titleTemplate: `Lokapp - %s`
+    };
+  },
+  components: {
+    LeftNavBar,
+    HeaderBanner,
+    LanguagesGroup,
+    ContentDetails
+  },
+  data() {
+    return {
+      loading: true
+    };
+  },
+  created() {
+    this.loadProject();
+  },
+  computed: {
+    currentProject(): Project {
+      return this.$store.state.currentProject;
     }
+  },
+  methods: {
+    loadProject() {
+      this.loading = true;
+
+      this.$service.projects.getEntireProjectById(parseInt(this.$route.params.project_id))
+          .then(async (project: Project) => {
+            this.$store.commit("SET_CURRENT_PROJECT", project);
+            await this.updateMyRole(project.id);
+            this.loading = false;
+          })
+          .catch(() => {
+            this.$notify(this.$t("errors.retrieve_project").toString());
+            this.$store.commit("SET_CURRENT_PROJECT", null);
+            this.backToDashboard();
+          });
+    },
+    async updateMyRole(projectId: number): Promise<void> {
+      return this.$service.user.getMyselfInProject(projectId).then((user) => this.$store.commit("SET_APP_USER", user));
+    },
+    backToDashboard() {
+      this.$router.push({path: "/dashboard"});
+    }
+  }
 });
 </script>
 
@@ -97,9 +97,9 @@ export default Vue.extend({
 @import '~vuetify/src/styles/settings/_variables';
 
 .full-screen-container {
-    background-color: var(--v-primary-base);
-    width: 100vw;
-    height: 100vh;
+  background-color: var(--v-primary-base);
+  width: 100vw;
+  height: 100vh;
 }
 
 .row {
@@ -107,30 +107,19 @@ export default Vue.extend({
   margin-left: 12px;
 }
 
-@mixin styling($base-height) {
-  .row.header {
-    height: $base-height;
-  }
-  .row.content {
-    position: absolute;
-    top: $base-height;
-    bottom: 0;
-    width: 100%;
-    padding-right: 12px;
-  }
+
+.row.header {
+  height: 190px;
 }
 
-@media #{map-get($display-breakpoints, 'sm-only')} {
-  @include styling($base-height: 200px);
+.row.content {
+  position: absolute;
+  top: 190px;
+  bottom: 0;
+  width: 100%;
+  padding-right: 12px;
 }
 
-@media #{map-get($display-breakpoints, 'xs-only')} {
-  @include styling($base-height: 270px);
-}
-
-@media #{map-get($display-breakpoints, 'md-and-up')} {
-  @include styling($base-height: 170px);
-}
 
 .card-style-content {
   border-radius: 15px 0 0 15px !important;

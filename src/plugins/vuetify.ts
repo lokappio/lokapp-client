@@ -15,6 +15,7 @@ export default new Vuetify({
                 background:'#FAF8F9',
                 inputBackground: '#F2F3F7',
                 grey: "#757575",
+                red: "#EA1B32"
             },
         },
     }
