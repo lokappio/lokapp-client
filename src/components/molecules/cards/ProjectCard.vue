@@ -1,10 +1,10 @@
 <template>
   <div class="fill-height">
-    <v-dialog v-model="dialogOpened" max-width="500px">
+    <v-dialog v-model="dialogOpened" max-width="800px">
       <ProjectManagement :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
     </v-dialog>
 
-    <v-card v-if="project" class="py-2 pl-2 pr-3 custom-cards">
+    <v-card v-if="project" class="py-2 pl-2 pr-3 custom-cards-project">
       <v-row no-gutters @click="openProjectView" class="fill-height">
         <v-col cols="3" class="set-cursor-pointer fill-height">
           <div class="title-h1 div-text-contain-center" :style="{ 'background-color':'#' + this.currProject.color }">
@@ -73,8 +73,9 @@ export default Vue.extend(
 </script>
 
 <style lang="scss" scoped>
-.custom-cards {
-  @extend .custom-cards;
+.custom-cards-project {
+  border-radius: 20px !important;
+  box-shadow: 0 4px 4px rgba(203, 203, 203, 0.25) !important;
   height: 120px;
 }
 
