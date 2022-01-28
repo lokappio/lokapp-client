@@ -228,7 +228,7 @@ export default Vue.extend({
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   background-color: var(--v-background-base);
-  height: 100%;
+  height: calc(100% - 50px); // 50px == language tab height
   width: 100%;
 }
 
@@ -246,11 +246,11 @@ export default Vue.extend({
 }
 
 @media #{map-get($display-breakpoints, 'sm-and-down')} {
-  @include styling($base-height: 200px);
+  @include styling($base-height: 220px);
 }
 
 @media #{map-get($display-breakpoints, 'md-and-up')} {
-  @include styling($base-height: 120px);
+  @include styling($base-height: 140px);
 }
 
 .no-data-button {

@@ -10,10 +10,10 @@
           <template v-if="!loading">
             <div class="row header">
               <header-banner projectDetail/>
-              <languages-group/>
             </div>
 
             <div class="row content">
+              <languages-group/>
               <content-details/>
             </div>
           </template>
@@ -107,14 +107,13 @@ export default Vue.extend({
   margin-left: 12px;
 }
 
-
 .row.header {
-  height: 190px;
+  height: 170px;
 }
 
 .row.content {
   position: absolute;
-  top: 190px;
+  top: 170px;
   bottom: 0;
   width: 100%;
   padding-right: 12px;

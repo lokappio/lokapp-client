@@ -5,15 +5,15 @@
     </v-dialog>
 
       <v-row no-gutters>
-        <v-col cols="12" md="6">
-          <v-row >
+        <v-col cols="12" :md="!projectDetail ? '6' : '12'">
+          <v-row no-gutters align="baseline">
             <v-col cols="auto">
               <v-btn @click="() => this.dialogOpened = true" color="primary" fab depressed>
                 <v-icon large>mdi-account</v-icon>
               </v-btn>
             </v-col>
 
-            <v-col cols="auto">
+            <v-col cols="10" class="ml-3">
               <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUser.name }}</span></p>
               <p v-if="!projectDetail" class="text-1">{{ $t("header.greetings_description") }}</p>
             </v-col>
