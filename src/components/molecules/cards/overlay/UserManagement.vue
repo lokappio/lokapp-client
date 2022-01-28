@@ -22,7 +22,7 @@
                     </v-col>
                 </v-row>
 
-                <v-list subheader class="mx-0 users-list" two-line>
+                <v-list subheader class="mx-0" two-line>
                     <v-list-item class="px-0" v-for="user in users" :key="user.userId">
                         <v-list-item-content>
                             <v-row align="center">
@@ -224,28 +224,3 @@ export default Vue.extend({
     }
 });
 </script>
-
-<style lang="scss" scoped>
-.users-list {
-    color: black;
-    background-color: white;
-    max-height: 400px; /* or any height you want */
-    overflow-y: auto
-}
-
-.users-list::v-deep .v-subheader {
-    color: black;
-}
-
-.users-list::v-deep .v-divider {
-    border-color: black;
-}
-
-.users-list::v-deep .v-list-item__title {
-    color: black;
-}
-
-.users-list::v-deep .v-list-item__subtitle {
-    color: black;
-}
-</style>
