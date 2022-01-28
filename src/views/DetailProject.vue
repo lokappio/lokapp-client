@@ -108,12 +108,12 @@ export default Vue.extend({
 }
 
 .row.header {
-  height: 170px;
+  height: 120px;
 }
 
 .row.content {
   position: absolute;
-  top: 170px;
+  top: 120px;
   bottom: 0;
   width: 100%;
   padding-right: 12px;

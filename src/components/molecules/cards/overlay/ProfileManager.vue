@@ -1,5 +1,5 @@
 <template>
-  <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+  <v-card color="white" width="100%" class="pa-4 pa-md-7 custom-cards">
     <v-container>
       <!-- Title -->
       <v-row :style="{ 'height':'50px' }">
@@ -21,7 +21,7 @@
         </v-row>
         <v-row class="mt-0">
           <v-col cols="12" class="pb-0 pt-0 px-0">
-            <v-text-field :rules="usernameRules" class="custom-text-field" background-color="#F2F3F7" v-model="username" solo flat></v-text-field>
+            <v-text-field :rules="usernameRules" class="custom-text-field" background-color="inputBackground" v-model="username" solo flat></v-text-field>
           </v-col>
         </v-row>
 

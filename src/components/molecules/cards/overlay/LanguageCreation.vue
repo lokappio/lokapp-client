@@ -1,6 +1,5 @@
 <template>
-    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
-        <v-container>
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
                 <v-col cols="11" class="pl-0">
@@ -21,7 +20,7 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col cols="12" class="pb-0 pt-0 px-0">
-                        <v-text-field autofocus :rules="languageNameRules" class="custom-text-field" background-color="#F2F3F7" v-model="languageName"
+                        <v-text-field autofocus :rules="languageNameRules" class="custom-text-field" background-color="inputBackground" v-model="languageName"
                                       :label="$t('language_creation.language_name_label')" solo flat required></v-text-field>
                     </v-col>
                 </v-row>
@@ -33,7 +32,7 @@
                     </v-col>
                 </v-row>
             </v-form>
-        </v-container>
+
     </v-card>
 </template>
 
@@ -96,13 +95,3 @@ export default Vue.extend({
 });
 
 </script>
-
-<style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-
-.card-style-project {
-    border-radius: 20px !important;
-    width: 400px;
-}
-
-</style>

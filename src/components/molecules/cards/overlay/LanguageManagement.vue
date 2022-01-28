@@ -4,7 +4,7 @@
             <LanguageDelete :dialog-opened="dialogOpenedDelete" :project-id="projectId" :language="languageToDelete" @closeDelete="() => this.dialogOpenedDelete = false"/>
         </v-dialog>
 
-        <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+        <v-card color="white" class="pa-4 pa-md-7 custom-cards">
             <v-container>
                 <!-- Title -->
                 <v-row class="mb-2 row-title">

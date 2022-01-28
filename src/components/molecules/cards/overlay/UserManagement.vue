@@ -8,7 +8,7 @@
             <UserDelete :project-id="projectId" :user="userToDelete" :dialog-opened="openDialogDelete" @closeDelete="closeDelete"/>
         </v-dialog>
 
-        <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+        <v-card color="white" class="pa-4 pa-md-7 custom-cards">
             <v-container class="pa-0">
                 <!-- Title -->
                 <v-row :style="{ 'height':'50px' }">
@@ -226,11 +226,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.card-style-project {
-    border-radius: 20px !important;
-    width: 700px;
-}
-
 .users-list {
     color: black;
     background-color: white;

@@ -1,5 +1,5 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project" width="100%">
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards" width="100%">
         <v-container>
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
@@ -158,11 +158,6 @@ export default Vue.extend({
 
 .card-project-style.v-sheet.v-card {
     border-radius: 20px;
-}
-
-.card-style-project {
-    border-radius: 20px !important;
-    width: 400px;
 }
 
 .file-list-style {

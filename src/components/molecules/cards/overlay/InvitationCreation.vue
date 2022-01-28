@@ -1,5 +1,5 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
         <v-container class="pa-0">
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
@@ -22,7 +22,7 @@
                 </v-row>
                 <v-row class="ma-0">
                     <v-col cols="12" class="pb-0 pt-1 px-0">
-                        <v-text-field :rules="emailRules" class="custom-text-field" background-color="#F2F3F7" v-model="email" :label="$t('invitation_creation.email_label')" type="email" solo flat
+                        <v-text-field :rules="emailRules" class="custom-text-field" background-color="inputBackground" v-model="email" :label="$t('invitation_creation.email_label')" type="email" solo flat
                                       required></v-text-field>
                     </v-col>
                 </v-row>

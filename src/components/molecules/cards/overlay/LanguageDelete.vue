@@ -1,5 +1,5 @@
 <template>
-    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
         <!-- Title and close -->
         <v-icon @click="comebackToLanguageManagement" color="black" class="float-right">
             mdi-close

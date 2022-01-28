@@ -68,12 +68,12 @@ export default Vue.extend({
   }
 }
 
-@media #{map-get($display-breakpoints, 'sm-only')} {
-  @include styling($base-height: 200px);
-}
-
 @media #{map-get($display-breakpoints, 'xs-only')} {
   @include styling($base-height: 270px);
+}
+
+@media #{map-get($display-breakpoints, 'sm-only')} {
+  @include styling($base-height: 200px);
 }
 
 @media #{map-get($display-breakpoints, 'md-and-up')} {
