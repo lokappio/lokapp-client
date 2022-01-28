@@ -21,7 +21,7 @@
                     <v-row class="mx-0 my-2 pr-1" v-for="language in languages" :key="language.id">
                         <v-col cols="12" class="pb-0 pt-0 px-0">
                             <span class="title-h3">{{ language.name }}</span>
-                            <v-icon @click="deleteLanguage(language)" class="float-right" color="maincolor">mdi-delete</v-icon>
+                            <v-icon @click="deleteLanguage(language)" class="float-right" color="primary">mdi-delete</v-icon>
                         </v-col>
                     </v-row>
                 </v-container>

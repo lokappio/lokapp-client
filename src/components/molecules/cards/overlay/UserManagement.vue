@@ -44,8 +44,8 @@
                                         @change="updateRole(user)"
                                     >
                                         <template v-slot:[`append-outer`]>
-                                            <v-btn color="maincolor" icon :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId" @click="deleteUser(user)">
-                                                <v-icon color="maincolor">mdi-delete</v-icon>
+                                            <v-btn color="primary" icon :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId" @click="deleteUser(user)">
+                                                <v-icon color="primary">mdi-delete</v-icon>
                                             </v-btn>
                                         </template>
                                     </v-select>
@@ -75,8 +75,8 @@
                 </v-list>
 
                 <v-card-actions class="mt-0 ml-0 pl-0 pb-0 justify-start" v-if="canCreateInvitation">
-                    <v-btn class="pl-0" x-large color="maincolor" icon @click="() => this.openDialogInvitation = true">
-                        <v-icon color="maincolor" x-large>mdi-plus-circle</v-icon>
+                    <v-btn class="pl-0" x-large color="primary" icon @click="() => this.openDialogInvitation = true">
+                        <v-icon color="primary" x-large>mdi-plus-circle</v-icon>
                     </v-btn>
                 </v-card-actions>
             </v-container>

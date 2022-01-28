@@ -15,7 +15,6 @@
 
             <v-col cols="10" class="ml-3">
               <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUser.name }}</span></p>
-              <p v-if="!projectDetail" class="text-1">{{ $t("header.greetings_description") }}</p>
             </v-col>
           </v-row>
         </v-col>
@@ -25,23 +24,6 @@
           <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
         </v-col>
       </v-row>
-
-      <!-- TODO: FIX SVG ILLUSTRATION
-      <v-row v-if="!projectDetail">
-        <v-col cols="12">
-          <v-row class="banner-container">
-            <v-col cols="6" class="fill-height">
-              <span class="title-h2 white--text">{{ $t("header.banner_title") }}</span>
-            </v-col>
-
-            <v-col cols="6" class="pa-0 fill-height">
-              <v-img class="background-banner" src="Banner/BannerBackground.svg" contain/>
-              <v-img class="men-style" src="Banner/Man.svg" contain/>
-              <v-img class="women-style" src="Banner/Women.svg" contain/>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row> -->
   </v-container>
 </template>
 

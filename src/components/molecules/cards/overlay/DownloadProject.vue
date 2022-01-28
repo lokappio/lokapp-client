@@ -44,8 +44,8 @@
                     </v-col>
 
                     <v-col cols="auto">
-                        <v-icon @click="() => copyFile(file)" color="maincolor">mdi-content-copy</v-icon>
-                        <v-icon @click="() => downloadFile(file)" color="maincolor">mdi-download</v-icon>
+                        <v-icon @click="() => copyFile(file)" color="primary">mdi-content-copy</v-icon>
+                        <v-icon @click="() => downloadFile(file)" color="primary">mdi-download</v-icon>
                     </v-col>
                 </v-row>
 
