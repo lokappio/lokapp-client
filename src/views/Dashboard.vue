@@ -6,7 +6,7 @@
       </v-col>
 
       <v-col>
-        <v-card class="box card-style-content background-color-white fill-height px-5 pt-5">
+        <v-card class="box card-style-content background-color-white fill-height px-0 pt-5">
             <div class="row header">
               <header-banner />
             </div>
