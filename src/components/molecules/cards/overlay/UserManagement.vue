@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-dialog v-model="openDialogInvitation" width="500px">
-            <InvitationCreation :project-id="projectId" :dialog-opened="openDialogInvitation" @closeInvitation="() => this.openDialogInvitation = false"/>
+            <InvitationCreation :project-id="projectId" :dialog-opened="openDialogInvitation" @invitationSent="refresh" @closeInvitation="() => this.openDialogInvitation = false"/>
         </v-dialog>
 
         <v-dialog v-model="openDialogDelete" width="500px">
@@ -172,7 +172,7 @@ export default Vue.extend({
                         return 0;
                     });
                 }).catch(() => {
-                this.$notify(this.$t("errors.unknown_error") as string);
+                this.$notify(this.$t("errors.unknown_error").toString());
             });
         },
         refresh() {
