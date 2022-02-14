@@ -1,10 +1,10 @@
 <template>
   <v-row align="center">
-    <v-btn color="maincolor" icon @click="deleteKey()" class="white--text mr-1">
+    <v-btn color="primary" icon @click="deleteKey()" class="white--text mr-1">
       <v-icon>mdi-delete</v-icon>
     </v-btn>
 
-    <v-btn color="maincolor" small @click="switchQuantity" class="white--text mx-2">
+    <v-btn color="primary" small @click="switchQuantity" class="white--text mx-2">
       {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
     </v-btn>
 

@@ -1,0 +1,129 @@
+@import '~vuetify/src/styles/styles.sass';
+
+@font-face {
+    font-family: "Nobile";
+    font-weight: bold;
+    src: local("Nobile"), url("../../public/fonts/Nobile/Nobile-Bold.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Nobile";
+    font-weight: normal;
+    src: local("Nobile"), url("../../public/fonts/Nobile/Nobile-Regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Nobile";
+    font-weight: 500;
+    src: local("Nobile"), url("../../public/fonts/Nobile/Nobile-Medium.ttf") format("truetype");
+}
+
+* {
+    font-family: Nobile, serif;
+    font-style: normal;
+    font-weight: normal;
+    text-transform: none !important;
+}
+
+.set-cursor-pointer {
+    cursor: pointer;
+}
+
+.trad-text-field .theme--dark.v-label {
+    color: black !important;
+    font-weight: 500;
+    font-size: 18px !important;
+    line-height: 20px;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+}
+.trad-text-field input {
+    font-size: 14px !important;
+    line-height: 18px;
+    letter-spacing: 0.05em;
+    color: black;
+}
+.trad-text-field .v-label--active {
+    transform: translateY(-18px) scale(0.90);
+}
+
+.trad-text-field {
+    caret-color: black !important;
+    color: black !important;
+}
+
+.v-text-field label {
+    font-size: 16px;
+    line-height: 18px;
+    letter-spacing: 0.05em;
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.v-text-field {
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+//Setup .v-text-field
+.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat) > .v-input__control > .v-input__slot {
+    box-shadow: 0 4px 4px rgba(203, 203, 203, 0.25) !important;
+}
+.custom-text-field.v-text-field.v-text-field--enclosed .v-input__slot {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+.custom-text-field.v-text-field.v-text-field--enclosed .v-text-field__details {
+    padding: 0 !important;
+    padding-top: 1px !important;
+}
+.custom-text-field .v-input__slot {
+    min-height: 0px;
+    height: 40px;
+}
+.custom-text-field {
+    caret-color: black !important;
+    color: black !important;
+}
+
+
+//TEXT
+.title-h1 {
+    font-weight: bold;
+    font-size: 26px;
+    color: #000000;
+}
+.title-h2 {
+    font-weight: 500;
+    font-size: 22px;
+    color: #000000;
+}
+.title-h3 {
+    font-weight: 500;
+    font-size: 18px;
+    color: #000000;
+}
+.text-1 {
+    font-size: 16px;
+    color: #000000;
+}
+.text-2 {
+    font-size: 14px;
+    color: #000000;
+}
+.text-3 {
+    font-size: 12px;
+    color: #000000;
+}
+
+//Setup Colors
+.background-color-white {
+    background-color: white !important;
+}
+
+//CARDS
+.v-dialog {
+    border-radius: 20px !important;
+}
+
+.custom-cards {
+    border-radius: 20px !important;
+    box-shadow: 0 4px 4px rgba(203, 203, 203, 0.25) !important;
+}

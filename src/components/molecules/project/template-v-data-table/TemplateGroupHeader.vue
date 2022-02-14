@@ -3,7 +3,7 @@
     <template>
       <v-row align="center">
         <v-col cols="auto">
-          <v-icon color="maincolor" @click="toggle">
+          <v-icon color="primary" @click="toggle">
             {{ isOpen ? "mdi-chevron-down" : "mdi-chevron-right" }}
           </v-icon>
         </v-col>

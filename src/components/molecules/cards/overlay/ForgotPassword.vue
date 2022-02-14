@@ -1,5 +1,5 @@
 <template>
-    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
         <v-container class="pa-0">
             <!-- Title -->
             <v-row :style="{ 'height':'50px' }">
@@ -22,7 +22,7 @@
 
                 <v-row class="mt-0 mb-2">
                     <v-col cols="12" class="py-0 px-2">
-                        <v-text-field :rules="emailRules" class="custom-text-field" background-color="#F2F3F7" v-model="sendEmail" :label="$t('forgot_password.email_label')" type="email" solo flat required></v-text-field>
+                        <v-text-field :rules="emailRules" class="custom-text-field" background-color="inputBackground" v-model="sendEmail" :label="$t('forgot_password.email_label')" type="email" solo flat required></v-text-field>
                     </v-col>
                 </v-row>
 

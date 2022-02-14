@@ -1,120 +1,79 @@
 <template>
-    <div>
-        <v-dialog v-model="dialogOpened" max-width="500px">
-            <ProfileManager :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
-        </v-dialog>
+  <v-container fluid>
+    <v-dialog v-model="dialogOpened" max-width="500px">
+      <ProfileManager :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
+    </v-dialog>
 
-        <v-container v-if="!projectDetail" class="pa-0 full-contain full-width-container">
-            <v-row class="ma-0 row-header">
-                <!-- HeaderTitle -->
-                <v-col cols="12" md="6" class="title-height">
-                    <v-btn class="mr-5 ml-2 rounded-button-style icon-color" @click="() => this.dialogOpened = true" color="white" icon>
-                        <v-icon large class="icon-color">mdi-account</v-icon>
-                    </v-btn>
-                    <header-title displayDescription="true"/>
-                </v-col>
+      <v-row no-gutters>
+        <v-col cols="12" :md="!projectDetail ? '6' : '12'">
+          <v-row no-gutters align="baseline">
+            <v-col cols="auto">
+              <v-btn @click="() => this.dialogOpened = true" color="primary" fab depressed>
+                <v-icon large>mdi-account</v-icon>
+              </v-btn>
+            </v-col>
 
-                <!-- HeaderSearchbar -->
-                <v-col cols="12" md="6" class="pt-1 pr-0 search-bar-height">
-                    <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
-                </v-col>
+            <v-col cols="10" class="ml-3">
+              <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUser.name }}</span></p>
+            </v-col>
+          </v-row>
+        </v-col>
 
-                <!-- HeaderBanner -->
-                <v-col v-if="$vuetify.breakpoint.mdAndUp" md="12" lg="10" class="pa-0 banner-height">
-                    <HeaderBanner />
-                </v-col>
 
-            </v-row>
-        </v-container>
-
-        <v-container v-else class="pa-0 full-contain full-width-container">
-            <v-row class="ma-0 row-header">
-                <!-- HeaderTitle -->
-                <v-col cols="11" class="title-height">
-                    <v-btn class="mr-5 ml-2 rounded-button-style icon-color" @click="() => this.dialogOpened = true" color="white" icon>
-                        <v-icon large class="icon-color">mdi-account</v-icon>
-                    </v-btn>
-                    <header-title/>
-                </v-col>
-
-                <v-col cols="1" class="justify-end title-height">
-                    <invitations-button />
-                </v-col>
-
-            </v-row>
-        </v-container>
-    </div>
+        <v-col v-if="!projectDetail" cols="12" md="5">
+          <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
+        </v-col>
+      </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
-import HeaderTitle from "@/components/molecules/header/HeaderTitle.vue";
-import HeaderBanner from "@/components/molecules/header/HeaderBanner.vue";
-import InvitationsButton from "@/components/molecules/buttons/InvitationsButton.vue";
 import Vue from "vue";
 import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
+import ProjectUser from "@/data/models/api/ProjectUser";
 
 export default Vue.extend({
-    name: "header-banner",
-    components: {ProfileManager, HeaderTitle, HeaderBanner, InvitationsButton},
-    props: {projectDetail: {type: Boolean, default: false}},
-    data() {
-        return {
-            searchValue: "",
-            dialogOpened: false,
-        };
-    },
-    destroyed() {
-        this.$store.commit("SET_SEARCH_PROJECT", "");
-    },
-    watch: {
-        searchValue(value) {
-            this.$store.commit("SET_SEARCH_PROJECT", value);
-        }
+  name: "header-banner",
+  components: {ProfileManager},
+  props: {projectDetail: {type: Boolean, default: false}},
+  data() {
+    return {
+      searchValue: "",
+      dialogOpened: false
+    };
+  },
+  computed: {
+    appUser(): ProjectUser {
+      return this.$store.getters.appUser;
     }
+  },
+  watch: {
+    searchValue(value) {
+      this.$store.commit("SET_SEARCH_PROJECT", value);
+    }
+  },
+  destroyed() {
+    this.$store.commit("SET_SEARCH_PROJECT", "");
+  }
 });
 </script>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-
-.full-width-container {
-    max-width: 100%;
-}
-
-.row-header {
-    height: 100%;
-}
-
-.title-height {
-    height: 50%;
-}
-
-.search-bar-height {
-    height: 50%;
-}
-
-.banner-height {
-    height: 50%;
-}
-
 .icon-color {
-    background-color: #02188C;
-    color: white;
+  background-color: var(--v-primary-base);
+  color: white;
 }
 
 .rounded-button-style {
-    height: 50px !important;
-    width: 50px !important;
-    border-radius: 50%;
-    float: left;
+  height: 50px !important;
+  width: 50px !important;
+  border-radius: 50%;
+  float: left;
 }
 
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .title-height {
-        height: 60%;
-    }
-    .search-bar-height {
-        height: 40%;
-    }
+.banner-container {
+  border-radius: 20px;
+  height: 150px;
+  background-color: var(--v-primary-base);
 }
 </style>

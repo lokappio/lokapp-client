@@ -1,6 +1,6 @@
 <template>
   <!-- Modification of project -->
-  <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+  <v-card color="white" class="pa-4 pa-md-7 custom-cards">
     <v-container>
       <!-- Title -->
       <v-row :style="{ 'height':'50px' }">
@@ -25,7 +25,7 @@
           <v-col cols="12" class="pa-0">
             <v-text-field
                 class="custom-text-field"
-                background-color="#F2F3F7"
+                background-color="inputBackground"
                 v-model="updatedProject.name"
                 :rules="projectNameRules"
                 :label="$t('project_creation.project_name_label')"
@@ -64,7 +64,7 @@
 
         <v-row class="pt-3" justify="space-between">
           <v-col cols="12" class="pa-0">
-            <v-text-field :rules="colorRules" class="custom-text-field" background-color="#F2F3F7" v-model="writtenColor" solo flat prefix="#"></v-text-field>
+            <v-text-field :rules="colorRules" class="custom-text-field" background-color="inputBackground" v-model="writtenColor" solo flat prefix="#"></v-text-field>
           </v-col>
         </v-row>
 
@@ -77,7 +77,7 @@
           <v-col cols="12" class="py-0 px-0">
             <v-text-field
                 class="custom-text-field"
-                background-color="#F2F3F7"
+                background-color="inputBackground"
                 v-model="languageName"
                 :rules="languageRules"
                 :label="$t('project_creation.language_name_label')"
@@ -90,14 +90,14 @@
         <!-- DescriptionProject -->
         <v-row class="mt-2 pb-0">
           <v-col cols="12" class="pb-0 px-0">
-            <span class="title-h3">{{ $t("project_creation.description_title") }} <span class="text-2 grey-color"> {{ $t("common.optional") }}</span></span>
+            <span class="title-h3">{{ $t("project_creation.description_title") }} <span class="text-2 grey--text"> {{ $t("common.optional") }}</span></span>
           </v-col>
         </v-row>
 
         <v-row>
           <v-col class="py-0 px-0">
             <v-textarea
-                background-color="#F2F3F7"
+                background-color="inputBackground"
                 flat
                 solo
                 no-resize
@@ -216,37 +216,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-
-.card-style-project {
-  border-radius: 20px !important;
-  width: 400px;
-}
-
-.overflow-container-languages {
-  max-height: 250px;
-  overflow-y: scroll;
-}
-
-.custom-text-field::v-deep .v-text-field__prefix {
-  color: black !important;
-}
-
-.custom-text-area::v-deep .v-input__slot {
-  caret-color: black !important;
-}
-
-//Display the scrollbar permanently on mac
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 7px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, .5);
-  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-}
-</style>

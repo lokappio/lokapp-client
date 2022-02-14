@@ -8,7 +8,7 @@
             <UserDelete :project-id="projectId" :user="userToDelete" :dialog-opened="openDialogDelete" @closeDelete="closeDelete"/>
         </v-dialog>
 
-        <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+        <v-card color="white" class="pa-4 pa-md-7 custom-cards">
             <v-container class="pa-0">
                 <!-- Title -->
                 <v-row :style="{ 'height':'50px' }">
@@ -22,7 +22,7 @@
                     </v-col>
                 </v-row>
 
-                <v-list subheader class="mx-0 users-list" two-line>
+                <v-list subheader class="mx-0" two-line>
                     <v-list-item class="px-0" v-for="user in users" :key="user.userId">
                         <v-list-item-content>
                             <v-row align="center">
@@ -44,8 +44,8 @@
                                         @change="updateRole(user)"
                                     >
                                         <template v-slot:[`append-outer`]>
-                                            <v-btn color="maincolor" icon :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId" @click="deleteUser(user)">
-                                                <v-icon color="maincolor">mdi-delete</v-icon>
+                                            <v-btn color="primary" icon :disabled="isUserUpdateRoleDisabled(user) || user.userId === me.userId" @click="deleteUser(user)">
+                                                <v-icon color="primary">mdi-delete</v-icon>
                                             </v-btn>
                                         </template>
                                     </v-select>
@@ -75,8 +75,8 @@
                 </v-list>
 
                 <v-card-actions class="mt-0 ml-0 pl-0 pb-0 justify-start" v-if="canCreateInvitation">
-                    <v-btn class="pl-0" x-large color="maincolor" icon @click="() => this.openDialogInvitation = true">
-                        <v-icon color="maincolor" x-large>mdi-plus-circle</v-icon>
+                    <v-btn class="pl-0" x-large color="primary" icon @click="() => this.openDialogInvitation = true">
+                        <v-icon color="primary" x-large>mdi-plus-circle</v-icon>
                     </v-btn>
                 </v-card-actions>
             </v-container>
@@ -224,33 +224,3 @@ export default Vue.extend({
     }
 });
 </script>
-
-<style lang="scss" scoped>
-.card-style-project {
-    border-radius: 20px !important;
-    width: 700px;
-}
-
-.users-list {
-    color: black;
-    background-color: white;
-    max-height: 400px; /* or any height you want */
-    overflow-y: auto
-}
-
-.users-list::v-deep .v-subheader {
-    color: black;
-}
-
-.users-list::v-deep .v-divider {
-    border-color: black;
-}
-
-.users-list::v-deep .v-list-item__title {
-    color: black;
-}
-
-.users-list::v-deep .v-list-item__subtitle {
-    color: black;
-}
-</style>

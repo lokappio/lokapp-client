@@ -1,63 +1,70 @@
 <template>
-  <v-container class="full-contain my-table">
-    <v-row v-if="getItems.length <= 0" align-content="start" justify="center" class="middle-row my-0 mx-auto">
-      <v-col cols="4">
-        <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
-      </v-col>
-    </v-row>
-
-    <v-data-table
-        v-else
-        hide-default-footer
-        fixed-header
-        :headers="headers"
-        :items="getItems"
-        :loading="loading"
-        item-class="text-3 data-table-key-style"
-        disable-pagination
-        group-by="group.id"
-        elevation="0"
-        class="my-custom-table">
-
-      <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
-        <template-item-keys
-            v-if="header.value === 'keys'"
-            :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
-            :item="item"
-            :projectId="projectId"
-            v-on:saveKey="(value) => keySaved(value)"
-            v-on:deleteKey="(value) => keyDeleted(value)"
-        />
-
-        <template-item-values
-            v-else
-            :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
-            :item="item"
-            :header="header"
-            :projectId="projectId"
-            @valueSaved="valueSaved"
-        />
-      </template>
-
-      <!-- Custom header for groups -->
-      <template v-slot:group.header="{group, items, isOpen, toggle}">
-        <template-group-header
-            :headers="headers"
-            :groupId="group"
-            :items="items"
-            :isOpen="isOpen"
-            :toggle="toggle"
-        />
-      </template>
-
-      <!-- Custom footer on groups -->
-      <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
-        <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
-      </template>
-    </v-data-table>
-
+  <div class="my-projects-container">
     <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => this.isOpenCreation = false"></key-creation>
-  </v-container>
+    <v-container fluid>
+
+      <Header class="header"/>
+
+      <v-row no-gutters v-if="getItems.length <= 0" align-content="start" justify="center">
+        <v-col cols="4">
+          <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters v-else class="content">
+        <v-col cols="12" class="fill-height">
+          <v-data-table
+              hide-default-footer
+              fixed-header
+              :headers="headers"
+              :items="getItems"
+              :loading="loading"
+              item-class="text-3"
+              disable-pagination
+              group-by="group.id"
+              elevation="0"
+              class="my-custom-table">
+
+            <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
+              <template-item-keys
+                  v-if="header.value === 'keys'"
+                  :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
+                  :item="item"
+                  :projectId="projectId"
+                  v-on:saveKey="(value) => keySaved(value)"
+                  v-on:deleteKey="(value) => keyDeleted(value)"
+              />
+
+              <template-item-values
+                  v-else
+                  :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
+                  :item="item"
+                  :header="header"
+                  :projectId="projectId"
+                  @valueSaved="valueSaved"
+              />
+            </template>
+
+            <!-- Custom header for groups -->
+            <template v-slot:group.header="{group, items, isOpen, toggle}">
+              <template-group-header
+                  :headers="headers"
+                  :groupId="group"
+                  :items="items"
+                  :isOpen="isOpen"
+                  :toggle="toggle"
+              />
+            </template>
+
+            <!-- Custom footer on groups -->
+            <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
+              <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -66,6 +73,7 @@ import TemplateItemValues from "@/components/molecules/project/template-v-data-t
 import TemplateItemKeys from "@/components/molecules/project/template-v-data-table/TemplateItemKeys.vue";
 import TemplateGroupHeader from "@/components/molecules/project/template-v-data-table/TemplateGroupHeader.vue";
 import TemplateGroupFooter from "@/components/molecules/project/template-v-data-table/TemplateGroupFooter.vue";
+import Header from "@/components/molecules/project/DetailHeader.vue";
 import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
@@ -81,6 +89,7 @@ export default Vue.extend({
     TemplateGroupHeader,
     TemplateGroupFooter,
     TemplateItemKeys,
+    Header,
     KeyCreation
   },
   data() {
@@ -213,37 +222,61 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '~vuetify/src/styles/styles.sass';
+@import '~vuetify/src/styles/settings/_variables';
+
+.my-projects-container {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: var(--v-background-base);
+  height: calc(100% - 50px); // 50px == language tab height
+  width: 100%;
+}
+
+@mixin styling($base-height) {
+  .header {
+    margin-top: 20px;
+    height: $base-height;
+  }
+  .content {
+    position: absolute;
+    top: calc($base-height + 20px);
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+@media #{map-get($display-breakpoints, 'sm-and-down')} {
+  @include styling($base-height: 220px);
+}
+
+@media #{map-get($display-breakpoints, 'md-and-up')} {
+  @include styling($base-height: 140px);
+}
 
 .no-data-button {
   margin-left: 45%;
 }
 
-.my-table {
-  max-width: 100%;
-}
 .v-data-table--fixed-header thead th {
-  background: #FAF8F9 !important;
+  background: var(--v-background-base) !important;
 }
 
 .my-custom-table {
   background-color: transparent !important;
   height: 100% !important;
+  margin-right: 50px !important;
 
   .v-data-table__wrapper {
     height: 100% !important;
+    overflow-y: scroll;
   }
 
   table {
-    border-spacing: 0px 16px !important;
+    border-spacing: 0 16px !important;
   }
 }
 
 .v-row-group__summary {
   background-color: transparent !important;
-}
-
-.icon-style-big {
-  font-size: 32px !important;
 }
 </style>

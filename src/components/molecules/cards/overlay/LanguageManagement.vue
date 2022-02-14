@@ -4,10 +4,10 @@
             <LanguageDelete :dialog-opened="dialogOpenedDelete" :project-id="projectId" :language="languageToDelete" @closeDelete="() => this.dialogOpenedDelete = false"/>
         </v-dialog>
 
-        <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+        <v-card color="white" class="pa-4 pa-md-7 custom-cards">
             <v-container>
                 <!-- Title -->
-                <v-row class="mb-2 row-title">
+                <v-row class="mb-2">
                     <v-col cols="11">
                         <h2 class="title-h2">{{ $t("language_manage.title") }}</h2>
                     </v-col>
@@ -21,7 +21,7 @@
                     <v-row class="mx-0 my-2 pr-1" v-for="language in languages" :key="language.id">
                         <v-col cols="12" class="pb-0 pt-0 px-0">
                             <span class="title-h3">{{ language.name }}</span>
-                            <v-icon @click="deleteLanguage(language)" class="float-right" color="maincolor">mdi-delete</v-icon>
+                            <v-icon @click="deleteLanguage(language)" class="float-right" color="primary">mdi-delete</v-icon>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -61,14 +61,3 @@ export default Vue.extend({
     }
 });
 </script>
-
-<style lang="scss" scoped>
-.row-title {
-    height: 50px;
-}
-
-.list-languages-style {
-    max-height: 300px;
-    overflow-y: auto;
-}
-</style>

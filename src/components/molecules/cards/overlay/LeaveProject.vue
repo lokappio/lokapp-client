@@ -1,5 +1,5 @@
 <template>
-    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
         <!-- Title and close -->
         <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
         <v-card-title class="title-style d-flex justify-space-around">{{ $t("leave_project.title") }}</v-card-title>

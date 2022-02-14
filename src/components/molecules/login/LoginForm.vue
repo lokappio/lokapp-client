@@ -5,7 +5,7 @@
         </v-dialog>
 
         <v-tabs v-model="toggleExclusive" color="white" grow centered>
-            <v-tabs-slider color="maincolor"></v-tabs-slider>
+            <v-tabs-slider color="primary"></v-tabs-slider>
             <v-tab :key="0" @change="activeConnexion">
                 <span :class="toggleExclusive === 0 ? 'activatedTab' : 'desactivatedTab'">{{ $t("connexion.login") }}</span>
             </v-tab>
@@ -144,7 +144,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '~vuetify/src/styles/styles.sass';
+@import '~vuetify/src/styles/settings/_variables';
 
 .activatedTab {
     color: #010F5C;

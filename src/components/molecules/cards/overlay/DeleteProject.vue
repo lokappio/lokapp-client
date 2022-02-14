@@ -1,5 +1,5 @@
 <template>
-    <v-card color="white" width="100%" class="pa-4 pa-md-7 card-style-project">
+    <v-card color="white" width="100%" class="pa-4 pa-md-7 custom-cards">
         <!-- Title and close -->
         <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
 
@@ -62,10 +62,3 @@ export default Vue.extend({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-    .card-style-project {
-        border-radius: 20px !important;
-        width: 400px;
-    }
-</style>
