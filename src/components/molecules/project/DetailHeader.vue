@@ -21,7 +21,7 @@
           </v-col>
 
           <v-col cols="auto" class="mr-4">
-            <v-btn @click="() => this.dialogOpened = true" height="50" color="primary"><v-icon color="white">mdi-download</v-icon></v-btn>
+            <v-btn @click="() => this.dialogOpened = true" depressed height="50" color="primary"><v-icon color="white">mdi-download</v-icon></v-btn>
           </v-col>
         </v-row>
       </v-col>

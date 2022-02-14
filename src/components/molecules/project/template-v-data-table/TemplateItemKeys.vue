@@ -4,7 +4,7 @@
       <v-icon>mdi-delete</v-icon>
     </v-btn>
 
-    <v-btn color="primary" small @click="switchQuantity" class="white--text mx-2">
+    <v-btn color="primary" small depressed @click="switchQuantity" class="white--text mx-2">
       {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
     </v-btn>
 

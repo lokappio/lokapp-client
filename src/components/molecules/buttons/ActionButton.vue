@@ -1,5 +1,5 @@
 <template>
-    <v-btn :loading="loading" dark class="button-action-style" height="55" :block="block" color="primary" @click="handler">
+    <v-btn :loading="loading" dark class="button-action-style" depressed height="55" :block="block" color="primary" @click="handler">
           <div class="title-h3 white--text">{{ text }}</div>
           <v-icon v-if="addIcon" color="white" class="pl-2">mdi-plus-circle</v-icon>
     </v-btn>

@@ -2,7 +2,7 @@
   <v-dialog v-model="dialogOpened" scrollable transition="dialog-bottom-transition" max-width="600px">
     <template v-slot:activator="{ on }">
       <v-badge :value="nbOfInvitations > 0" color="red" dot overlap>
-        <v-btn v-on="on" x-small fab color="primary">
+        <v-btn v-on="on" x-small fab depressed color="primary">
           <v-icon color="white">mdi-bell-ring</v-icon>
         </v-btn>
       </v-badge>
