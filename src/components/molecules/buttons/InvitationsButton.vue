@@ -1,8 +1,8 @@
 <template>
-  <v-dialog v-if="nbOfInvitations > 0" v-model="opened" scrollable transition="dialog-bottom-transition" max-width="600px">
-    <template v-slot:activator="{ on, attrs }">
-      <v-badge color="red" dot overlap>
-        <v-btn v-on="on" v-bind="attrs" x-small fab color="primary">
+  <v-dialog v-model="dialogOpened" scrollable transition="dialog-bottom-transition" max-width="600px">
+    <template v-slot:activator="{ on }">
+      <v-badge :value="nbOfInvitations > 0" color="red" dot overlap>
+        <v-btn v-on="on" x-small fab color="primary">
           <v-icon color="white">mdi-bell-ring</v-icon>
         </v-btn>
       </v-badge>
@@ -27,12 +27,12 @@
               <v-container class="justify-center">
                 <v-row>
                   <v-col class="pa-0 pr-1" cols="6">
-                    <v-btn @click="acceptInvitation(invitation)" color="success">
+                    <v-btn @click="acceptInvitation(invitation)" depressed color="primary">
                       <v-icon>mdi-check</v-icon>
                     </v-btn>
                   </v-col>
                   <v-col class="pa-0 pl-1" cols="6">
-                    <v-btn @click="declineInvitation(invitation)" color="error">
+                    <v-btn @click="declineInvitation(invitation)" depressed outlined color="primary">
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </v-col>
@@ -59,7 +59,8 @@ export default Vue.extend({
     return {
       opened: false,
       timer: null,
-      invitations: []
+      invitations: [],
+      dialogOpened: false
     };
   },
   methods: {
@@ -68,19 +69,27 @@ export default Vue.extend({
           .then((invitations: Invitation[]) => {
             this.$store.commit("SET_INVITATIONS", invitations);
             this.invitations = invitations;
+
+            if(invitations.length === 0) this.dialogOpened = false;
           });
     },
     acceptInvitation(invitation: Invitation) {
       this.$service.invitations.acceptInvitation(invitation)
           .then(() => this.$notify(this.$t("success.invitation_accepted") as string))
           .catch(() => this.$notify(this.$t("errors.unknown_error") as string))
-          .finally(() => this.refreshInvitations());
+          .finally(() => {
+            this.refreshInvitations();
+            this.refreshProjects();
+          });
     },
     declineInvitation(invitation: Invitation) {
       this.$service.invitations.declineInvitation(invitation)
           .then(() => this.$notify(this.$t("success.invitation_declined") as string))
           .catch(() => this.$notify(this.$t("errors.unknown_error") as string))
           .finally(() => this.refreshInvitations());
+    },
+    refreshProjects(): void {
+      this.$emit("refreshProjects");
     }
   },
   computed: {

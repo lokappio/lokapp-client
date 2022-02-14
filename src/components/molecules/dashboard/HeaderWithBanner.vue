@@ -23,7 +23,7 @@
           <v-text-field solo v-model="searchValue" hide-details :label="$t('common.search_label')"></v-text-field>
         </v-col>
 
-        <invitations-button />
+        <invitations-button @refreshProjects="() => $emit('refreshProjects')"/>
       </v-row>
   </v-container>
 </template>

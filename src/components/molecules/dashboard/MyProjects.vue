@@ -52,36 +52,28 @@ import Project from "@/data/models/api/Project";
 export default Vue.extend({
   name: "my-projects",
   components: {ProjectCard},
-  created() {
-    this.refreshProjectList();
-  },
+  props: {projects: [], loading: Boolean},
   data() {
     return {
-      projects: [] as Project[],
       timerUpdate: 0,
       totalSecondes: 0,
       timer: null,
-      loading: false
     };
+  },
+  watch : {
+    projects() {
+      this.updateMyTimer();
+    }
   },
   computed: {
     searchProjectValue(): string {
       return this.$store.state.searchProject;
     },
     displayedProjects(): Project[] {
-      return this.projects.filter((project) => project.name.toUpperCase().includes(this.searchProjectValue.toUpperCase()));
+      return (this.projects as Project[]).filter((project) => project.name.toUpperCase().includes(this.searchProjectValue.toUpperCase()));
     }
   },
   methods: {
-    refreshProjectList() {
-      this.loading = true;
-
-      this.$service.projects.getProjects()
-          .then(projects => {
-            this.projects = projects;
-            this.updateMyTimer();
-          }).finally(() => this.loading = false);
-    },
     updateMyTimer() {
       this.totalSecondes = 0;
       this.timerUpdate = 0;

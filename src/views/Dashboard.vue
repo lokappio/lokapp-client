@@ -8,11 +8,11 @@
       <v-col>
         <v-card class="box card-style-content background-color-white fill-height px-0 pt-5">
             <div class="row header">
-              <header-banner />
+              <header-banner @refreshProjects="refreshProjectList"/>
             </div>
 
             <div class="row content">
-              <my-projects/>
+              <my-projects :projects="projects" :loading="loading"/>
             </div>
         </v-card>
       </v-col>
@@ -20,11 +20,12 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import {Vue} from "vue-property-decorator";
 import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
+import Project from "@/data/models/api/Project.js";
 
 export default Vue.extend({
   components: {
@@ -35,10 +36,25 @@ export default Vue.extend({
   metaInfo() {
     return {
       title: "Lokapp",
-      titleTemplate: null
+      titleTemplate: null,
     };
-  }
+  },
+  data() {
+    return {
+      projects: [] as Project[],
+      loading: false
+    };
+  },
+  methods: {
+    refreshProjectList() {
+      this.loading = true;
 
+      this.$service.projects.getProjects()
+          .then(projects => {
+            this.projects = projects;
+          }).finally(() => this.loading = false);
+    },
+  }
 });
 </script>
 
