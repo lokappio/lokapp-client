@@ -1,10 +1,10 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="mr-5">
     <v-dialog v-model="dialogOpened" max-width="500px">
       <ProfileManager :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
     </v-dialog>
 
-      <v-row no-gutters>
+      <v-row no-gutters align="center" justify="space-between">
         <v-col cols="12" :md="!projectDetail ? '6' : '12'">
           <v-row no-gutters align="baseline">
             <v-col cols="auto">
@@ -19,10 +19,11 @@
           </v-row>
         </v-col>
 
-
         <v-col v-if="!projectDetail" cols="12" md="5">
-          <v-text-field solo v-model="searchValue" :label="$t('common.search_label')"></v-text-field>
+          <v-text-field solo v-model="searchValue" hide-details :label="$t('common.search_label')"></v-text-field>
         </v-col>
+
+        <invitations-button />
       </v-row>
   </v-container>
 </template>
@@ -31,10 +32,11 @@
 import Vue from "vue";
 import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
 import ProjectUser from "@/data/models/api/ProjectUser";
+import InvitationsButton from "@/components/molecules/buttons/InvitationsButton.vue";
 
 export default Vue.extend({
   name: "header-banner",
-  components: {ProfileManager},
+  components: {InvitationsButton, ProfileManager},
   props: {projectDetail: {type: Boolean, default: false}},
   data() {
     return {

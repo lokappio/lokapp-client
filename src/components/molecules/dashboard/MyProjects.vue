@@ -28,14 +28,14 @@
           </v-col>
         </v-row>
 
-        <v-row no-gutters v-else justify="center">
+        <v-row no-gutters v-else justify="center" class="ma-5">
           <v-col cols="12">
             <p><span class="title-h3">{{ $t("dashboard.no_project_in_dashboard") }}</span></p>
           </v-col>
 
           <!-- CREATING PROJECT BUTTON -->
           <v-col cols="12">
-            <ProjectCard/>
+            <ProjectCard />
           </v-col>
         </v-row>
       </v-col>
