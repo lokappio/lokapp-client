@@ -26,11 +26,26 @@ class GroupsService {
         return Group.map(result.data);
     }
 
-    public static updateGroup(groupId: number, groupName: string): Promise<AxiosResponse> {
+    public static updateGroup(groupId: number, groupName: string): Promise<any> {
         const bodyParameters = {
             name: groupName
         };
-        return ApiService.patchAPI(GroupsService.groupsUrl + this.projectId + "/groups/" + groupId, bodyParameters);
+
+        return ApiService.patchAPI(GroupsService.groupsUrl + this.projectId + "/groups/" + groupId, bodyParameters)
+          .catch((error) => {
+              if (error.response) {
+                  switch (error.response.status) {
+                      case 422:
+                          throw "errors.group_already_exists";
+                      case 404:
+                          throw "errors.not_existing_group";
+                      case 403:
+                          throw "errors.unauthorized";
+                      default:
+                          throw "errors.unknown-error";
+                  }
+              }
+        });
     }
 }
 

@@ -82,24 +82,7 @@ export default Vue.extend({
     saveGroup() {
       this.$service.groups.updateGroup(this.groupId, this.updateName)
           .then(() => this.updateGroup())
-          .catch((error) => {
-            if (error.response) {
-              switch (error.response.status) {
-                case 422:
-                  this.$notify(this.$t("errors.group_already_exists").toString());
-                  break;
-                case 404:
-                  this.$notify(this.$t("errors.not_existing_group").toString());
-                  break;
-                case 403:
-                  this.$notify(this.$t("errors.unauthorized").toString());
-                  break;
-                default:
-                  this.$notify(this.$t("errors.unknown-error").toString());
-                  break;
-              }
-            }
-          });
+          .catch((error) => this.$notify(this.$t(error).toString()));
     }
   }
 });

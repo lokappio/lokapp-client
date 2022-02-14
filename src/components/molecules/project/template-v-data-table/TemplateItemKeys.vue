@@ -35,7 +35,7 @@ export default Vue.extend({
   name: "template-item-keys",
   props: {
     item: {},
-    projectId: Number,
+    projectId: Number
   },
   data() {
     return {
@@ -47,14 +47,14 @@ export default Vue.extend({
   },
   watch: {
     item: {
-      handler: function() {
+      handler: function () {
         this.updateKey = Object.assign(Key.map({}), (this.item as translationItem).key);
       }
     }
   },
   computed: {
     keyQuantityName(): string {
-      return  (this.item as translationItem)?.quantity ? `[${(this.item as translationItem).quantity}]` : '';
+      return (this.item as translationItem)?.quantity ? `[${(this.item as translationItem).quantity}]` : "";
     }
   },
   methods: {
@@ -72,25 +72,8 @@ export default Vue.extend({
             this.$emit("saveKey", result);
             setTimeout(() => this.inputIcon = "", 1000);
           })
-          .catch((error) => {
-            if (!error.response) {
-              return;
-            }
-            switch (error.response.status) {
-              case 422:
-                this.$notify(this.$t("errors.key_name_already_exists").toString());
-                break;
-              case 403:
-                this.$notify(this.$t("errors.unauthorized").toString());
-                break;
-              case 404:
-                this.$notify(this.$t("errors.not_existing_key").toString());
-                break;
-              default:
-                this.$notify(this.$t("errors.unknown_error").toString());
-                break;
-            }
-          });
+          .catch((error) => this.$notify(this.$t(error).toString()))
+          .finally(() => this.loading = false);
     },
     deleteKey() {
       this.$service.keys.deleteKey((this.item as translationItem).key.id)

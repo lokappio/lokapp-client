@@ -114,9 +114,21 @@ class KeysService {
       "is_plural": key.isPlural
     };
 
-    await ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters);
-    key.values = await ValuesService.getValuesByKeyId(key.id);
-    return key;
+    return ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters).then(async () => {
+      key.values = await ValuesService.getValuesByKeyId(key.id);
+      return key;
+    }).catch((error) => {
+      switch (error.response.status) {
+        case 422:
+          throw "errors.key_name_already_exists";
+        case 403:
+          throw "errors.unauthorized";
+        case 404:
+          throw "errors.not_existing_key";
+        default:
+          throw "errors.unknown_error";
+      }
+    });
   }
 }
 
