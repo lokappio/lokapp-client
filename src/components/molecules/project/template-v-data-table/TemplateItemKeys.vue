@@ -101,14 +101,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-.span-keys-with-overflow {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  white-space: nowrap;
-  max-width: 48vw;
-  width: 100%;
-}
-</style>

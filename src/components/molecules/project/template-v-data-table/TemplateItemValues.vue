@@ -76,19 +76,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-.span-with-overflow {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  white-space: nowrap;
-  max-width: 360px;
-  width: 100%;
-}
-
-.empty-value {
-  width: 300px;
-  background-color: #F6F6F6;
-}
-</style>
