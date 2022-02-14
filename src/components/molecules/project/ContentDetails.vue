@@ -264,6 +264,7 @@ export default Vue.extend({
 .my-custom-table {
   background-color: transparent !important;
   height: 100% !important;
+  margin-right: 50px !important;
 
   .v-data-table__wrapper {
     height: 100% !important;
