@@ -45,6 +45,9 @@ export default Vue.extend({
       loading: false
     };
   },
+  created() {
+    this.refreshProjectList();
+  },
   methods: {
     refreshProjectList() {
       this.loading = true;
