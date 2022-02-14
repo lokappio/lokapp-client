@@ -135,18 +135,7 @@ export default Vue.extend({
         deleteInvitation(invitation: ProjectUser) {
             this.$service.invitations.deleteInvitation(this.projectId, invitation.invitationId)
                 .then(() => this.refresh())
-                .catch((error) => {
-                  if (error.response) {
-                      switch (error.response.status) {
-                          case 403:
-                              this.$notify(this.$t("errors.unauthorized") as string);
-                              break;
-                          default:
-                              this.$notify(this.$t("errors.unknown_error") as string);
-                              break;
-                      }
-                  }
-                });
+                .catch((error) => this.$notify(this.$t(error).toString()));
         },
         isUserUpdateRoleDisabled(user: ProjectUser): boolean {
             return (!this.me.roleAbility.canWriteUser ? true : user.role === Role.OWNER) || user.userId === this.me.userId;
@@ -199,19 +188,7 @@ export default Vue.extend({
                     if (this.me.role === Role.OWNER && user.role === Role.OWNER) {
                         this.refresh();
                     }
-                }).catch((error) => {
-                if (error.response) {
-                    switch (error.response.status) {
-                        case 403:
-                            this.$notify(this.$t("errors.unauthorized") as string);
-                            break;
-                        default:
-                            this.$notify(this.$t("errors.unknown_error") as string);
-                            break;
-                    }
-                    this.refresh();
-                }
-            });
+                }).catch((error) => this.$notify(this.$t(error).toString()));
         },
         deleteUser(user: ProjectUser) {
             this.userToDelete = user;

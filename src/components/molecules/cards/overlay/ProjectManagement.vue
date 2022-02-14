@@ -179,18 +179,8 @@ export default Vue.extend({
               this.$emit("projectUpdated", this.updatedProject);
               this.closeManageProject();
             })
-            .catch((error) => {
-              if (error.response) {
-                switch (error.response.status) {
-                  case 403:
-                    this.$notify(this.$t("error.unauthorized").toString());
-                    break;
-                }
-              }
-            })
-            .finally(() => {
-              this.loading = false;
-            });
+            .catch((error) => this.$notify(this.$t(error).toString()))
+            .finally(() => this.loading = false);
       }
     },
     createNewProject() {

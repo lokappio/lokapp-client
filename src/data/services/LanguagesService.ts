@@ -54,8 +54,17 @@ class LanguagesService {
       });
   }
 
-  public static deleteLanguage(languageId: number, projectId = this.projectId): Promise<AxiosResponse> {
-    return ApiService.delAPI(LanguagesService.languagesUrl + projectId + "/languages/" + languageId);
+  public static deleteLanguage(languageId: number, projectId = this.projectId): Promise<any> {
+    return ApiService.delAPI(LanguagesService.languagesUrl + projectId + "/languages/" + languageId).catch((error) => {
+      if (error.response) {
+        switch (error.response.status) {
+          case 403:
+            throw "errors.unauthorized";
+          default:
+            throw "error.unknown_error";
+        }
+      }
+    });
   }
 }
 

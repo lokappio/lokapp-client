@@ -64,17 +64,8 @@ export default Vue.extend({
                     this.$store.commit("DELETE_PROJECT_LANGUAGE", this.language);
                     this.comebackToLanguageManagement();
                     this.$notify(this.$t("success.language_deleted").toString());
-                }).catch((error) => {
-                if (error.response) {
-                    switch (error.response.status) {
-                        case 403:
-                            this.$notify(this.$t("errors.unauthorized") as string);
-                            break;
-                        default:
-                            this.$notify(this.$t("error.unknown_error") as string);
-                    }
-                }
-            });
+                })
+                .catch((error) => this.$notify(this.$t(error).toString()));
         }
     }
 });

@@ -7,11 +7,21 @@ import ApiService from "./ApiService";
 class InvitationsService {
     static invitationsUrl: string = config.baseUrl + "/invitations";
 
-    public static deleteInvitation(projectId: number, invitationId: number): Promise<AxiosResponse> {
+    public static deleteInvitation(projectId: number, invitationId: number): Promise<any> {
         const bodyParameters = {
             "project_id": projectId
         };
-        return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`, bodyParameters);
+
+        return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`, bodyParameters).catch((error) => {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 403:
+                        throw "errors.unauthorized";
+                    default:
+                        throw "errors.unknown_error";
+                }
+            }
+        });
     }
 
     public static createInvitation(projectId: number, email: string, role: Role): Promise<AxiosResponse> {
