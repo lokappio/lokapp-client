@@ -144,7 +144,7 @@ export default Vue.extend({
             Export.downloadFile(file.content, file.name);
         },
         downloadEverything() {
-            Export.downloadEverything(this.files);
+            Export.downloadEverything(this.files, this.selectedPlatform);
         },
         closeDialog() {
             this.$emit("close", false);

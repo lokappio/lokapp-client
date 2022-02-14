@@ -7,12 +7,8 @@ import ApiService from "./ApiService";
 class InvitationsService {
     static invitationsUrl: string = config.baseUrl + "/invitations";
 
-    public static deleteInvitation(projectId: number, invitationId: number): Promise<any> {
-        const bodyParameters = {
-            "project_id": projectId
-        };
-
-        return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`, bodyParameters).catch((error) => {
+    public static deleteInvitation(invitationId: number): Promise<any> {
+        return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`).catch((error) => {
             if (error.response) {
                 switch (error.response.status) {
                     case 403:

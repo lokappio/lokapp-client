@@ -133,7 +133,7 @@ export default Vue.extend({
     },
     methods: {
         deleteInvitation(invitation: ProjectUser) {
-            this.$service.invitations.deleteInvitation(this.projectId, invitation.invitationId)
+            this.$service.invitations.deleteInvitation(invitation.invitationId)
                 .then(() => this.refresh())
                 .catch((error) => this.$notify(this.$t(error).toString()));
         },

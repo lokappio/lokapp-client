@@ -1,6 +1,7 @@
 import JSZip from "jszip";
 import { saveAs } from 'file-saver';
 import {TranslationFile} from "@/data/models/types/export";
+import store from "@/store";
 
 export default class Export {
   static downloadFile(content: string, name: string): void {
@@ -13,14 +14,14 @@ export default class Export {
     document.body.removeChild(element);
   }
 
-  static downloadEverything(files: TranslationFile[]): void {
+  static downloadEverything(files: TranslationFile[], platform: string): void {
     const zip = new JSZip();
     files.forEach((file) => {
       zip.file(file.name, file.content);
     });
     zip.generateAsync({type: "blob"})
       .then((content) => {
-        saveAs(content, "archive-lokapp.zip");
+        saveAs(content, `${platform.toLowerCase()}-${store.getters.currentProject.name.replaceAll(" ", "_")}-lokapp.zip`);
       });
   }
 }
