@@ -19,16 +19,12 @@ const generateWebStringFile = (language: Language, localizedProject: LocalizedGr
           currGroup[localization?.key] = replaceMarkers(value, platform);
         } else {
           const values: Plural = localization[language.name] as Plural;
-          let jsonValues = "";
 
           if (values) {
-            Object.entries(values).forEach((value, index) => {
-              jsonValues += replaceMarkers(value[1].replace(/"/g, "\\\""), platform);
-              if (index < 2) {jsonValues += " | "}
-            });
+            currGroup[localization?.key] = `${values.zero} | ${values.one} | ${values.other}`;
+          } else {
+            currGroup[localization?.key] = "";
           }
-
-          currGroup[localization?.key] = jsonValues;
         }
       });
     }
