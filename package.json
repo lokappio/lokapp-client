@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy": "NODE_ENV='production' vue-cli-service build && firebase deploy -P staging",
+    "deploy-staging": "NODE_ENV=development vue-cli-service build --mode development && firebase deploy -P staging",
+    "deploy-prod": "NODE_ENV=production vue-cli-service build && firebase deploy -P demo-prod",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
