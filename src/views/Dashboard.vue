@@ -53,7 +53,7 @@ export default Vue.extend({
       this.loading = true;
 
       this.$service.projects.getProjects()
-          .then(projects => {
+          .then((projects: Project[]) => {
             this.projects = projects;
           }).finally(() => this.loading = false);
     },

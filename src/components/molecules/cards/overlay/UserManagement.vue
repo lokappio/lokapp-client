@@ -183,8 +183,8 @@ export default Vue.extend({
         },
         updateRole(user: ProjectUser) {
             this.$service.projects.updateRoleOfUser(this.projectId, user.userId, user.role)
-                .then((userUpdated: ProjectUser) => {
-                    user = userUpdated;
+                .then((userUpdated) => {
+                    user = userUpdated as ProjectUser;
                     if (this.me.role === Role.OWNER && user.role === Role.OWNER) {
                         this.refresh();
                     }
