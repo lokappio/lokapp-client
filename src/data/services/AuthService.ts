@@ -1,6 +1,8 @@
 import config from "@/config";
 import ApiService from "./ApiService";
 import {FirebaseHelper} from "@/data/helpers/firebase";
+import UserService from "@/data/services/UserService";
+import store from "@/store";
 
 class AuthService {
   static authUrl: string = config.baseUrl + "/auth";
@@ -48,9 +50,28 @@ class AuthService {
           };
 
           return ApiService.postAPI(registerUrl, bodyParameters)
+            .then(async () => {
+              await this.setUser();
+            })
+            .catch((error) => console.log(error));
         }
+      });
+  }
 
-        return Promise.reject();
+  public static async setUser(): Promise<void> {
+    await UserService.getMe()
+      .then((user) => store.commit('SET_APP_USER', user))
+      .catch((error) => {
+        if (error.response) {
+          switch (error.response.status) {
+            //CASE HAPPEN ON USER SIGN UP.
+            case 400: //400 == user don't exist in DB (but exist in auth)
+              //DO NOTHING BECAUSE IT IS MANAGED ON this.register()
+              return null;
+            default:
+              return FirebaseHelper.logout();
+          }
+        }
       });
   }
 

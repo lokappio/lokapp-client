@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import store from "@/store/index";
-import UserService from "@/data/services/UserService";
+import authService from "@/data/services/AuthService";
 
 export class FirebaseHelper {
   static currentUser(): firebase.User {
@@ -29,11 +29,7 @@ export class FirebaseHelper {
       store.commit("SET_USER", user);
 
       if(user != null) {
-        await UserService.getMe()
-          .then((user) => store.commit('SET_APP_USER', user))
-          .catch(() => {
-            this.logout();
-          });
+        await authService.setUser();
       } else {
         store.commit('SET_APP_USER',null);
       }

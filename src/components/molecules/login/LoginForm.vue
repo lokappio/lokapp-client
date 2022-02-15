@@ -103,11 +103,8 @@ export default Vue.extend({
                 this.loading = true;
                 this.$service.auth.logIn(this.email, this.passwordLogin)
                     .then(() => this.$router.push("/dashboard"))
-                    .catch((error) => {
-                        this.changeErrorText(error.code);
-                    }).finally(() => {
-                    this.loading = false;
-                });
+                    .catch((error) => this.changeErrorText(error.code))
+                    .finally(() => this.loading = false);
             }
         },
         validateRegister() {
@@ -118,11 +115,8 @@ export default Vue.extend({
                 }
                 this.$service.auth.register(this.email, this.password, this.pseudo)
                     .then(() => this.$router.push("/dashboard"))
-                    .catch((error) => {
-                        this.changeErrorText(error.code);
-                    }).finally(() => {
-                    this.loading = false;
-                });
+                    .catch((error) => this.changeErrorText(error.code))
+                    .finally(() => this.loading = false);
             }
         },
         changeErrorText(errorCode) {
