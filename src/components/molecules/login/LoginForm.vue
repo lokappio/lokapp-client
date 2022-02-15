@@ -76,13 +76,15 @@ export default Vue.extend({
             passwordRules: userPasswordRules(),
 
             passwordCopy: "",
-            passwordCopyRules: userPasswordCopyRules(this.password),
 
             pseudo: null,
 
             dialogOpenedResetPassword: false,
             loading: false,
         };
+    },
+    computed: {
+      passwordCopyRules() { return userPasswordCopyRules(this.password)}
     },
     methods: {
         activeConnexion() {
