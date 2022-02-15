@@ -46,9 +46,9 @@ export default Vue.extend({
         closeOverlay(): void {
             this.$emit("close");
         },
-        deleteProject() {
+        deleteKey() {
             this.loading = true;
-            this.$service.projects.deleteProject(this.project.id)
+            this.$service.projects.deleteKey(this.project.id)
             .then(() => {
                 this.$notify(this.$t("success.project_deleted") as string);
                 this.$router.push("/dashboard");

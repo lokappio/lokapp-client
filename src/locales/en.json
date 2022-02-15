@@ -96,6 +96,13 @@
         "traductions_title": "Translation value",
         "validate_button": "Add new key"
     },
+    "key_delete" : {
+        "cancel_button": "Cancel",
+        "confirm_button": "Delete the key",
+        "description_1": "Are you sure you want to delete {value}?\n",
+        "description_2": "Its deletion is irremediable and you will lose every keys.",
+        "title": "Delete {name}"
+    },
     "language_creation": {
         "confirm_button": "Add",
         "language_name_label": "Enter language's name",

@@ -112,6 +112,13 @@
         "traductions_title": "Valeurs de traduction",
         "validate_button": "Ajouter la clé"
     },
+    "key_delete" : {
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer la clé",
+        "description_1": "Êtes-vous sûr de vouloir supprimer la clé '{value}' ?\n",
+        "description_2": "Sa suppression est irrémédiable et vous perdrez la clé et les valeurs associées.",
+        "title": "Supprimer une clé"
+    },
     "language_creation": {
         "confirm_button": "Ajouter",
         "language_name_label": "Nom de la langue",
