@@ -6,6 +6,7 @@ import firebase from "firebase/app";
 
 export interface State {
   applicationReady: boolean;
+  canRetrieveUser: boolean;
   user: firebase.User;
   appUser: ProjectUser;
   actualLanguage: Language;
@@ -19,6 +20,7 @@ export interface State {
 
 export default {
   applicationReady: false,
+  canRetrieveUser: true,
   user: null,
   appUser: null,
   actualLanguage: null,

@@ -29,7 +29,7 @@ export class FirebaseHelper {
       store.commit("SET_USER", user);
 
       if(user != null) {
-        await authService.setUser();
+        if(store.state.canRetrieveUser) await authService.setUser();
       } else {
         store.commit('SET_APP_USER',null);
       }

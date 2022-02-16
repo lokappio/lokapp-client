@@ -17,6 +17,9 @@ export default {
     UPDATE_APP_USER(state: State, user: ProjectUser): void {
         state.appUser.username = user.username;
     },
+    SET_CAN_RETRIEVE_USER(state: State, value: boolean): void {
+        state.canRetrieveUser = value;
+    },
     SET_APPLICATION_READY(state: State): void {
         state.applicationReady = true;
     },

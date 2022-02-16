@@ -37,12 +37,14 @@ class AuthService {
 
   public static register(email: string, password: string, pseudo: string) {
     const registerUrl: string = AuthService.authUrl + "/register";
+    store.commit("SET_CAN_RETRIEVE_USER", false);
 
     return FirebaseHelper.firebaseEmailSignUp(email, password)
       .then((credentials) => {
         const user = credentials.user;
-        
+
         if (user) {
+
           const mail = user.email;
           const bodyParameters = {
             username: pseudo,
@@ -50,29 +52,16 @@ class AuthService {
           };
 
           return ApiService.postAPI(registerUrl, bodyParameters)
-            .then(async () => {
-              await this.setUser();
-            })
+            .then(() => this.setUser())
             .catch((error) => console.log(error));
         }
-      });
+      }).finally(() => store.commit("SET_CAN_RETRIEVE_USER", true));
   }
 
   public static async setUser(): Promise<void> {
     await UserService.getMe()
       .then((user) => store.commit('SET_APP_USER', user))
-      .catch((error) => {
-        if (error.response) {
-          switch (error.response.status) {
-            //CASE HAPPEN ON USER SIGN UP.
-            case 400: //400 == user don't exist in DB (but exist in auth)
-              //DO NOTHING BECAUSE IT IS MANAGED ON this.register()
-              return null;
-            default:
-              return FirebaseHelper.logout();
-          }
-        }
-      });
+      .catch(() => FirebaseHelper.logout());
   }
 
   public static isLoggedIn(): boolean {
