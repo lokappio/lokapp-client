@@ -13,7 +13,7 @@
           </v-col>
         </v-row>
 
-        <v-form ref="formCreateKey">
+        <v-form ref="formCreateKey" @submit.prevent="() => false">
           <!-- Key name -->
           <v-row class="mt-2 pb-0 mb-0">
             <v-col cols="12" class="pb-0 px-0">
@@ -22,8 +22,17 @@
           </v-row>
           <v-row class="mt-0">
             <v-col cols="12" class="pa-0">
-              <v-text-field :rules="keyNameRules" class="custom-text-field" background-color="inputBackground" v-model="newKey.name" :label="$t('key_creation.key_name_label')" solo flat
-                            required></v-text-field>
+              <v-text-field
+                  :rules="keyNameRules"
+                  class="custom-text-field"
+                  background-color="inputBackground"
+                  v-model="newKey.name"
+                  :label="$t('key_creation.key_name_label')"
+                  solo
+                  flat
+                  required
+                  @keydown.enter="createKeyWithGroup"
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -57,8 +66,17 @@
           </v-row>
           <v-row class="mt-4" v-if="currentGroup.id === -1">
             <v-col cols="12" class="pa-0">
-              <v-text-field :rules="groupNameRules" class="custom-text-field" background-color="inputBackground" v-model="groupName" :label="$t('key_creation.group_name_label')" solo flat required
-                            autofocus></v-text-field>
+              <v-text-field
+                  :rules="groupNameRules"
+                  class="custom-text-field"
+                  background-color="inputBackground"
+                  v-model="groupName"
+                  :label="$t('key_creation.group_name_label')"
+                  solo
+                  flat
+                  required
+                  autofocus
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -72,7 +90,12 @@
           <!-- ValidateButton -->
           <v-row class="mt-2 pb-0">
             <v-col cols="12" class="pb-0 px-0">
-              <action-button block :loading="loading" :handler="createKeyWithGroup" :text="$t('key_creation.validate_button')"/>
+              <action-button
+                  block
+                  :loading="loading"
+                  :text="$t('key_creation.validate_button').toString()"
+                  :handler="createKeyWithGroup"
+              />
             </v-col>
           </v-row>
         </v-form>
