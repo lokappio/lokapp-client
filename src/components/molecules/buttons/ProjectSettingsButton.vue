@@ -20,12 +20,20 @@
 
     <v-menu :nudge-width="200" transition="slide-x-transition">
       <template v-slot:[`activator`]="{on}">
-        <v-btn color="black" v-on="on" @click="getMe" icon>
+        <v-btn color="black" v-on="on" icon>
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </template>
+
+
       <v-list>
-        <v-list-item v-for="(item, i) in actions" :key="i">
+        <v-list-item v-if="loading">
+          <v-list-item-title>
+            <v-progress-circular size="25" indeterminate color="primary"></v-progress-circular>
+          </v-list-item-title>
+        </v-list-item>
+
+        <v-list-item v-else v-for="(item, i) in actions" :key="i">
           <v-list-item-title class="set-cursor-pointer" :style="item.important ? 'color: red': ''" @click="item.callback">{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -53,15 +61,22 @@ export default Vue.extend({
       dialogOpenedLanguage: false,
       dialogOpenedProject: false,
       dialogOpenedDelete: false,
-      dialogOpenedLeave: false
+      dialogOpenedLeave: false,
+
+      currentUserRoleInProject: null as RoleProtection,
+      loading: false,
     };
   },
-  created() {
-    this.getMe();
+  async created() {
+    if(this.fromStore) {
+      this.currentUserRoleInProject = this.$store.getters.appUser.roleAbility;
+    } else {
+      await this.getMe();
+    }
   },
   computed: {
     actions(): any[] {
-      const ability: RoleProtection = this.$store.getters.appUser.roleAbility;
+      const ability: RoleProtection = this.currentUserRoleInProject //this.$store.getters.appUser.roleAbility;
       const items = [];
 
       if (ability.canWriteUser || ability.canWriteInvitation) {
@@ -112,9 +127,15 @@ export default Vue.extend({
     }
   },
   methods: {
+    //USED TO RETRIEVE THE ROLE OF THE USER IN THE PROJECT
     getMe() {
+      this.loading = true;
+
       this.$service.user.getMyselfInProject(this.project.id)
-          .then((user) => this.$store.commit("SET_APP_USER", user));
+          .then((user) => {
+            this.currentUserRoleInProject = user.roleAbility;
+            this.loading = false;
+          });
     },
     projectUpdated(project: Project) {
       if(this.fromStore) {
