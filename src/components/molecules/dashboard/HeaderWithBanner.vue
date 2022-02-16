@@ -14,7 +14,7 @@
             </v-col>
 
             <v-col cols="10" class="ml-3">
-              <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUser.name }}</span></p>
+              <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUserName }}</span></p>
             </v-col>
           </v-row>
         </v-col>
@@ -45,8 +45,8 @@ export default Vue.extend({
     };
   },
   computed: {
-    appUser(): ProjectUser {
-      return this.$store.getters.appUser;
+    appUserName(): ProjectUser {
+      return this.$store.getters.appUser?.name ?? "";
     }
   },
   watch: {
