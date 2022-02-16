@@ -11,7 +11,7 @@
       </v-col>
     </v-row>
 
-    <v-form ref="formCreateLanguage">
+    <v-form ref="formCreateLanguage" @submit.prevent="() => false">
       <!-- Language name -->
       <v-row class="mt-4 pb-0 mb-0">
         <v-col cols="12" class="pb-0 px-0">
@@ -20,15 +20,24 @@
       </v-row>
       <v-row class="mt-0">
         <v-col cols="12" class="pb-0 pt-0 px-0">
-          <v-text-field autofocus :rules="languageNameRules" class="custom-text-field" background-color="inputBackground" v-model="languageName"
-                        :label="$t('language_creation.language_name_label')" solo flat required></v-text-field>
+          <v-text-field
+              autofocus
+              :rules="languageNameRules"
+              class="custom-text-field"
+              background-color="inputBackground"
+              v-model="languageName"
+              :label="$t('language_creation.language_name_label')"
+              solo
+              flat
+              required
+              @keydown.enter="createNewLanguage"></v-text-field>
         </v-col>
       </v-row>
 
       <!-- ValidateButton -->
       <v-row class="mt-0 pb-0">
         <v-col cols="12" class="pb-0 px-0">
-          <action-button @keydown.enter="createNewLanguage" block :loading="loading" :handler="createNewLanguage" :text="$t('language_creation.confirm_button')"/>
+          <action-button block :loading="loading" :handler="createNewLanguage" :text="$t('language_creation.confirm_button')"/>
         </v-col>
       </v-row>
     </v-form>
