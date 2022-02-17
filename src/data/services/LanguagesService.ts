@@ -3,6 +3,7 @@ import Language from "../models/api/Language";
 import ApiService from "./ApiService";
 import store from "@/store/index";
 import Value from "@/data/models/api/Value";
+import ValuesService from "@/data/services/ValuesService";
 
 class LanguagesService {
   static languagesUrl: string = config.baseUrl + "/projects/";
@@ -24,7 +25,7 @@ class LanguagesService {
     return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
       .then(async (result) => {
         const language = Language.map(result.data.language);
-        const values = result.data.values.map((value: {}) => Value.map(value));
+        const values = await ValuesService.getValuesByLanguageId(language.id);
 
         return {language: language, values: values};
       })

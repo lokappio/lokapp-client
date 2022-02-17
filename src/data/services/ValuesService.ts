@@ -60,6 +60,12 @@ class ValuesService {
         return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
         .then((response) => response.data.map((item: any) => Value.map(item)));
     }
+
+    public static getValuesByLanguageId(languageId: number, projectId = this.projectId): Promise<Value[]> {
+        //TODO: correct api route
+        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + languageId + "/values")
+        .then((response) => response.data.map((item: any) => Value.map(item)));
+    }
 }
 
 export default ValuesService;
