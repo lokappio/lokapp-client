@@ -30,27 +30,9 @@ class ProjectsService {
       .then((response) => Project.map(response.data));
   }
 
-  public static getEntireProjectById(projectId: number): Promise<Project> {
-    return this.getProjectById(projectId)
-      .then(async (response) => {
-        response.languages = await LanguagesService.getLanguages(projectId);
-        const keys: Key[] = await KeysService.getKeys(projectId);
-
-        //Set values for each keys
-        await Promise.all(
-          keys.map(async (key) => {
-            const values: Value[] = await ValuesService.getValuesByKeyId(key.id, projectId);
-            key.values = values;
-          })
-        );
-
-
-        const groups: Group[] = await GroupsService.getGroups(projectId);
-        groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
-        response.groups = groups;
-
-        return response;
-      });
+  public static async getEntireProjectById(projectId: number): Promise<Project> {
+    return await ApiService.getAPI(`${ProjectsService.projectsUrl}/${projectId}/details`)
+      .then((response) => Project.mapEntire(response.data));
   }
 
 

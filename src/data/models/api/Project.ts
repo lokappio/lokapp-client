@@ -45,6 +45,25 @@ export default class Project {
     return project;
   }
 
+  static mapEntire(data: Partial<Project>): Project {
+    const project: Project = Project.map(data);
+    project.groups = data.groups.map((group) => {
+      const currGroup = Group.map(group);
+
+      currGroup.keys = group.keys.map((key) => {
+        const currKey = Key.map(key);
+        currKey.values = key.values.map((value) => Value.map(value));
+        return currKey;
+      });
+
+      return currGroup;
+    });
+
+    project.languages = data.languages.map((language) => Language.map(language));
+
+    return project;
+  }
+
   get toLocalizedProject(): LocalizedGroup[] {
     const localized: LocalizedGroup[] = [];
 
