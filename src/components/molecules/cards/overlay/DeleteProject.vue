@@ -16,12 +16,12 @@
             <v-container class="py-0">
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="deleteProject" :text="$t('project_delete.confirm_button')"/>
+                        <action-button block :loading="loading" :handler="deleteProject" :text="$t('project_delete.confirm_button').toString()"/>
                     </v-col>
                 </v-row>
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="closeOverlay" :text="$t('project_delete.cancel_button')"/>
+                        <action-button block :loading="loading" :handler="closeOverlay" :text="$t('project_delete.cancel_button').toString()"/>
                     </v-col>
                 </v-row>
             </v-container>
@@ -36,7 +36,7 @@ import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
     name: "delete-project",
-    props: {project: Project, dialogOpened: Boolean},
+    props: {project: Project, dialogOpened: Boolean, fromDetails: Boolean},
     data() {
         return {
             loading: false,
@@ -51,7 +51,13 @@ export default Vue.extend({
             this.$service.projects.deleteProject(this.project.id)
             .then(() => {
                 this.$notify(this.$t("success.project_deleted") as string);
-                this.$router.push("/dashboard");
+
+                if(this.fromDetails) {
+                  this.$router.push("/dashboard");
+                } else {
+                  this.$emit("projectDeleted");
+                }
+
                 this.closeOverlay();
             }).catch(() => {
                 this.$notify(this.$t("errors.project_deleted") as string);

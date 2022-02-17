@@ -19,7 +19,7 @@
               :key="project.id"
               cols="12" sm="6" md="4" lg="3" xl="2"
           >
-            <ProjectCard :project="project"/>
+            <ProjectCard :project="project" @projectDeleted="() => $emit('projectDeleted')"/>
           </v-col>
 
           <!-- CREATING PROJECT BUTTON -->

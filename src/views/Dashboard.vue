@@ -12,7 +12,7 @@
             </div>
 
             <div class="row content">
-              <my-projects :projects="projects" :loading="loading"/>
+              <my-projects :projects="projects" :loading="loading" @projectDeleted="refreshProjectList"/>
             </div>
         </v-card>
       </v-col>

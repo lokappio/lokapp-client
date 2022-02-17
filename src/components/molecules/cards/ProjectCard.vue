@@ -18,7 +18,7 @@
         </v-col>
 
         <v-col cols="1" class="fill-height">
-          <project-settings-button :project="currProject" :from-store="false" @update_projects="updateProject"/>
+          <project-settings-button :project="currProject" :from-store="false" @update_projects="updateProject" @projectDeleted="() => $emit('projectDeleted')"/>
         </v-col>
       </v-row>
     </v-card>

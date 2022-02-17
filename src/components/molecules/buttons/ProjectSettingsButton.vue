@@ -13,7 +13,14 @@
           @projectUpdated="projectUpdated"
       />
 
-      <delete-project v-if="dialogOpenedDelete" :dialog-opened="dialogOpenedDelete" :project="project" @close="() => this.dialogOpenedDelete = false"/>
+      <delete-project
+          v-if="dialogOpenedDelete"
+          :dialog-opened="dialogOpenedDelete"
+          :project="project"
+          :from-details="fromStore"
+          @close="() => this.dialogOpenedDelete = false"
+          @projectDeleted="() => $emit('projectDeleted')"
+      />
 
       <leave-project v-if="dialogOpenedLeave" :dialog-opened="dialogOpenedLeave" :project-id="project.id" @close="() => this.dialogOpenedLeave = false"/>
     </v-dialog>
