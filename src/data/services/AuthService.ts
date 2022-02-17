@@ -65,7 +65,7 @@ class AuthService {
   }
 
   public static isLoggedIn(): boolean {
-    return FirebaseHelper.isLoggedIn();
+    return FirebaseHelper.isLoggedIn() && store.getters.appUser != null;
   }
 }
 
