@@ -15,8 +15,8 @@ class ValuesService {
     public static async createValue(keyId: number, value: Value): Promise<Value> {
         const bodyParameters = {
             name: value.name,
-            "language_id": value.languageId,
-            "quantity_string": value.quantityString
+            languageId: value.languageId,
+            quantityString: value.quantityString
         };
 
         const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values", bodyParameters)
@@ -29,8 +29,8 @@ class ValuesService {
                  const values: Value[] = await Promise.all(Object.values(ValueQuantity).map(async (quantity) => {
                     const value = Value.map({
                         name: "",
-                        'language_id': language.id,
-                        'quantity_string': quantity,
+                        languageId: language.id,
+                        quantityString: quantity,
                     })
                     return await this.createValue(key.id, value);
                 }));
@@ -39,8 +39,8 @@ class ValuesService {
             } else {
                 const value = Value.map({
                     name: "",
-                    'language_id': language.id,
-                    'quantity_string': null,
+                    languageId: language.id,
+                    quantityString: null,
                 })
                 return await this.createValue(key.id, value);
             }

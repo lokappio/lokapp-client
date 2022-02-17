@@ -26,8 +26,8 @@ class KeysService {
   public static async createKey(key: Key): Promise<Key> {
     const bodyParameters = {
       name: key.name,
-      "group_id": key.groupId,
-      "is_plural": key.isPlural
+      groupId: key.groupId,
+      isPlural: key.isPlural
     };
 
     const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + this.projectId + "/translations/", bodyParameters);
@@ -111,7 +111,7 @@ class KeysService {
   public static async updateKey(key: Key): Promise<Key> {
     const bodyParameters = {
       name: key.name,
-      "is_plural": key.isPlural
+      isPlural: key.isPlural
     };
 
     return ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters).then(async () => {
