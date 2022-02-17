@@ -65,7 +65,8 @@ export default Vue.extend({
                     this.comebackToLanguageManagement();
                     this.$notify(this.$t("success.language_deleted").toString());
                 })
-                .catch((error) => this.$notify(this.$t(error).toString()));
+                .catch((error) => this.$notify(this.$t(error).toString()))
+                .finally(() => this.loading = false);
         }
     }
 });
