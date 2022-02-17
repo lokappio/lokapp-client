@@ -39,7 +39,7 @@ class ProjectsService {
         //Set values for each keys
         await Promise.all(
           keys.map(async (key) => {
-            const values: Value[] = await ValuesService.getValuesByKeyId(key.id, projectId, response.languages);
+            const values: Value[] = await ValuesService.getValuesByKeyId(key.id, projectId);
             key.values = values;
           })
         );

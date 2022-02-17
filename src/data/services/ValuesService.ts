@@ -20,10 +20,7 @@ class ValuesService {
         };
 
         const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values", bodyParameters)
-        const resultValue = Value.map(result.data);
-        resultValue.languageName = value.languageName;
-
-        return resultValue;
+        return Value.map(result.data);
     }
 
     public static async createValueForKey(key: Key, languages: Language[] = this.languages): Promise<Value[]> {
@@ -34,7 +31,6 @@ class ValuesService {
                         name: "",
                         'language_id': language.id,
                         'quantity_string': quantity,
-                        'language_name': language.name
                     })
                     return await this.createValue(key.id, value);
                 }));
@@ -45,7 +41,6 @@ class ValuesService {
                     name: "",
                     'language_id': language.id,
                     'quantity_string': null,
-                    'language_name': language.name
                 })
                 return await this.createValue(key.id, value);
             }
@@ -61,16 +56,9 @@ class ValuesService {
         return ApiService.patchAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
-    public static getValuesByKeyId(keyId: number, projectId = this.projectId, languages = this.languages): Promise<Value[]> {
+    public static getValuesByKeyId(keyId: number, projectId = this.projectId): Promise<Value[]> {
         return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
-        .then((response) => {
-            return response.data.map((item: any) => {
-                const value = Value.map(item);
-                // ADD LANGUAGE NAME TO VALUE
-                value.languageName = languages.find((lang) => lang.id == value.languageId)?.name;
-                return value;
-            });
-        })
+        .then((response) => response.data.map((item: any) => Value.map(item)));
     }
 }
 

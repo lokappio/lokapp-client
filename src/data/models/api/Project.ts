@@ -58,7 +58,7 @@ export default class Project {
         localization.type = key.isPlural ? KeyType.PLURAL : KeyType.SINGULAR;
 
         if(key.isPlural) {
-          Object.entries(groupBy<Value[]>(key.values, 'languageName')).forEach((value) => {
+          Object.entries(groupBy<Value[]>(key.values, 'languageId')).forEach((value) => {
             const pluralValue = new Plural();
 
             value[1].forEach((value) => {
@@ -69,7 +69,7 @@ export default class Project {
           })
         } else {
           key.values.forEach((value) => {
-            localization[value.languageName] = value.name;
+            localization[value.languageId] = value.name;
           })
         }
 
