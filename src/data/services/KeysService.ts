@@ -23,10 +23,11 @@ class KeysService {
       });
   }
 
-  public static async createKey(key: Key): Promise<Key> {
+  public static async createKey(key: Key, group: Group): Promise<Key> {
     const bodyParameters = {
       name: key.name,
-      groupId: key.groupId,
+      groupId: group.id,
+      groupName: group.name,
       isPlural: key.isPlural
     };
 
@@ -34,39 +35,19 @@ class KeysService {
     return Key.map(result.data);
   }
 
-  public static async createKeyWithGroup(createGroup: boolean, group: Group, key: Key): Promise<{ group: Group | null; key: Key }> {
-    /*TODO: REMOVE FROM FRONT AND MOVE TO API */
+  public static async createKeyWithGroup(group: Group, key: Key): Promise<{ group: Group | null; key: Key }> {
     const data: { group: Group | null; key: Key } = {} as any;
 
-    //IF GROUP DOESN'T EXIST YET IN DB, CREATE IT ...
-    if (createGroup) {
-      try {
-        const result: Group = await GroupsService.createGroup(group);
-        key.groupId = result.id;
-        data.group = result;
-      } catch (error) {
-        if (error.response) {
-          switch (error.response.status) {
-            case 422:
-              throw "errors.group_already_exists";
-            case 403:
-              throw "errors.unauthorized";
-            case 404:
-              throw "errors.group_create_failed";
-            default:
-              throw "errors.unknown_error";
-          }
-        }
-      }
-    } else {
-      key.groupId = group.id;
-    }
-
-
-    let createdKey: Key;
-    //CREATE KEY WITH CURRGROUP
     try {
-      createdKey = await this.createKey(key);
+      const createdKey: Key = await this.createKey(key, group);
+
+      //ASSIGN EMPTY VALUES FOR EACH LANGUAGES AND EACH QUANTITIES
+      createdKey.values = ValuesService.retrieveValueForKey(createdKey);
+
+      if (group.isNewGroup) {
+        data.group = await GroupsService.getGroupById(createdKey.groupId);
+      }
+      data.key = createdKey;
     } catch (error) {
       if (error.response) {
         switch (error.response.status) {
@@ -80,15 +61,6 @@ class KeysService {
       }
     }
 
-    //FINALLY, CREATE EMPTY VALUES FOR EACH LANGUAGES AND EACH QUANTITIES
-    try {
-      const result = await ValuesService.createValueForKey(createdKey);
-      createdKey.values = result;
-    } catch (e) {
-      throw "errors.unknown_error";
-    }
-
-    data.key = createdKey;
     return data;
   }
 
