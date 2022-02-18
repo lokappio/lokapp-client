@@ -22,7 +22,7 @@ class InvitationsService {
 
     public static createInvitation(projectId: number, email: string, role: Role): Promise<any> {
         const bodyParameters = {
-            "project_id": projectId,
+            "projectId": projectId,
             "email": email,
             "role": role
         };
