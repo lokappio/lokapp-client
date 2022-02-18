@@ -64,7 +64,7 @@
               </v-menu>
             </v-col>
           </v-row>
-          <v-row class="mt-4" v-if="currentGroup.id === -1">
+          <v-row class="mt-4" v-if="currentGroup.isNewGroup">
             <v-col cols="12" class="pa-0">
               <v-text-field
                   :rules="groupNameRules"
@@ -164,13 +164,13 @@ export default Vue.extend({
       if ((this.$refs.formCreateKey as Vue & { validate: () => boolean }).validate() === true) {
         this.loading = true;
 
-        if (this.currentGroup.id === -1) {
+        if (this.currentGroup.isNewGroup) {
           this.currentGroup.name = this.groupName;
         }
 
         let data: { group: Group | null; key: Key };
         try {
-          data = await this.$service.keys.createKeyWithGroup(this.currentGroup.id === -1, this.currentGroup, this.newKey);
+          data = await this.$service.keys.createKeyWithGroup(this.currentGroup, this.newKey);
           this.$store.commit("ADD_PROJECT_KEY", data);
           this.closeKeyCreation();
         } catch (e) {

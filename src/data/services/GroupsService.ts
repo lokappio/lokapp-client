@@ -17,6 +17,11 @@ class GroupsService {
         })
     }
 
+    public static getGroupById(groupId: number, projectId = this.projectId): Promise<Group> {
+        return ApiService.getAPI(`${GroupsService.groupsUrl}${projectId}/groups/${groupId}`)
+        .then((response) => Group.map(response.data));
+    }
+
     public static async createGroup(group: Group): Promise<Group> {
         const bodyParameters = {
             name: group.name

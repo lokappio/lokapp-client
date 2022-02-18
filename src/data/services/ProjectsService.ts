@@ -4,13 +4,6 @@ import ProjectUser from "../models/api/ProjectUser";
 import {Role} from "../models/roles/role.enum";
 import ApiService from "./ApiService";
 import Project from "@/data/models/api/Project";
-import GroupsService from "@/data/services/GroupsService";
-import Group from "@/data/models/api/Group";
-import KeysService from "@/data/services/KeysService";
-import Key from "@/data/models/api/Key";
-import ValuesService from "@/data/services/ValuesService";
-import Value from "@/data/models/api/Value";
-import LanguagesService from "@/data/services/LanguagesService";
 
 class ProjectsService {
   static projectsUrl: string = config.baseUrl + "/projects";
@@ -25,32 +18,9 @@ class ProjectsService {
     return Project.map(result.data);
   }
 
-  public static getProjectById(projectId: number): Promise<Project> {
-    return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
-      .then((response) => Project.map(response.data));
-  }
-
-  public static getEntireProjectById(projectId: number): Promise<Project> {
-    return this.getProjectById(projectId)
-      .then(async (response) => {
-        response.languages = await LanguagesService.getLanguages(projectId);
-        const keys: Key[] = await KeysService.getKeys(projectId);
-
-        //Set values for each keys
-        await Promise.all(
-          keys.map(async (key) => {
-            const values: Value[] = await ValuesService.getValuesByKeyId(key.id, projectId);
-            key.values = values;
-          })
-        );
-
-
-        const groups: Group[] = await GroupsService.getGroups(projectId);
-        groups.forEach((group) => group.keys = keys.filter((key) => key.groupId == group.id));
-        response.groups = groups;
-
-        return response;
-      });
+  public static async getEntireProjectById(projectId: number): Promise<Project> {
+    return await ApiService.getAPI(`${ProjectsService.projectsUrl}/${projectId}/details`)
+      .then((response) => Project.mapEntire(response.data));
   }
 
 

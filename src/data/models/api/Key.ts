@@ -1,11 +1,5 @@
 import Value from "@/data/models/api/Value";
 
-export type partialKey = Partial<Key> &
-  {
-    'is_plural'?: boolean;
-    'group_id'?: number;
-  };
-
 export default class Key {
   id: number;
   name: string;
@@ -13,13 +7,13 @@ export default class Key {
   groupId: number;
   values: Value[] = [];
 
-  public static map(data: partialKey): Key {
+  public static map(data: Partial<Key>): Key {
     const key = new Key();
 
     key.id = data.id;
     key.name = data.name;
-    key.isPlural = data['is_plural'];
-    key.groupId = data['group_id'];
+    key.isPlural = data['isPlural'];
+    key.groupId = data['groupId'];
 
     return key;
   }

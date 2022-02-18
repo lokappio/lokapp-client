@@ -1,12 +1,9 @@
 import config from "@/config";
-import {AxiosResponse} from "axios";
 import Language from "../models/api/Language";
 import ApiService from "./ApiService";
 import store from "@/store/index";
-import ValuesService from "@/data/services/ValuesService";
-import Key from "@/data/models/api/Key";
 import Value from "@/data/models/api/Value";
-import Project from "@/data/models/api/Project";
+import ValuesService from "@/data/services/ValuesService";
 
 class LanguagesService {
   static languagesUrl: string = config.baseUrl + "/projects/";
@@ -28,12 +25,9 @@ class LanguagesService {
     return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
       .then(async (result) => {
         const language = Language.map(result.data);
+        const values = await ValuesService.getValuesByLanguageId(language.id);
 
-        //INSERT EACH VALUES IN DB FOR THE NEWLY CREATED LANGUAGE
-        const keys: Key[] = (store.getters.currentProject as Project).groups.map(group => group.keys).flat();
-        const values = await Promise.all(keys.map(async (key) => await ValuesService.createValueForKey(key, [language])));
-
-        return {language: language, values: values.flat()};
+        return {language: language, values: values};
       })
       .catch((error) => {
         if (error.response) {

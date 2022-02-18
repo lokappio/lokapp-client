@@ -7,8 +7,10 @@
     <v-row no-gutters justify="space-between" class="fill-height">
       <!-- LeftPart -->
       <v-col cols="12" md="6" class="pr-3">
+        <v-row no-gutters align="center">
           <span class="title-h2 primary--text">{{ currentProject.name }}</span>
-          <project-settings-button class="d-inline" :project="currentProject" :from-store="true"/>
+          <project-settings-button class="d-inline ml-1" :project="currentProject" :from-store="true"/>
+        </v-row>
 
           <p class="text-2 description-style">{{ currentProject.description }}</p>
       </v-col>
