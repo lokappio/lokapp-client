@@ -23,30 +23,6 @@ class ValuesService {
         return Value.map(result.data);
     }
 
-    public static retrieveValueForKey(key: Key, languages: Language[] = this.languages): Value[] {
-        const result = languages.map((language) => {
-            if (key.isPlural) {
-                 const values: Value[] = Object.values(ValueQuantity).map((quantity) => {
-                     return Value.map({
-                        name: "",
-                        languageId: language.id,
-                        quantityString: quantity,
-                    });
-                });
-
-                return values.flat(2);
-            } else {
-                return Value.map({
-                    name: "",
-                    languageId: language.id,
-                    quantityString: null,
-                });
-            }
-        });
-
-        return result.flat();
-    }
-
     public static updateValue(value: Value): Promise<AxiosResponse> {
         const bodyParameters = {
             name: value.name
@@ -55,7 +31,7 @@ class ValuesService {
     }
 
     public static getValuesByKeyId(keyId: number, projectId = this.projectId): Promise<Value[]> {
-        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
+        return ApiService.getAPI(`${ValuesService.valuesUrl}${projectId}/translations/${keyId}/values`)
         .then((response) => response.data.map((item: any) => Value.map(item)));
     }
 

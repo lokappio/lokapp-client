@@ -41,8 +41,7 @@ class KeysService {
     try {
       const createdKey: Key = await this.createKey(key, group);
 
-      //ASSIGN EMPTY VALUES FOR EACH LANGUAGES AND EACH QUANTITIES
-      createdKey.values = ValuesService.retrieveValueForKey(createdKey);
+      createdKey.values = await ValuesService.getValuesByKeyId(key.id);
 
       if (group.isNewGroup) {
         data.group = await GroupsService.getGroupById(createdKey.groupId);
