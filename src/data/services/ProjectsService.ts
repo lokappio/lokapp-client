@@ -4,13 +4,6 @@ import ProjectUser from "../models/api/ProjectUser";
 import {Role} from "../models/roles/role.enum";
 import ApiService from "./ApiService";
 import Project from "@/data/models/api/Project";
-import GroupsService from "@/data/services/GroupsService";
-import Group from "@/data/models/api/Group";
-import KeysService from "@/data/services/KeysService";
-import Key from "@/data/models/api/Key";
-import ValuesService from "@/data/services/ValuesService";
-import Value from "@/data/models/api/Value";
-import LanguagesService from "@/data/services/LanguagesService";
 
 class ProjectsService {
   static projectsUrl: string = config.baseUrl + "/projects";
@@ -23,11 +16,6 @@ class ProjectsService {
   public static async createProject(project: Project, language: string): Promise<Project> {
     const result = await ApiService.postAPI(ProjectsService.projectsUrl, {...project.toCreate(), language});
     return Project.map(result.data);
-  }
-
-  public static getProjectById(projectId: number): Promise<Project> {
-    return ApiService.getAPI(ProjectsService.projectsUrl + "/" + projectId)
-      .then((response) => Project.map(response.data));
   }
 
   public static async getEntireProjectById(projectId: number): Promise<Project> {
