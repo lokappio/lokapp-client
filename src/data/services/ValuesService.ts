@@ -60,8 +60,7 @@ class ValuesService {
     }
 
     public static getValuesByLanguageId(languageId: number, projectId = this.projectId): Promise<Value[]> {
-        //TODO: correct api route
-        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + languageId + "/values")
+        return ApiService.getAPI(`${ValuesService.valuesUrl}${projectId}/translations/values?languageId=${languageId}`)
         .then((response) => response.data.map((item: any) => Value.map(item)));
     }
 }

@@ -24,7 +24,7 @@ class LanguagesService {
 
     return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
       .then(async (result) => {
-        const language = Language.map(result.data.language);
+        const language = Language.map(result.data);
         const values = await ValuesService.getValuesByLanguageId(language.id);
 
         return {language: language, values: values};

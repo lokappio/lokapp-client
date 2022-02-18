@@ -26,7 +26,7 @@ class KeysService {
   public static async createKey(key: Key, group: Group): Promise<Key> {
     const bodyParameters = {
       name: key.name,
-      groupId: group.id,
+      groupId: group.isNewGroup ? null : group.id,
       groupName: group.name,
       isPlural: key.isPlural
     };
