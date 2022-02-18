@@ -40,8 +40,7 @@ class KeysService {
 
     try {
       const createdKey: Key = await this.createKey(key, group);
-
-      createdKey.values = await ValuesService.getValuesByKeyId(key.id);
+      createdKey.values = await ValuesService.getValuesByKeyId(createdKey.id);
 
       if (group.isNewGroup) {
         data.group = await GroupsService.getGroupById(createdKey.groupId);
