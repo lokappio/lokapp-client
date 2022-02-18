@@ -5,7 +5,7 @@ export default class Group {
   name: string;
   keys: Key[] = [];
 
-  get isDefault(): boolean { return this.id === 1}
+  get isDefault(): boolean { return this.name === "common"}
   get isNewGroup(): boolean { return this.id === -1}
 
   public static map(data: Partial<Group>): Group {
