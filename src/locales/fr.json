@@ -53,6 +53,7 @@
         "connexion_problem": "Problème de connexion",
         "email_already_in_use": "L'utilisateur existe déjà",
         "enter_role": "Veuillez entrer un rôle",
+        "invitation_already_exists": "Une invitation a déjà été envoyée à cet utilisateur",
         "group_already_exists": "Ce groupe existe déjà",
         "group_create_failed": "Erreur pendant la création du nouveau groupe",
         "key_name_already_exists": "Ce nom de clé existe déjà dans ce groupe",

@@ -37,6 +37,7 @@
         "connexion_problem": "Connection problem",
         "email_already_in_use": "User already exists",
         "enter_role": "Please enter a role",
+        "invitation_already_exists": "An invitation has already been sent to this user",
         "group_already_exists": "This group already exists",
         "group_create_failed": "Error while creating a new group",
         "key_name_already_exists": "This key name is already used in this group",

@@ -121,8 +121,8 @@ export default Vue.extend({
               this.closeOverlay();
               this.$emit('invitationSent');
             })
-            .catch(() => {
-              this.$notify(this.$t("errors.unknown_error").toString());
+            .catch((e) => {
+              this.$notify(this.$t(e).toString());
               this.email = "";
               this.role = null;
             })

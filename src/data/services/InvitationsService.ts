@@ -20,13 +20,26 @@ class InvitationsService {
         });
     }
 
-    public static createInvitation(projectId: number, email: string, role: Role): Promise<AxiosResponse> {
+    public static createInvitation(projectId: number, email: string, role: Role): Promise<any> {
         const bodyParameters = {
             "project_id": projectId,
             "email": email,
             "role": role
         };
-        return ApiService.postAPI(`${InvitationsService.invitationsUrl}`, bodyParameters);
+
+        return ApiService.postAPI(`${InvitationsService.invitationsUrl}`, bodyParameters)
+          .catch((error) => {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 403:
+                        throw "errors.unauthorized";
+                    case 422:
+                        throw "errors.invitation_already_exists";
+                    default:
+                        throw "errors.unknown_error";
+                }
+            }
+        });
     }
 
     public static getInvitations(): Promise<Invitation[]> {
