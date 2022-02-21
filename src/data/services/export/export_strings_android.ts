@@ -19,7 +19,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
 
         localizedGroup.localizations.forEach((localization) => {
             if (localization.type === KeyType.SINGULAR) {
-                const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
+                const value = (localization[language.id]?.toString() ?? "").replace(/"/g, "\\\"");
 
                 const stringEl = xmlDoc.createElement("string");
                 stringEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
@@ -29,7 +29,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                 const pluralEl = xmlDoc.createElement("plural");
                 pluralEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
 
-                const value: Plural = (localization[language.name] as Plural) ?? new Plural();
+                const value: Plural = (localization[language.id] as Plural) ?? new Plural();
 
                 Object.entries(value).forEach((value) => {
                     if (value !== undefined) {
@@ -46,7 +46,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     });
 
     xmlDoc.appendChild(resourcesEl);
-    return {language: language.name.toUpperCase(), content: xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), {collapseContent: true})};
+    return {language: language.name.toLowerCase(), content: xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), {collapseContent: true})};
 };
 
 export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {

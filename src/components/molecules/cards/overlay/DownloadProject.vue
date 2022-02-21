@@ -52,7 +52,7 @@
 
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :handler="downloadEverything" :text="$t('download_project.download_everything')"/>
+                        <action-button block :handler="downloadEverything" :text="$t('download_project.download_everything').toString()"/>
                     </v-col>
                 </v-row>
             </template>
@@ -119,7 +119,7 @@ export default Vue.extend({
                 case Platform.IOS:
                     this.files = filesData.map((file) => {
                         return {
-                            name: file.plural ? `Localizable_${file.language}.stringsdict` : `Localizable_${file.language}.strings`,
+                            name: file.plural ? `localizable_${file.language}.stringsdict` : `localizable_${file.language}.strings`,
                             content: file.content
                         };
                     });

@@ -14,7 +14,7 @@ export class Plural {
 export class Localization {
   key: string;
   type: KeyType;
-  [language: string]: string | Plural;
+  [languageId: number]: string | Plural;
 }
 
 export class LocalizedGroup {

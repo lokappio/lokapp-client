@@ -61,7 +61,7 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
         stringEl3.innerHTML = "d";
         dictEl3.appendChild(stringEl3);
 
-        const values: Plural = localization[language.name] as Plural;
+        const values: Plural = localization[language.id] as Plural;
         if (values) {
           Object.entries(values).forEach((value) => {
             const keyEl6 = xmlDoc.createElement("key");
@@ -86,7 +86,7 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
   let formattedXml: string = xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), {collapseContent: true});
   formattedXml = `<?xml version="1.0" encoding="utf-8"?>\n ${formattedXml}`;
 
-  return {language: language.name.toUpperCase(), content: formattedXml, plural: true};
+  return {language: language.name.toLowerCase(), content: formattedXml, plural: true};
 };
 
 const generateIOSStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
@@ -101,11 +101,11 @@ const generateIOSStringFile = (language: Language, localizedProject: LocalizedGr
     localizedGroup.localizations
       .filter((localization) => localization.type === KeyType.SINGULAR)
       .forEach((localization) => {
-        const value = (localization[language.name]?.toString() ?? "").replace(/"/g, "\\\"");
+        const value = (localization[language.id]?.toString() ?? "").replace(/"/g, "\\\"");
         exportedString += `"${mixGroupAndKeyName(localizedGroup.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
       });
   });
-  return {language: language.name.toUpperCase(), content: exportedString, plural: false};
+  return {language: language.name.toLowerCase(), content: exportedString, plural: false};
 };
 
 export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
