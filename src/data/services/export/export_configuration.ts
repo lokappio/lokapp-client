@@ -1,39 +1,12 @@
 import { escapeXMLCharacters } from "../../helpers/escape_XMLCharacters";
-import { getGroups, getKeys, getLanguages, getLocalizationsObjects } from "./export_parsing";
 import { generateAndroidStringFiles } from "./export_strings_android";
 import { generateIOSStringFiles } from "./export_strings_ios";
-import Group from "../../models/export/Group";
-import Key from "../../models/export/Key";
-import Language from "../../models/export/Language";
-import Localizable from "../../models/export/Localizable";
+import Language from "../../models/api/Language";
 import { generateWebStringFiles } from "./export_strings_web";
-
-export const EXPORT_CONFIGURATION: any = {
-
-    PLATFORMS : {
-        ANDROID: "Android",
-        IOS: "iOS",
-        WEB: "Web"
-    },
-    LOCALIZATION_TYPE : {
-        SINGULAR: "singular",
-        PLURAL: "plural"
-    },
-    PLURAL_CONFIG : {
-        ZERO: {
-            PATTERN: "[zero]",
-            KEY: "zero"
-        },
-        ONE: {
-            PATTERN: "[one]",
-            KEY: "one"
-        },
-        OTHER: {
-            PATTERN: "[other]",
-            KEY: "other"
-        }
-    },
-};
+import store from "@/store";
+import Project, {LocalizedGroup} from "@/data/models/api/Project";
+import {FileData} from "@/data/models/types/export";
+import {Platform} from "@/data/models/enums/project";
 
 export const STRING_CONFIGURATION: any = {
     STRING: "s",
@@ -44,21 +17,21 @@ export const STRING_CONFIGURATION: any = {
 };
 
 export const STRING_SPECIFIERS: any = {
-    [EXPORT_CONFIGURATION.PLATFORMS.ANDROID]: {
+    [Platform.ANDROID]: {
         [STRING_CONFIGURATION.STRING]: "s",
         [STRING_CONFIGURATION.NUMBER]: "d",
         [STRING_CONFIGURATION.NUMBER_PRECISION]: "$1d",
         [STRING_CONFIGURATION.FLOAT]: "f",
         [STRING_CONFIGURATION.FLOAT_PRECISION]: "$1f"
     },
-    [EXPORT_CONFIGURATION.PLATFORMS.IOS]: {
+    [Platform.IOS]: {
         [STRING_CONFIGURATION.STRING]: "@",
         [STRING_CONFIGURATION.NUMBER]: "d",
         [STRING_CONFIGURATION.NUMBER_PRECISION]: "$1d",
         [STRING_CONFIGURATION.FLOAT]: "f",
         [STRING_CONFIGURATION.FLOAT_PRECISION]: "$1f"
     },
-    [EXPORT_CONFIGURATION.PLATFORMS.WEB]: {
+    [Platform.WEB]: {
         [STRING_CONFIGURATION.STRING]: "@",
         [STRING_CONFIGURATION.NUMBER]: "d",
         [STRING_CONFIGURATION.NUMBER_PRECISION]: "$1d",
@@ -67,7 +40,7 @@ export const STRING_SPECIFIERS: any = {
     }
 };
 
-export const replaceMarkers = (str: string, platform: any) => {
+export const replaceMarkers = (str: string, platform: Platform) => {
     const regexp = new RegExp(/(\$\{([.0-9]{0,}[s|d|f]{1})\})/g);
     const replacements = STRING_SPECIFIERS[platform];
     const data = [...str.matchAll(regexp)].reverse();
@@ -82,7 +55,7 @@ export const replaceMarkers = (str: string, platform: any) => {
             if (markerValue.match(new RegExp(platformMarker))) {
                 let replacedMarker = "";
 
-                if (platform === EXPORT_CONFIGURATION.PLATFORMS.WEB) {
+                if (platform === Platform.WEB) {
                     if (markerValue === platformMarker) {
                         replacedMarker = markerValue.replace(platformMarker, replacements[platformMarker]);
                     } else {
@@ -116,49 +89,21 @@ export const mixGroupAndKeyName = (groupName: string, keyName: string) => {
     return groupName + "_" + keyName;
 }
 
-const generateStringFiles = (platform: any, languagesParsed: any, localizedObjects: any) => {
+const generateStringFiles = (platform: string, languagesParsed: Language[], localizedObjects: LocalizedGroup[]): FileData[] => {
     switch (platform) {
-        case EXPORT_CONFIGURATION.PLATFORMS.ANDROID:
+        case Platform.ANDROID:
             return generateAndroidStringFiles(languagesParsed, localizedObjects);
-        case EXPORT_CONFIGURATION.PLATFORMS.IOS:
+        case Platform.IOS:
             return generateIOSStringFiles(languagesParsed, localizedObjects);
-        case EXPORT_CONFIGURATION.PLATFORMS.WEB:
+        case Platform.WEB:
             return generateWebStringFiles(languagesParsed, localizedObjects);
         default:
             break;
     }
 }
 
-const sortObjects = (localizationsObjects: any) => {
+export const exportProject = (platform: string): FileData[] => {
+    const project: Project = store.getters.currentProject;
 
-    //Sort groups by alphabetical order
-    localizationsObjects.sort((first: any, second: any) => {
-        //Null group first
-        if (first.name === null) {
-            return -1;
-        }
-        if (second.name === null) {
-            return 1;
-        }
-        return (first.name.localeCompare(second.name));
-    });
-
-    //Sort keys by alphabetical order
-    localizationsObjects.forEach((group: any) => {
-        group.localizations.sort((first: any, second: any) => {
-            return (first.key.localeCompare(second.key));
-        });
-    });
-};
-
-export const exportProject = (platform: string, headers: any, items: any, groups: any) => {
-
-    //Generate common object to manipulate data
-    const languagesParsed: Array<Language> = getLanguages(headers);
-    const groupsParsed: Array<Group> = getGroups(groups);
-    const keysParsed: Array<Key> = getKeys(items, languagesParsed);
-    const localizationsObjects: Array<Localizable> = getLocalizationsObjects(languagesParsed, groupsParsed, keysParsed);
-    sortObjects(localizationsObjects);
-
-    return generateStringFiles(platform, languagesParsed, localizationsObjects);
+    return generateStringFiles(platform, project.languages, project.toLocalizedProject);
 };

@@ -1,49 +1,25 @@
+export enum ValueQuantity {
+  zero = "zero", one = "one", other = "other"
+}
 
 export default class Value {
-    keyId: number;
-    keyName: string;
-    valueId: number;
-    valueName: string;
-    quantity: string;
-    isPlural: boolean;
-    languageId: number;
-    languageName: string;
-    groupId: number;
-    groupName: string;
+  id: number
+  name: string
+  quantityString: ValueQuantity;
+  languageId: number;
+  keyId: number;
 
-    constructor(
-        keyId: number,
-        keyName: string,
-        valueId: number,
-        valueName: string,
-        quantity: string,
-        isPlural: boolean,
-        languageId: number,
-        languageName: string,
-        groupId: number,
-        groupName: string) {
-        this.keyId = keyId;
-        this.keyName = keyName;
-        this.valueId = valueId;
-        this.valueName = valueName;
-        this.languageId = languageId;
-        this.languageName = languageName;
-        this.groupId = groupId;
-        this.groupName = groupName;
-        this.quantity = quantity;
-        this.isPlural = isPlural;
-    }
 
-    public static map(json: any): Value {
-        return new this(json.key_id,
-                        json.key_name,
-                        json.value_id,
-                        json.value_name,
-                        json.quantity,
-                        json.is_plural,
-                        json.language_id,
-                        json.language_name,
-                        json.group_id,
-                        json.group_name);
-    }
+  static map(data: Partial<Value>): Value {
+    const value: Value = new Value();
+
+    value.id = data.id;
+    value.name = data?.name ?? "";
+    value.quantityString = data['quantityString'] != null ? ValueQuantity[data['quantityString']] : null ;
+    value.languageId = data['languageId'];
+    value.keyId = data['keyId'];
+
+    return value;
+  }
 }
+

@@ -6,7 +6,6 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy": "NODE_ENV='production' vue-cli-service build && firebase deploy -P default",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
@@ -23,9 +22,11 @@
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "xml-formatter": "^2.6.0"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.4",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",

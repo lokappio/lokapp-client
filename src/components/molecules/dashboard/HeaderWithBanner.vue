@@ -1,108 +1,81 @@
-
 <template>
-    <v-container v-if="projectDetail === undefined" class="pa-0 full-contain full-width-container">
-        <v-row class="ma-0 row-header">
-            
-            <!-- HeaderTitle -->
-            <v-col cols="12" md="6" class="title-height">
-                <v-btn class="mr-5 ml-2 rounded-button-style icon-color" @click="$store.commit('SET_OPEN_CARD', CardEnum.MANAGE_PROFILE)" color="white" icon>
-                    <v-icon large class="icon-color">
-                        mdi-account
-                    </v-icon>
-                </v-btn>
-                <header-title displayDescription="true"/>
-            </v-col>
-            
-            <!-- HeaderSearchbar -->
-            <v-col cols="12" md="6" class="pt-1 pr-0 search-bar-height">
-                <HeaderSearchbar/>
-            </v-col>
-        
-            <!-- HeaderBanner -->
-            <v-col v-if="$vuetify.breakpoint.mdAndUp" md="12" lg="10" class="pa-0 banner-height">
-                <HeaderBanner/>
+  <v-container fluid class="mr-5">
+    <v-dialog v-model="dialogOpened" max-width="500px">
+      <ProfileManager :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false"/>
+    </v-dialog>
+
+      <v-row no-gutters align="center" justify="space-between">
+        <v-col cols="12" :md="!projectDetail ? '6' : '12'">
+          <v-row no-gutters align="baseline">
+            <v-col cols="auto">
+              <v-btn @click="() => this.dialogOpened = true" color="primary" fab depressed>
+                <v-icon large>mdi-account</v-icon>
+              </v-btn>
             </v-col>
 
-        </v-row>
-    </v-container>
-
-    <v-container v-else class="pa-0 full-contain full-width-container">
-        <v-row class="ma-0 row-header">
-            
-            <!-- HeaderTitle -->
-            <v-col cols="11" class="title-height">
-                <v-btn class="mr-5 ml-2 rounded-button-style icon-color" @click="$store.commit('SET_OPEN_CARD', CardEnum.MANAGE_PROFILE)" color="white" icon>
-                    <v-icon large class="icon-color">
-                        mdi-account
-                    </v-icon>
-                </v-btn>
-                <header-title/>
+            <v-col cols="10" class="ml-3">
+              <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUserName }}</span></p>
             </v-col>
-            <v-col cols="1" class="justify-end title-height">
-                <invitations-button/>
-            </v-col>
+          </v-row>
+        </v-col>
 
-        </v-row>
-    </v-container>
+        <v-col v-if="!projectDetail" cols="12" md="5">
+          <v-text-field solo v-model="searchValue" hide-details :label="$t('common.search_label')"></v-text-field>
+        </v-col>
+
+        <invitations-button v-if="!projectDetail" @refreshProjects="() => $emit('refreshProjects')"/>
+      </v-row>
+  </v-container>
 </template>
 
-<script>
-import HeaderTitle from "@/components/molecules/header/HeaderTitle";
-import HeaderSearchbar from "@/components/molecules/header/HeaderSearchBar";
-import HeaderBanner from "@/components/molecules/header/HeaderBanner";
+<script lang="ts">
+import Vue from "vue";
+import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
+import ProjectUser from "@/data/models/api/ProjectUser";
 import InvitationsButton from "@/components/molecules/buttons/InvitationsButton.vue";
-import CardEnum from "@/data/models/Card.enum";
 
-export default (
-    'header-banner', {
-    components: {
-        HeaderTitle,
-        HeaderSearchbar,
-        HeaderBanner,
-        InvitationsButton
-    },
-    props: ['projectDetail'],
-    data() {
-        return {
-            CardEnum
-        }
+export default Vue.extend({
+  name: "header-banner",
+  components: {InvitationsButton, ProfileManager},
+  props: {projectDetail: {type: Boolean, default: false}},
+  data() {
+    return {
+      searchValue: "",
+      dialogOpened: false
+    };
+  },
+  computed: {
+    appUserName(): ProjectUser {
+      return this.$store.getters.appUser?.name ?? "";
     }
-})
+  },
+  watch: {
+    searchValue(value) {
+      this.$store.commit("SET_SEARCH_PROJECT", value);
+    }
+  },
+  destroyed() {
+    this.$store.commit("SET_SEARCH_PROJECT", "");
+  }
+});
 </script>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-    .full-width-container {
-        max-width: 100%;
-    }
-    .row-header {
-        height: 100%;
-    }
-    .title-height {
-        height: 50%;
-    }
-    .search-bar-height {
-        height: 50%;
-    }
-    .banner-height {
-        height: 50%;
-    }
-    .icon-color {
-        background-color: #02188C;
-        color: white;
-    }
-    .rounded-button-style {
-        height: 50px !important;
-        width: 50px !important;
-        border-radius: 50%;
-        float: left;
-    }
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .title-height {
-        height: 60%;
-    }
-    .search-bar-height {
-        height: 40%;
-    } 
+.icon-color {
+  background-color: var(--v-primary-base);
+  color: white;
+}
+
+.rounded-button-style {
+  height: 50px !important;
+  width: 50px !important;
+  border-radius: 50%;
+  float: left;
+}
+
+.banner-container {
+  border-radius: 20px;
+  height: 150px;
+  background-color: var(--v-primary-base);
 }
 </style>

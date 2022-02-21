@@ -1,38 +1,65 @@
 import config from "@/config";
-import { AxiosResponse } from "axios";
 import Language from "../models/api/Language";
 import ApiService from "./ApiService";
-
+import store from "@/store/index";
+import Value from "@/data/models/api/Value";
+import ValuesService from "@/data/services/ValuesService";
 
 class LanguagesService {
-    static languagesUrl: string = config.baseUrl + "/projects/";
+  static languagesUrl: string = config.baseUrl + "/projects/";
 
-    public static getLanguages(projectId: number): Promise<Array<Language>> {
-        return ApiService.getAPI(LanguagesService.languagesUrl + projectId + "/languages")
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return Language.map(item);
-            });
-        })
-    }
+  static get projectId(): number {
+    return store.getters.currentProject.id;
+  }
 
-    public static createLanguage(projectId: number, languageName: string): Promise<AxiosResponse<any>> {
-        const bodyParameters = {
-            name: languageName
-        };
-        return ApiService.postAPI(LanguagesService.languagesUrl + projectId + "/languages", bodyParameters)
-    }
+  public static getLanguages(projectId = this.projectId): Promise<Array<Language>> {
+    return ApiService.getAPI(LanguagesService.languagesUrl + projectId + "/languages")
+      .then((response) => {
+        return response.data.map((item: any) => Language.map(item));
+      });
+  }
 
-    public static getLanguage(projectId: number, languageId: number): Promise<Language> {
-        return ApiService.getAPI(LanguagesService.languagesUrl + projectId + "/languages/" + languageId)
-        .then((response) => {
-            return Language.map(response.data);
-        });
-    }
+  public static createLanguage(languageName: string): Promise<{ language: Language; values: Value[] } | void> {
+    const bodyParameters = {name: languageName};
 
-    public static deleteLanguage(projectId: number, languageId: number): Promise<AxiosResponse<any>> {
-        return ApiService.delAPI(LanguagesService.languagesUrl + projectId + "/languages/" + languageId);
-    }
+    return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
+      .then(async (result) => {
+        const language = Language.map(result.data);
+        const values = await ValuesService.getValuesByLanguageId(language.id);
+
+        return {language: language, values: values};
+      })
+      .catch((error) => {
+        if (error.response) {
+          switch (error.response.status) {
+            case 403:
+              throw "errors.unauthorized";
+            case 422:
+              throw "errors.language_already_exists";
+          }
+        }
+      });
+  }
+
+  public static getLanguage(languageId: number): Promise<Language> {
+    return ApiService.getAPI(LanguagesService.languagesUrl + this.projectId + "/languages/" + languageId)
+      .then((response) => {
+        return Language.map(response.data);
+      });
+  }
+
+  public static deleteLanguage(languageId: number, projectId = this.projectId): Promise<any> {
+    return ApiService.delAPI(LanguagesService.languagesUrl + projectId + "/languages/" + languageId).catch((error) => {
+      if (error.response) {
+        switch (error.response.status) {
+          case 403:
+            throw "errors.unauthorized";
+          default:
+            throw "error.unknown_error";
+        }
+      }
+    });
+  }
 }
 
 export default LanguagesService;

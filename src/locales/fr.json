@@ -33,10 +33,27 @@
         "project": "Paramètres",
         "users": "Utilisateurs"
     },
+    "success": {
+        "copy": "Texte copié",
+        "files_generated": "Fichiers générés avec succès",
+        "user_delete": "L'utilisateur a été supprimé du projet",
+        "invitation_accepted": "Invitation acceptée",
+        "invitation_created": "Invitation envoyée",
+        "invitation_declined": "Invitation déclinée",
+        "language_created": "Nouvelle langue ajoutée",
+        "language_deleted": "Langue supprimée",
+        "logout": "Déconnecté avec succès",
+        "password_reset": "Un email vous a été envoyé pour réinitialiser votre mot de passe.",
+        "project_created": "Nouveau projet créé",
+        "project_deleted": "Projet supprimé avec succès",
+        "project_leave": "Projet quitté",
+        "project_updated": "Projet mis à jour"
+    },
     "errors": {
         "connexion_problem": "Problème de connexion",
         "email_already_in_use": "L'utilisateur existe déjà",
         "enter_role": "Veuillez entrer un rôle",
+        "invitation_already_exists": "Une invitation a déjà été envoyée à cet utilisateur",
         "group_already_exists": "Ce groupe existe déjà",
         "group_create_failed": "Erreur pendant la création du nouveau groupe",
         "key_name_already_exists": "Ce nom de clé existe déjà dans ce groupe",
@@ -45,12 +62,17 @@
         "not_existing_key": "Cette clé n'existe plus",
         "not_existing_language": "Ce langage n'existe plus",
         "not_your_project": "Ceci n'est pas votre projet",
+        "retrieve_project": "Erreur lors de la récupération du projet",
+        "retrieve_languages": "Erreur lors de la récupération des langues",
         "project_deleted": "Erreur lors de la suppression du projet",
         "reset_failed": "L'email donné n'existe pas dans Lokapp",
         "unauthorized": "Vous n'êtes pas autorisé à réaliser cette action",
         "unknown_error": "Une erreur est survenue, veuillez recharger",
         "user_not_found": "L'utilisateur n'existe pas",
-        "wrong_password": "Mauvais mot de passe"
+        "wrong_password": "Mauvais mot de passe",
+        "update_user": "La mise à jour de l'utilisateur a échouée",
+        "reset_password": "Une erreur est survenue",
+        "update_value": "Une erreur est survenue lors de la traduction"
     },
     "forgot_password": {
         "email_label": "Entrer mon email",
@@ -90,6 +112,13 @@
         "title": "Nouvelle clé",
         "traductions_title": "Valeurs de traduction",
         "validate_button": "Ajouter la clé"
+    },
+    "key_delete" : {
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer la clé",
+        "description_1": "Êtes-vous sûr de vouloir supprimer la clé '{value}' ?\n",
+        "description_2": "Sa suppression est irrémédiable et vous perdrez la clé et les valeurs associées.",
+        "title": "Supprimer une clé"
     },
     "language_creation": {
         "confirm_button": "Ajouter",
@@ -169,21 +198,6 @@
         "required": "Requis",
         "snake_case_only": "Uniquement la casse snake_case est autorisée",
         "username_length": "Le nom d'utilisateur doit contenir 3 caractères minimum"
-    },
-    "success": {
-        "copy": "Texte copié",
-        "files_generated": "Fichiers générés avec succès",
-        "invitation_accepted": "Invitation acceptée",
-        "invitation_created": "Invitation envoyée",
-        "invitation_declined": "Invitation déclinée",
-        "language_created": "Nouvelle langue ajoutée",
-        "language_deleted": "Langue supprimée",
-        "logout": "Déconnecté avec succès",
-        "password_reset": "Un email vous a été envoyé pour réinitialiser votre mot de passe.",
-        "project_created": "Nouveau projet créé",
-        "project_deleted": "Projet supprimé avec succès",
-        "project_leave": "Projet quitté",
-        "project_updated": "Projet mis à jour"
     },
     "user_delete": {
         "cancel_button": "Non, annuler",

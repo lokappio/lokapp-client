@@ -41,7 +41,8 @@ export default (
 </script>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
+@import '~vuetify/src/styles/settings/_variables';
+
   .logo {
     background-color: transparent;
   }

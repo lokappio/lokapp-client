@@ -1,51 +1,54 @@
-import { EXPORT_CONFIGURATION, mixGroupAndKeyName, replaceMarkers } from "./export_configuration";
-import Language from "../../models/export/Language";
-import Localizable from "../../models/export/Localizable";
+import {mixGroupAndKeyName, replaceMarkers} from "./export_configuration";
+import Language from "../../models/api/Language";
+import {LocalizedGroup, Plural} from "@/data/models/api/Project";
+import {KeyType, Platform} from "@/data/models/enums/project";
+import {FileData} from "@/data/models/types/export";
+import xmlFormatter from "xml-formatter";
 
-const generateAndroidStringFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
-    let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<resources>\n";
+const generateAndroidStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
+    const platform = Platform.ANDROID;
 
-    localizedObjects.forEach((groupObject: Localizable, index: number) => {
+    const xmlDoc = document.implementation.createDocument("", "", null);
+    const resourcesEl = xmlDoc.createElement("resources");
 
-        if (index > 0) {
-            exportedString += "\n";
+    localizedProject.forEach((localizedGroup) => {
+        if (localizedGroup.name != null) {
+            const commentEl = xmlDoc.createComment(localizedGroup.name);
+            resourcesEl.appendChild(commentEl);
         }
-        if (groupObject.name != null) {
-            exportedString += `    <!-- ${groupObject.name} -->\n`;
-        }
 
-        groupObject.localizations.forEach((localization: any) => {
+        localizedGroup.localizations.forEach((localization) => {
+            if (localization.type === KeyType.SINGULAR) {
+                const value = (localization[language.id]?.toString() ?? "").replace(/"/g, "\\\"");
 
-            if (localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.SINGULAR) {
-                const value = localization[language.name].toString().replace(/"/g, "\\\"");
-                exportedString += `    <string name="${mixGroupAndKeyName(groupObject.name, localization.key)}">"${replaceMarkers(value, platform)}"</string>\n`;
+                const stringEl = xmlDoc.createElement("string");
+                stringEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
+                stringEl.innerHTML = replaceMarkers(value, platform);
+                resourcesEl.appendChild(stringEl);
             } else {
-                exportedString += `    <plurals name="${mixGroupAndKeyName(groupObject.name, localization.key)}">\n`;
+                const pluralEl = xmlDoc.createElement("plural");
+                pluralEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
 
-                const plurals = {[EXPORT_CONFIGURATION.PLURAL_CONFIG.ZERO.KEY]: "zero", [EXPORT_CONFIGURATION.PLURAL_CONFIG.ONE.KEY]: "one", [EXPORT_CONFIGURATION.PLURAL_CONFIG.OTHER.KEY]: "other"};
-                Object.keys(plurals).forEach((plural: any) => {
-                    const value = localization[language.name][plural];
+                const value: Plural = (localization[language.id] as Plural) ?? new Plural();
+
+                Object.entries(value).forEach((value) => {
                     if (value !== undefined) {
-                        exportedString += `        <item quantity="${plurals[plural]}">"${replaceMarkers(value.replace(/"/g, "\\\""), platform)}"</item>\n`;
+                        const itemEl = xmlDoc.createElement("item");
+                        itemEl.setAttribute("quantity", value[0]);
+                        itemEl.innerHTML = replaceMarkers(value[1].replace(/"/g, "\\\""), platform);
+                        pluralEl.appendChild(itemEl);
                     }
                 });
 
-                exportedString += `    </plurals>\n`;
+                resourcesEl.appendChild(pluralEl);
             }
-
         });
-        
-    });    
+    });
 
-    exportedString += "</resources>";
-    return {language: language.name.toUpperCase(), content: exportedString};
+    xmlDoc.appendChild(resourcesEl);
+    return {language: language.name.toLowerCase(), content: xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), {collapseContent: true})};
 };
 
-export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: Array<Localizable>) => {
-    const answer: any = [];
-    languages.forEach((language: Language) => {
-        answer.push(generateAndroidStringFile(EXPORT_CONFIGURATION.PLATFORMS.ANDROID, language, localizedObjects));
-    });
-    return answer;
+export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
+    return languages.map((language: Language) => generateAndroidStringFile(language, localizedObjects));
 };

@@ -1,46 +1,105 @@
 import config from "@/config";
-import { AxiosResponse } from "axios";
-import Key from "../models/api/Key";
+import {AxiosResponse} from "axios";
 import ApiService from "./ApiService";
+import Key from "@/data/models/api/Key";
+import Group from "@/data/models/api/Group";
+import GroupsService from "@/data/services/GroupsService";
+import ValuesService from "@/data/services/ValuesService";
+import store from "@/store/index";
 
 class KeysService {
-    static keysUrl: string = config.baseUrl + "/projects/";
+  static keysUrl: string = config.baseUrl + "/projects/";
 
-    public static getKeys(projectId: number): Promise<Array<Key>> {
-        return ApiService.getAPI(KeysService.keysUrl + projectId + "/translations")
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return Key.map(item);
-            })
-        })
+  static get projectId(): number {
+    return store.getters.currentProject.id;
+  }
+
+  public static getKeys(projectId = this.projectId): Promise<Array<Key>> {
+    return ApiService.getAPI(KeysService.keysUrl + projectId + "/translations")
+      .then((response) => {
+        return response.data.map((item: any) => {
+          return Key.map(item);
+        });
+      });
+  }
+
+  public static async createKey(key: Key, group: Group): Promise<Key> {
+    const bodyParameters = {
+      name: key.name,
+      groupId: group.isNewGroup ? null : group.id,
+      groupName: group.name,
+      isPlural: key.isPlural
+    };
+
+    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + this.projectId + "/translations/", bodyParameters);
+    return Key.map(result.data);
+  }
+
+  public static async createKeyWithGroup(group: Group, key: Key): Promise<{ group: Group | null; key: Key }> {
+    const data: { group: Group | null; key: Key } = {} as any;
+
+    try {
+      const createdKey: Key = await this.createKey(key, group);
+      createdKey.values = await ValuesService.getValuesByKeyId(createdKey.id);
+
+      if (group.isNewGroup) {
+        data.group = await GroupsService.getGroupById(createdKey.groupId);
+      }
+      data.key = createdKey;
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 422:
+            throw "errors.key_name_already_exists";
+          case 403:
+            throw "errors.unauthorized";
+          default:
+            throw "errors.unknown_error";
+        }
+      }
     }
 
-    public static createKey(projectId: number, keyName: string, groupId: any, isPlural: boolean): Promise<AxiosResponse<any>> {
-        const bodyParameters = {
-            name: keyName,
-            "group_id": groupId,
-            "is_plural": isPlural
-        };
-        return ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/", bodyParameters);
-    }
+    return data;
+  }
 
-    public static deleteKey(projectId: number, keyId: number): Promise<AxiosResponse<any>> {
-        return ApiService.delAPI(KeysService.keysUrl + projectId + "/translations/" + keyId);
-    }
+  public static deleteKey(keyId: number): Promise<any> {
+    return ApiService.delAPI(KeysService.keysUrl + this.projectId + "/translations/" + keyId)
+      .catch((error) => {
+        if (error.response) {
+          switch (error.response.status) {
+            case 404:
+              throw "errors.not_existing_key";
+            case 403:
+              throw "errors.unauthorized";
+            default:
+              throw "errors.unknown_error";
+          }
+        }
+      });
+  }
 
-    public static updateKey(projectId: number, keyId: number, newName: string): Promise<AxiosResponse<any>> {
-        const bodyParameters = {
-            name: newName
-        };
-        return ApiService.patchAPI(KeysService.keysUrl + projectId + "/translations/" + keyId, bodyParameters);
-    }
+  public static async updateKey(key: Key): Promise<Key> {
+    const bodyParameters = {
+      name: key.name,
+      isPlural: key.isPlural
+    };
 
-    public static updateKeyPlural(projectId: number, keyId: number, isPlural: boolean): Promise<AxiosResponse<any>> {
-        const bodyParameters = {
-            "is_plural": isPlural
-        };
-        return ApiService.patchAPI(KeysService.keysUrl + projectId + "/translations/" + keyId, bodyParameters);
-    }
+    return ApiService.patchAPI(KeysService.keysUrl + this.projectId + "/translations/" + key.id, bodyParameters).then(async () => {
+      key.values = await ValuesService.getValuesByKeyId(key.id);
+      return key;
+    }).catch((error) => {
+      switch (error.response.status) {
+        case 422:
+          throw "errors.key_name_already_exists";
+        case 403:
+          throw "errors.unauthorized";
+        case 404:
+          throw "errors.not_existing_key";
+        default:
+          throw "errors.unknown_error";
+      }
+    });
+  }
 }
 
 export default KeysService;

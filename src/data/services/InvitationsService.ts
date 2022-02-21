@@ -7,20 +7,39 @@ import ApiService from "./ApiService";
 class InvitationsService {
     static invitationsUrl: string = config.baseUrl + "/invitations";
 
-    public static deleteInvitation(projectId: number, invitationId: number): Promise<AxiosResponse<any>> {
-        const bodyParameters = {
-            "project_id": projectId
-        };
-        return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`, bodyParameters);
+    public static deleteInvitation(invitationId: number): Promise<any> {
+        return ApiService.delAPI(`${InvitationsService.invitationsUrl}/${invitationId}`).catch((error) => {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 403:
+                        throw "errors.unauthorized";
+                    default:
+                        throw "errors.unknown_error";
+                }
+            }
+        });
     }
 
-    public static createInvitation(projectId: number, email: string, role: Role): Promise<AxiosResponse<any>> {
+    public static createInvitation(projectId: number, email: string, role: Role): Promise<any> {
         const bodyParameters = {
-            "project_id": projectId,
+            "projectId": projectId,
             "email": email,
             "role": role
         };
-        return ApiService.postAPI(`${InvitationsService.invitationsUrl}`, bodyParameters);
+
+        return ApiService.postAPI(`${InvitationsService.invitationsUrl}`, bodyParameters)
+          .catch((error) => {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 403:
+                        throw "errors.unauthorized";
+                    case 422:
+                        throw "errors.invitation_already_exists";
+                    default:
+                        throw "errors.unknown_error";
+                }
+            }
+        });
     }
 
     public static getInvitations(): Promise<Invitation[]> {
@@ -32,11 +51,11 @@ class InvitationsService {
         })
     }
 
-    public static acceptInvitation(invitation: Invitation): Promise<AxiosResponse<any>> {
+    public static acceptInvitation(invitation: Invitation): Promise<AxiosResponse> {
         return ApiService.postAPI(`${InvitationsService.invitationsUrl}/${invitation.id}/accept`, {});
     }
 
-    public static declineInvitation(invitation: Invitation): Promise<AxiosResponse<any>> {
+    public static declineInvitation(invitation: Invitation): Promise<AxiosResponse> {
         return ApiService.postAPI(`${InvitationsService.invitationsUrl}/${invitation.id}/decline`, {});
     }
 }

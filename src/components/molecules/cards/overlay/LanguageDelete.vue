@@ -1,6 +1,5 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 card-style-project">
-
+    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
         <!-- Title and close -->
         <v-icon @click="comebackToLanguageManagement" color="black" class="float-right">
             mdi-close
@@ -12,10 +11,10 @@
         <!-- Confirmation text -->
         <v-card-text class="pb-0">
             <div class="field text-center">
-            {{ $t("language_delete.description_1", { "value": language.name }) }}
+                {{ $t("language_delete.description_1", {"value": language.name}) }}
             </div>
             <div class="field text-center">
-            {{ $t("language_delete.description_2") }}
+                {{ $t("language_delete.description_2") }}
             </div>
         </v-card-text>
 
@@ -34,53 +33,41 @@
                 </v-row>
             </v-container>
         </v-card-actions>
-
     </v-card>
 </template>
 
 <script lang="ts">
-import EventEnum from "@/data/enum/event-bus.enum";
-import CardEnum from '@/data/models/Card.enum';
-import ActionButton from "@/components/molecules/buttons/ActionButton.vue";
-import Vue from 'vue'
+import Vue from "vue";
+import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
     name: "language-delete",
-    components: {
-        ActionButton
+    props: {
+        language: Language,
+        projectId: Number,
+        dialogOpened: Boolean
     },
     data() {
         return {
-            loading: false,
-            language: this.$store.getters.actualLanguage
-        }
+            loading: false
+        };
     },
     methods: {
         comebackToLanguageManagement() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.MANAGE_LANGUAGE);
+            this.$emit("closeDelete");
         },
         deleteLanguage() {
-            if (this.language.id < 0) {
-                return;
-            }
             this.loading = true;
-            this.$service.languages.deleteLanguage(this.$store.getters.actualProjectId, this.language.id)
-            .then(() => {
-                this.comebackToLanguageManagement();
-                this.$notify(this.$t("success.language_deleted") as string);
-            }).catch((error) => {
-                if (error.response) {
-                    switch (error.response.status) {
-                        case 403:
-                            this.$notify(this.$t("errors.unauthorized") as string);
-                            break;
-                        default:
-                            this.$notify(this.$t("error.unknown_error") as string);
-                    }
-                }
-                this.$eventBus.$emit(EventEnum.ERROR_ACTION);
-            });
+
+            this.$service.languages.deleteLanguage(this.language.id, this.projectId)
+                .then(() => {
+                    this.$store.commit("DELETE_PROJECT_LANGUAGE", this.language);
+                    this.comebackToLanguageManagement();
+                    this.$notify(this.$t("success.language_deleted").toString());
+                })
+                .catch((error) => this.$notify(this.$t(error).toString()))
+                .finally(() => this.loading = false);
         }
     }
-})
+});
 </script>

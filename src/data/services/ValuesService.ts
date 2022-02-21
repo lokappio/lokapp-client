@@ -1,57 +1,43 @@
 import config from "@/config";
-import { AxiosResponse } from "axios";
-import SpecificValue from "../models/api/SpecificValue";
-import Value from "../models/api/Value";
+import {AxiosResponse} from "axios";
 import ApiService from "./ApiService";
+import Key from "@/data/models/api/Key";
+import Value, {ValueQuantity} from "@/data/models/api/Value";
+import Language from "@/data/models/api/Language";
+import store from "@/store/index";
 
 class ValuesService {
     static valuesUrl: string = config.baseUrl + "/projects/";
+    static get languages(): Language[] { return store.getters.currentProject.languages}
+    static get projectId(): number { return store.getters.currentProject.id}
 
-    public static getEveryValues(projectId: number): Promise<Array<Value>> {
-        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/all")
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return Value.map(item);
-            })
-        })
-    }
 
-    public static createValue(projectId: number, keyId: number, value: Value): Promise<AxiosResponse<any>> {
+    public static async createValue(keyId: number, value: Value): Promise<Value> {
         const bodyParameters = {
-            name: value.valueName,
-            "language_id": value.languageId,
-            "quantity_string": value.quantity
+            name: value.name,
+            languageId: value.languageId,
+            quantityString: value.quantityString
         };
-        return ApiService.postAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values", bodyParameters);
+
+        const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values", bodyParameters)
+        return Value.map(result.data);
     }
 
-    public static getSpecificValue(projectId: number, valueTarget: Value): Promise<Array<SpecificValue>> {
-        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + valueTarget.keyId + "/values?language_id=" + valueTarget.languageId)
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return SpecificValue.map(item);
-            });
-        })
-    }
-
-    public static updateValue(projectId: number, valueTarget: Value): Promise<AxiosResponse<any>> {
+    public static updateValue(value: Value): Promise<AxiosResponse> {
         const bodyParameters = {
-            name: valueTarget.valueName
+            name: value.name
         };
-        return ApiService.patchAPI(ValuesService.valuesUrl + projectId + "/translations/" + valueTarget.keyId + "/values/" + valueTarget.valueId, bodyParameters);
+        return ApiService.patchAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
-    public static deleteValue(projectId: number, valueTarget: Value): Promise<AxiosResponse<any>> {
-        return ApiService.delAPI(ValuesService.valuesUrl + projectId + "/translations/" + valueTarget.keyId + "/values/" + valueTarget.valueId);
+    public static getValuesByKeyId(keyId: number, projectId = this.projectId): Promise<Value[]> {
+        return ApiService.getAPI(`${ValuesService.valuesUrl}${projectId}/translations/${keyId}/values`)
+        .then((response) => response.data.map((item: any) => Value.map(item)));
     }
 
-    public static getValuesForKey(projectId: number, keyId: number): Promise<Array<SpecificValue>> {
-        return ApiService.getAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values")
-        .then((response) => {
-            return response.data.map((item: any) => {
-                return SpecificValue.map(item);
-            });
-        })
+    public static getValuesByLanguageId(languageId: number, projectId = this.projectId): Promise<Value[]> {
+        return ApiService.getAPI(`${ValuesService.valuesUrl}${projectId}/translations/values?languageId=${languageId}`)
+        .then((response) => response.data.map((item: any) => Value.map(item)));
     }
 }
 

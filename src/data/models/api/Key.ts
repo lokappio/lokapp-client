@@ -1,16 +1,29 @@
+import Value from "@/data/models/api/Value";
 
 export default class Key {
-    id: number;
-    name: string;
-    isPlural: boolean;
+  id: number;
+  name: string;
+  isPlural: boolean;
+  groupId: number;
+  values: Value[] = [];
 
-    constructor(id: number, name: string, isPlural: boolean) {
-        this.id = id;
-        this.name = name;
-        this.isPlural = isPlural;
-    }
+  public static map(data: Partial<Key>): Key {
+    const key = new Key();
 
-    public static map(json: any): Key {
-        return new this(json.id, json.name, json.is_plural);
-    }
+    key.id = data.id;
+    key.name = data.name;
+    key.isPlural = data['isPlural'];
+    key.groupId = data['groupId'];
+
+    return key;
+  }
+
+  public static empty(): Key {
+    const key = new Key();
+
+    key.name = "";
+    key.isPlural = false;
+
+    return key;
+  }
 }

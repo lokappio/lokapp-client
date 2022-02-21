@@ -1,18 +1,15 @@
 import Invitation from "@/data/models/api/Invitation";
 import Language from "@/data/models/api/Language";
-import ProjectUser from "@/data/models/api/ProjectUser";
-import CardEnum from "@/data/models/Card.enum";
-import RoleProtection from "@/data/models/roles/RoleProtection";
 import {State} from "@/store/states";
+import Project from "@/data/models/api/Project";
+import firebase from "firebase/app";
+import ProjectUser from "@/data/models/api/ProjectUser";
 
 export default {
-  user: (state: State): any => state.user,
+  user: (state: State): firebase.User => state.user,
+  appUser: (state: State): ProjectUser => state.appUser,
   applicationReady: (state: State): boolean => state.applicationReady,
-  actualProjectId: (state: State): number => state.actualProjectId,
-  openCard: (state: State): CardEnum => state.openCard,
+  currentProject: (state: State): Project => state.currentProject,
   actualLanguage: (state: State): Language => state.actualLanguage,
-  actualGroupId: (state: State): number => state.actualGroupId,
-  targetUser: (state: State): ProjectUser => state.targetUser,
   invitations: (state: State): Invitation[] => state.invitations,
-  actualRole: (state: State): RoleProtection => state.actualRole
 }

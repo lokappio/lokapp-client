@@ -14,7 +14,7 @@ const router = new VueRouter({
   routes,
 });
 
-const handleRoute = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
+const handleRoute = (to: Route, from: Route, next: NavigationGuardNext) => {
   if (to.meta.authRequired && !AuthService.isLoggedIn()) {
     next({ path: "/login", replace: true });
   } else if (to.name === "LoginPage" && AuthService.isLoggedIn()) {

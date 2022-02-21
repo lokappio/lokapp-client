@@ -1,87 +1,118 @@
-import { EXPORT_CONFIGURATION, replaceMarkers, mixGroupAndKeyName } from "./export_configuration";
-import Language from "../../models/export/Language";
-import Localizable from "../../models/export/Localizable";
+import {replaceMarkers, mixGroupAndKeyName} from "./export_configuration";
+import Language from "../../models/api/Language";
+import {LocalizedGroup, Plural} from "@/data/models/api/Project";
+import {KeyType, Platform} from "@/data/models/enums/project";
+import {FileData} from "@/data/models/types/export";
+import xmlFormatter from "xml-formatter";
 
-const generateIOSStringDictFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
-    let exportedString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
-<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\
-<plist version=\"1.0\">\n\
-<dict>\n";
+const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
+  const platform = Platform.IOS;
 
-    let i = 0;
-    for (; i < localizedObjects.length; i++) {
-        const item = localizedObjects[i];
-        if (item.localizations.find((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL)) {
-            exportedString += `    <!-- MARK: ${item.name} -->\n`;
-        }
+  const plistType = document.implementation.createDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+  const xmlDoc = document.implementation.createDocument("", "", plistType);
 
-        item.localizations
-        .filter((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL)
-        .forEach((localization: any) => {
-            exportedString += "    <key>" + mixGroupAndKeyName(item.name, localization.key) + "</key>\n";
-            exportedString += "    <dict>\n";
-            exportedString += "        <key>NSStringLocalizedFormatKey</key>\n";
-            exportedString += "        <string>%#@variable_name@</string>\n";
-            exportedString += "        <key>variable_name</key>\n";
-            exportedString += "        <dict>\n";
-            exportedString += "            <key>NSStringFormatSpecTypeKey</key>\n";
-            exportedString += "            <string>NSStringPluralRuleType</string>\n";
-            exportedString += "            <key>NSStringFormatValueTypeKey</key>\n";
-            exportedString += "            <string>d</string>\n";
+  const plistEl = xmlDoc.createElement("plist");
+  plistEl.setAttribute("version", "1.0");
+  const dictEl = xmlDoc.createElement("dict");
 
-            for (const key in EXPORT_CONFIGURATION.PLURAL_CONFIG) {
-                const quantity = EXPORT_CONFIGURATION.PLURAL_CONFIG[key].KEY;
-                if (localization[language.name][quantity]) {
-                    exportedString += "            <key>" + quantity + "</key>\n";
-                    exportedString += "            <string>" + replaceMarkers(localization[language.name][quantity], platform).replace(/"/g, "\\\"") + "</string>\n";
-                }
-            }
+  localizedProject.forEach((localizedGroup) => {
 
-            exportedString += "        </dict>\n";
-            exportedString += "    </dict>\n";
-        });
-    }
-    exportedString += "</dict>\n";
-    exportedString += "</plist>\n";
-
-    if (i < localizedObjects.length - 1) {
-        exportedString += "\n";
+    if (localizedGroup.localizations.find((localization) => localization.type === KeyType.PLURAL)) {
+      const commentEl = xmlDoc.createComment(`MARK: ${localizedGroup.name}`);
+      dictEl.appendChild(commentEl);
     }
 
-    return {language: language.name.toUpperCase(), content: exportedString, plural: true};
+    localizedGroup.localizations
+      .filter((localization) => localization.type === KeyType.PLURAL)
+      .forEach((localization) => {
+        const keyEl = xmlDoc.createElement("key");
+        keyEl.innerHTML = mixGroupAndKeyName(localizedGroup.name, localization.key);
+        dictEl.appendChild(keyEl);
+
+        const dictEl2 = xmlDoc.createElement("dict");
+
+        const keyEl2 = xmlDoc.createElement("key");
+        keyEl2.innerHTML = "NSStringLocalizedFormatKey";
+        dictEl2.appendChild(keyEl2);
+
+        const stringEl1 = xmlDoc.createElement("string");
+        stringEl1.innerHTML = "%#@variable_name@";
+        dictEl2.appendChild(stringEl1);
+
+        const keyEl3 = xmlDoc.createElement("key");
+        keyEl3.innerHTML = "variable_name";
+        dictEl2.appendChild(keyEl3);
+
+        const dictEl3 = xmlDoc.createElement("dict");
+
+        const keyEl4 = xmlDoc.createElement("key");
+        keyEl4.innerHTML = "NSStringFormatSpecTypeKey";
+        dictEl3.appendChild(keyEl4);
+
+        const stringEl2 = xmlDoc.createElement("string");
+        stringEl2.innerHTML = "NSStringPluralRuleType";
+        dictEl3.appendChild(stringEl2);
+
+        const keyEl5 = xmlDoc.createElement("key");
+        keyEl5.innerHTML = "NSStringFormatValueTypeKey";
+        dictEl3.appendChild(keyEl5);
+
+        const stringEl3 = xmlDoc.createElement("string");
+        stringEl3.innerHTML = "d";
+        dictEl3.appendChild(stringEl3);
+
+        const values: Plural = localization[language.id] as Plural;
+        if (values) {
+          Object.entries(values).forEach((value) => {
+            const keyEl6 = xmlDoc.createElement("key");
+            keyEl6.innerHTML = value[0];
+            dictEl3.appendChild(keyEl6);
+
+            const stringEl4 = xmlDoc.createElement("string");
+            stringEl4.innerHTML = replaceMarkers(value[1] ?? "", platform).replace(/"/g, "\\\"");
+            dictEl3.appendChild(stringEl4);
+
+          });
+        }
+
+        dictEl2.appendChild(dictEl3);
+        dictEl.appendChild(dictEl2);
+      });
+  });
+
+  plistEl.appendChild(dictEl);
+  xmlDoc.appendChild(plistEl);
+
+  let formattedXml: string = xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), {collapseContent: true});
+  formattedXml = `<?xml version="1.0" encoding="utf-8"?>\n ${formattedXml}`;
+
+  return {language: language.name.toLowerCase(), content: formattedXml, plural: true};
 };
 
-const generateIOSStringFile = (platform: any, language: Language, localizedObjects: Array<Localizable>) => {
-    let exportedString = "";
+const generateIOSStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
+  const platform = Platform.IOS;
+  let exportedString = "";
 
-    localizedObjects.forEach((groupObject: any, index: number) => {
-        //Check if data in group
-        const indexOfFirst = groupObject.localizations.findIndex((localization: any) => localization.type === EXPORT_CONFIGURATION.LOCALIZATION_TYPE.SINGULAR);
-        if (indexOfFirst === -1) {
-            return;
-        }
-        //Write data
-        if (index > 0) {
-            exportedString += "\n";
-        }
-        if (groupObject.name != null) {
-            exportedString += "// MARK: - " + groupObject.name + "\n\n";
-        }
-        groupObject.localizations.forEach((localization: any) => {
-            if (localization.type !== EXPORT_CONFIGURATION.LOCALIZATION_TYPE.PLURAL) {
-                const value = localization[language.name].toString().replace(/"/g, "\\\"");
-                exportedString += `"${mixGroupAndKeyName(groupObject.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
-            }
-        });
-    });
-    return {language: language.name.toUpperCase(), content: exportedString, plural: false};
+  localizedProject.forEach((localizedGroup) => {
+    if (localizedGroup.name != null) {
+      exportedString += "// MARK: - " + localizedGroup.name + "\n\n";
+    }
+
+    localizedGroup.localizations
+      .filter((localization) => localization.type === KeyType.SINGULAR)
+      .forEach((localization) => {
+        const value = (localization[language.id]?.toString() ?? "").replace(/"/g, "\\\"");
+        exportedString += `"${mixGroupAndKeyName(localizedGroup.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
+      });
+  });
+  return {language: language.name.toLowerCase(), content: exportedString, plural: false};
 };
 
-export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: Array<Localizable>) => {
-    const answer: any = [];
-    languages.forEach((language: Language) => {
-        answer.push(generateIOSStringFile(EXPORT_CONFIGURATION.PLATFORMS.IOS, language, localizedObjects));
-        answer.push(generateIOSStringDictFile(EXPORT_CONFIGURATION.PLATFORMS.IOS, language, localizedObjects));
-    });
-    return answer;
-}
+export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
+  const answer: any = [];
+  languages.forEach((language: Language) => {
+    answer.push(generateIOSStringFile(language, localizedObjects));
+    answer.push(generateIOSStringDictFile(language, localizedObjects));
+  });
+  return answer;
+};

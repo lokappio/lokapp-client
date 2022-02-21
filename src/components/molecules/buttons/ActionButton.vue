@@ -1,20 +1,15 @@
-
-
 <template>
-    
-    <v-btn class="button-action-style" height="55" :block="block" color="maincolor" @click="handler">
-        <div class="title-h3 button-action-text">
-            {{ text }}
-        </div>
-        <v-icon v-if="addIcon" color="white" class="pl-2">mdi-plus-circle</v-icon>
+    <v-btn :loading="loading" dark class="button-action-style" depressed height="55" :block="block" color="primary" @click="handler">
+          <div class="title-h3 white--text">{{ text }}</div>
+          <v-icon v-if="addIcon" color="white" class="pl-2">mdi-plus-circle</v-icon>
     </v-btn>
-  
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 
-export default (
-    'action-button', {
+export default Vue.extend({
+    name: 'action-button',
     props: {
         loading: Boolean,
         block: Boolean,
@@ -26,11 +21,6 @@ export default (
 </script>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-    .button-action-text {
-        color: white;
-        margin-bottom: 0px;
-    }
     .button-action-style {
         border-radius: 10px;
     }

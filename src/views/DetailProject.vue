@@ -1,225 +1,127 @@
-
 <template>
+  <v-container fluid class="full-screen-container px-0">
+    <v-row class="fill-height" no-gutters>
+      <v-col cols="auto">
+        <left-nav-bar/>
+      </v-col>
 
-    <v-container fluid class="full-screen-container px-0 py-0 py-md-3">
-        <keyboard-events :escape="closePopup"></keyboard-events>
-        <left-nav-bar v-if="$vuetify.breakpoint.mdAndUp"/>
-        <v-card class="card-style-content background-color-white px-6 pt-16 mr-0 ml-auto">
+      <v-col>
+        <v-card class="box card-style-content background-color-white fill-height px-5 pt-5">
+          <template v-if="!loading">
+            <div class="row header">
+              <header-banner projectDetail/>
+            </div>
 
-            <v-container v-if="!loading" class="ma-0 pa-0 full-contain card-container">
-                
+            <div class="row content">
+              <languages-group/>
+              <content-details/>
+            </div>
+          </template>
 
-                <v-overlay absolute :value="$store.getters.openCard !== CardEnum.NONE" class="my-overlay">
-                    <profile-manager v-if="$store.getters.openCard === CardEnum.MANAGE_PROFILE"/>
-                    <project-management v-if="$store.getters.openCard === CardEnum.MANAGE_PROJECT"/>
-                    <delete-project v-if="$store.getters.openCard === CardEnum.DELETE_PROJECT"/>
-                    <language-management v-if="$store.getters.openCard === CardEnum.MANAGE_LANGUAGE"/>
-                    <language-delete v-if="$store.getters.openCard === CardEnum.DELETE_LANGUAGE"/>
-                    <leave-project v-if="$store.getters.openCard === CardEnum.LEAVE_PROJECT"/>
-                    <user-management v-if="$store.getters.openCard === CardEnum.MANAGE_USERS"/>
-                    <user-delete v-if="$store.getters.openCard === CardEnum.DELETE_USER"/>
-                    <invitation-creation v-if="$store.getters.openCard === CardEnum.CREATE_INVITATION"/>
-                    <language-creation v-if="$store.getters.openCard === CardEnum.CREATE_LANGUAGE"/>
-                    <download-project v-if="$store.getters.openCard === CardEnum.DOWNLOAD_PROJECT"/>
-                    <key-creation v-if="$store.getters.openCard === CardEnum.CREATE_KEY"/>
-                </v-overlay>
-
-                <v-row class="ma-0 mb-4 row-header-style">
-                    <header-banner projectDetail />
-                </v-row>
-
-                <v-row class="ma-0 pl-0 pl-md-10  row-languages-style">
-                    <languages-group/>
-                </v-row>
-
-                <v-row class="ma-0 px-8 pt-8 row-content-style">
-
-                    <!-- Header -->
-                    <v-row class="ma-0 header-row-detail-style">
-                        <Header/>
-                    </v-row>
-
-                    <!-- Keys/Values -->
-                    <v-row class="ma-0 keys-row-detail-style">
-                        <content-details/>
-                    </v-row>
-                </v-row>
-
-            </v-container>
-
+          <template v-else>
+            <v-row no-gutters>
+              <v-col cols="12" class="text-center">
+                <v-progress-circular color="primary" indeterminate></v-progress-circular>
+              </v-col>
+            </v-row>
+          </template>
         </v-card>
-    </v-container>
-    
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-
-
 <script lang="ts">
-import { Vue } from "vue-property-decorator";
+import {Vue} from "vue-property-decorator";
 import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
-import ProfileManager from "@/components/molecules/cards/overlay/ProfileManager.vue";
-import LanguagesGroup from "@/components/molecules/details/LanguagesGroup.vue";
-import LanguageCreation from "@/components/molecules/cards/overlay/LanguageCreation.vue";
-import LanguageManagement from "@/components/molecules/cards/overlay/LanguageManagement.vue";
-import LanguageDelete from "@/components/molecules/cards/overlay/LanguageDelete.vue";
-import Header from "@/components/molecules/details/Header.vue";
-import ContentDetails from "@/components/molecules/details/ContentDetails.vue";
-import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
-import ProjectManagement from "@/components/molecules/cards/overlay/ProjectManagement.vue";
-import DeleteProject from "@/components/molecules/cards/overlay/DeleteProject.vue";
-import LeaveProject from "@/components/molecules/cards/overlay/LeaveProject.vue";
-import DownloadProject from "@/components/molecules/cards/overlay/DownloadProject.vue";
-import UserManagement from "@/components/molecules/cards/overlay/UserManagement.vue";
-import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
-import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
-import CardEnum from "@/data/models/Card.enum";
-import EventEnum from "@/data/enum/event-bus.enum";
-import KeyboardEvents from "@/components/molecules/KeyboardEvents.vue";
-import { MetaInfo } from 'vue-meta';
-import { getRoleClass, getRoleEnum } from "@/data/models/roles/role.enum";
+import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
+import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
+import {MetaInfo} from "vue-meta";
+import Project from "@/data/models/api/Project";
 
-export default Vue.extend ({
-    metaInfo(): MetaInfo {
-        return {
-            title: `${this.projectName ? this.projectName : ''}`,
-            titleTemplate: `Lokapp - %s`
-        }
-    },
-    components: {
-        LeftNavBar,
-        HeaderBanner,
-        ProfileManager,
-        LanguagesGroup,
-        LanguageCreation,
-        KeyCreation,
-        Header,
-        ContentDetails,
-        ProjectManagement,
-        DeleteProject,
-        LeaveProject,
-        DownloadProject,
-        LanguageManagement,
-        LanguageDelete,
-        UserManagement,
-        UserDelete,
-        InvitationCreation,
-        KeyboardEvents
-    },
-    created() {
-        this.$store.commit("SET_ACTUAL_PROJECT_ID", parseInt(this.$route.params.project_id));
-        this.projectId = this.$store.getters.actualProjectId;
-        this.reloadProject();
-    },
-    data() {
-        return {
-            loading: true as boolean,
-            projectId: -1 as number,
-            CardEnum,
-            projectName: null as string | null
-        }
-    },
-    methods: {
-        reloadProject() {
-            this.loading = true;
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            this.$service.projects.getSpecificProject(parseInt(this.$route.params.project_id))
-            .then((res) => {
-                this.$eventBus.$emit(EventEnum.RELOAD_YOURSELF);
-                this.loading = false;
-                this.projectName = res.name;
-                this.updateMyRole();
-            }).catch(() => {
-                this.errorGetSomething();
-            });
-        },
-        updateMyRole() {
-            this.$service.user.getMyselfInProject(this.projectId)
-            .then((response) => {
-                this.$store.commit("SET_ACTUAL_ROLE", getRoleClass(getRoleEnum(response.data.role)));
-            }).catch(() => {
-                this.$eventBus.$emit(EventEnum.ERROR_GET_SOMETHING);
-            });
-        },
-        errorGetSomething() {
-            this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-            this.$notify(this.$t("errors.not_your_project") as string);
-            this.backToDashboard();
-        },
-        backToDashboard() {
-            this.$router.push({path: '/dashboard'});
-        },
-        closePopup() {
-            if (this.$store.getters.openCard !== CardEnum.NONE) {
-                this.$store.commit("SET_OPEN_CARD", CardEnum.NONE);
-           }
-        }
-    },
-    mounted() {
-        this.$eventBus.$on(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-        this.$eventBus.$on(EventEnum.RELOAD_PROJECT, this.reloadProject);
-        this.$eventBus.$on(EventEnum.BACK_TO_DASHBOARD, this.backToDashboard);
-        this.$eventBus.$on(EventEnum.ERROR_ACTION, this.reloadProject);
-    },
-    beforeDestroy() {
-        this.$eventBus.$off(EventEnum.ERROR_GET_SOMETHING, this.errorGetSomething);
-        this.$eventBus.$off(EventEnum.RELOAD_PROJECT, this.reloadProject);
-        this.$eventBus.$off(EventEnum.BACK_TO_DASHBOARD, this.backToDashboard);
-        this.$eventBus.$off(EventEnum.ERROR_ACTION, this.reloadProject);
+export default Vue.extend({
+  name: "DetailProject",
+  metaInfo(): MetaInfo {
+    return {
+      title: this.currentProject?.name ?? "",
+      titleTemplate: `Lokapp - %s`
+    };
+  },
+  components: {
+    LeftNavBar,
+    HeaderBanner,
+    LanguagesGroup,
+    ContentDetails
+  },
+  data() {
+    return {
+      loading: true
+    };
+  },
+  created() {
+    this.loadProject();
+  },
+  computed: {
+    currentProject(): Project {
+      return this.$store.state.currentProject;
     }
-})
+  },
+  methods: {
+    loadProject() {
+      this.loading = true;
+
+      this.$service.projects.getEntireProjectById(parseInt(this.$route.params.project_id))
+          .then(async (project: Project) => {
+            this.$store.commit("SET_CURRENT_PROJECT", project);
+            await this.updateMyRole(project.id);
+            this.loading = false;
+          })
+          .catch(() => {
+            this.$notify(this.$t("errors.retrieve_project").toString());
+            this.$store.commit("SET_CURRENT_PROJECT", null);
+            this.backToDashboard();
+          });
+    },
+    async updateMyRole(projectId: number): Promise<void> {
+      return this.$service.user.getMyselfInProject(projectId).then((user) => this.$store.commit("SET_APP_USER", user));
+    },
+    backToDashboard() {
+      this.$router.push({path: "/dashboard"});
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/styles/styles.sass';
-    .full-screen-container {
-        background-color: #02188C;
-        width: 100vw;
-        height: 100vh;
-    }
-    .card-style-content {
-        width: 92vw;
-        height: 100%;
-        border-top-left-radius: 15px !important;
-        border-bottom-left-radius: 15px !important;
-        border-top-right-radius: 0px !important;
-        border-bottom-right-radius: 0px !important;
-    }
-    .card-container {
-        border-bottom-left-radius: 0px !important;
-        max-width: 100%;
-    }
-    .row-header-style {
-        height: 10%;
-        width: 100%;
-    }
-    .row-content-style {
-        background-color: #FAF8F9;
-        border-top-right-radius: 20px;
-        border-top-left-radius: 20px;
-        height: calc(85% - 4 * 4px);
-        width: 100%;
-    }
-    .row-languages-style {
-        width: 100%;
-        height: 5%;
-    }
-    .header-row-detail-style {
-        width: 100%;
-        height: 15%;
-    }
-    .keys-row-detail-style {
-        width: 100%;
-        height: 85%;
-    }
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .card-style-content {
-        width: 100vw;
-        border-top-left-radius: 0px !important;
-        border-bottom-left-radius: 0px !important;
-    }
-    .search-bar-height {
-        height: 40%;
-    } 
+@import '~vuetify/src/styles/settings/_variables';
+
+.full-screen-container {
+  background-color: var(--v-primary-base);
+  width: 100vw;
+  height: 100vh;
 }
+
+.row {
+  margin-bottom: 0 !important;
+  margin-left: 12px;
+}
+
+.row.header {
+  height: 120px;
+}
+
+.row.content {
+  position: absolute;
+  top: 120px;
+  bottom: 0;
+  width: 100%;
+  padding-right: 12px;
+}
+
+
+.card-style-content {
+  border-radius: 15px 0 0 15px !important;
+}
+
 </style>

@@ -37,6 +37,7 @@
         "connexion_problem": "Connection problem",
         "email_already_in_use": "User already exists",
         "enter_role": "Please enter a role",
+        "invitation_already_exists": "An invitation has already been sent to this user",
         "group_already_exists": "This group already exists",
         "group_create_failed": "Error while creating a new group",
         "key_name_already_exists": "This key name is already used in this group",
@@ -47,8 +48,13 @@
         "not_your_project": "You do not belong to this project",
         "project_deleted": "Error while deleting project",
         "reset_failed": "This email doesn't exist on Lokapp",
+        "reset_password": "An error happened",
+        "retrieve_languages": "Error while retrieving languages",
+        "retrieve_project": "Error while retrieving project",
         "unauthorized": "You are not authorized to perform this action",
-        "unknown_error": "An error has occured, please reload",
+        "unknown_error": "An error has occurred, please reload",
+        "update_user": "The update has failed",
+        "update_value": "Error while translating",
         "user_not_found": "User doesn't exist",
         "wrong_password": "Wrong password"
     },
@@ -90,6 +96,13 @@
         "title": "New key",
         "traductions_title": "Translation value",
         "validate_button": "Add new key"
+    },
+    "key_delete" : {
+        "cancel_button": "Cancel",
+        "confirm_button": "Delete the key",
+        "description_1": "Are you sure you want to delete {value}?\n",
+        "description_2": "Its deletion is irremediable and you will lose every keys.",
+        "title": "Delete {name}"
     },
     "language_creation": {
         "confirm_button": "Add",
@@ -183,7 +196,8 @@
         "project_created": "New project created",
         "project_deleted": "Project successfully deleted",
         "project_leave": "Project left",
-        "project_updated": "Project updated"
+        "project_updated": "Project updated",
+        "user_delete": "The user has been removed from the project"
     },
     "user_delete": {
         "cancel_button": "No, cancel",

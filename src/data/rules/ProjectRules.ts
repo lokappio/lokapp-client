@@ -1,5 +1,6 @@
+import i18n from "@/i18n";
 
-export const projectNameRules = (required: string, length: string) => [
-    (v: string) => !!v || required,
-    (v: string) => v.length >= 3 || length
+export const projectNameRules = () => [
+    (v: string) => !!v || i18n.tc('rules.required'),
+    (v: string) => v.length >= 3 || i18n.tc("rules.project_name_length")
 ];
