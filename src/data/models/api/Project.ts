@@ -84,7 +84,7 @@ export default class Project {
               pluralValue[value.quantityString] = value?.name ?? ""
             });
 
-            localization[value[0]] = pluralValue;
+            localization[parseInt(value[0])] = pluralValue;
           })
         } else {
           key.values.forEach((value) => {
