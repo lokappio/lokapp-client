@@ -20,7 +20,7 @@
         </v-col>
 
         <v-col v-if="!projectDetail" cols="12" md="5">
-          <v-text-field solo v-model="searchValue" hide-details :label="$t('common.search_label')"></v-text-field>
+          <v-text-field solo v-model="searchValue" class="custom-shadow" hide-details :label="$t('common.search_label')"></v-text-field>
         </v-col>
 
         <invitations-button v-if="!projectDetail" @refreshProjects="() => $emit('refreshProjects')"/>
@@ -59,3 +59,9 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.v-text-field.custom-shadow {
+  box-shadow: 0 -2px 10px rgba(200, 200, 200, 0.2)
+}
+</style>
