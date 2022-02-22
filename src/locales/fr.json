@@ -100,7 +100,8 @@
     "invitations": {
         "item_no_owner": "Vous avez été invité à rejoindre le projet {project}",
         "item_owner": "{owner} vous a invité à rejoindre {project}",
-        "title": "Mes invitations"
+        "title": "Mes invitations",
+        "no_invitations": "Aucune invitation"
     },
     "key_creation": {
         "group_name_label": "Nom du groupe",

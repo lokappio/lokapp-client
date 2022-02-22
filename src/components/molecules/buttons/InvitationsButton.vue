@@ -17,7 +17,7 @@
         </v-card-title>
 
         <v-card-text class="list-invitations-style">
-          <v-list>
+          <v-list v-if="nbOfInvitations > 0">
             <v-list-item class="px-0" v-for="invitation in invitations" :key="invitation.id">
               <v-list-item-content>
                 <v-list-item-title v-if="invitation.ownerUsername" v-text="$t('invitations.item_owner', { owner: invitation.ownerUsername, project: invitation.projectName })"></v-list-item-title>
@@ -42,6 +42,8 @@
               </v-list-item-action>
             </v-list-item>
           </v-list>
+
+          <span v-else>{{ $t('invitations.no_invitations') }}</span>
         </v-card-text>
       </v-card>
     </v-dialog>
