@@ -4,7 +4,7 @@
       <delete-key :dialog-opened="dialogOpenedDelete" :item="item" @close="() => this.dialogOpenedDelete = false" @deletedKey="deletedKey"/>
     </v-dialog>
 
-    <v-row align="center">
+    <v-row align="center" class="my-3">
       <v-btn v-if="canUpdate" color="primary" icon @click="() => this.dialogOpenedDelete = true" class="white--text mr-1">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
@@ -18,6 +18,7 @@
           single-line
           :rules="keyNameRules"
           @keydown.enter="saveKey"
+          hide-details
           class="mx-2"
       >
         <template v-slot:append>
@@ -26,7 +27,7 @@
         </template>
 
       </v-text-field>
-      <p>{{ keyQuantityName }}</p>
+      <span>{{ keyQuantityName }}</span>
     </v-row>
   </div>
 </template>
