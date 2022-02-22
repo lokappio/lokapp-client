@@ -15,12 +15,12 @@
             <v-container class="pa-0">
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="leaveProject" :text="$t('leave_project.confirm_button')"/>
+                        <action-button block :loading="loading" :handler="leaveProject" :text="$t('leave_project.confirm_button').toString()"/>
                     </v-col>
                 </v-row>
                 <v-row class="mt-2 pb-0">
-                    <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="closeOverlay" :text="$t('leave_project.cancel_button')"/>
+                    <v-col cols="12" class="pb-0 px-0 text-center">
+                      <v-btn text @click="closeOverlay" color="primary">{{ $t('leave_project.cancel_button').toString() }}</v-btn>
                     </v-col>
                 </v-row>
             </v-container>
