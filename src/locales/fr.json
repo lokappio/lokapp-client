@@ -1,7 +1,7 @@
 {
     "common": {
         "optional": "(facultatif)",
-        "search_label": "Rechercher..."
+        "search_label": "Rechercher…"
     },
     "connexion": {
         "forgot_password": "Mot de passe oublié ?",
@@ -15,15 +15,15 @@
     },
     "dashboard": {
         "add_project": "Ajouter un projet",
-        "all_projects_title": "Mes projets",
+        "all_projects_title": "Projets",
         "last_update": "Actualisé il y a moins d'une minute | Actualisé il y a une minute | Actualisé il y a {count} minutes",
         "no_project_in_dashboard": "Il n'y a aucun projet dans ce dashboard"
     },
     "download_project": {
         "download_everything": "Tout télécharger",
         "generate_files": "Génerer les fichiers",
-        "no_file_to_download": "Pas de fichiers à télécharger",
-        "platform_target": "Plateforme ciblée",
+        "no_file_to_download": "Aucun fichier à télécharger",
+        "platform_target": "Plateforme",
         "title": "Exporter des fichiers"
     },
     "dropdown": {
@@ -35,7 +35,6 @@
     },
     "success": {
         "copy": "Texte copié",
-        "files_generated": "Fichiers générés avec succès",
         "user_delete": "L'utilisateur a été supprimé du projet",
         "invitation_accepted": "Invitation acceptée",
         "invitation_created": "Invitation envoyée",
@@ -52,20 +51,19 @@
     "errors": {
         "connexion_problem": "Problème de connexion",
         "email_already_in_use": "L'utilisateur existe déjà",
-        "enter_role": "Veuillez entrer un rôle",
+        "enter_role": "Veuillez sélectionner un rôle",
         "invitation_already_exists": "Une invitation a déjà été envoyée à cet utilisateur",
         "group_already_exists": "Ce groupe existe déjà",
-        "group_create_failed": "Erreur pendant la création du nouveau groupe",
+        "group_create_failed": "Erreur lors de la création du nouveau groupe",
         "key_name_already_exists": "Ce nom de clé existe déjà dans ce groupe",
         "language_already_exists": "Cette langue existe déjà",
         "not_existing_group": "Ce groupe n'existe plus",
         "not_existing_key": "Cette clé n'existe plus",
-        "not_existing_language": "Ce langage n'existe plus",
         "not_your_project": "Ceci n'est pas votre projet",
         "retrieve_project": "Erreur lors de la récupération du projet",
         "retrieve_languages": "Erreur lors de la récupération des langues",
         "project_deleted": "Erreur lors de la suppression du projet",
-        "reset_failed": "L'email donné n'existe pas dans Lokapp",
+        "reset_failed": "L'email saisi n'existe pas dans Lokapp",
         "unauthorized": "Vous n'êtes pas autorisé à réaliser cette action",
         "unknown_error": "Une erreur est survenue, veuillez recharger",
         "user_not_found": "L'utilisateur n'existe pas",
@@ -75,15 +73,14 @@
         "update_value": "Une erreur est survenue lors de la traduction"
     },
     "forgot_password": {
-        "email_label": "Entrer mon email",
+        "email_label": "email@exemple.fr",
         "email_title": "Email",
-        "title": "Réinitialiser mon mot de passe",
+        "title": "Réinitialisation du mot de passe",
         "confirm_button": "Réinitialiser"
     },
     "header": {
         "banner_title": "“Toutes vos traductions réunies au même endroit”",
-        "greetings": "Bienvenue",
-        "greetings_description": "Retrouvez ici tous vos projets"
+        "greetings": "Bienvenue,"
     },
     "invitation_creation": {
         "confirm_button": "Inviter",
@@ -91,7 +88,7 @@
         "description_manager": "Manager : dispose de tous les droits sur le projet mais ne peut pas le supprimer.",
         "description_owner": "Propriétaire : dispose de tous les droits sur le projet, y compris sa suppression.",
         "description_translator": "Traducteur : peut uniquement modifier les valeurs des traductions.",
-        "email_label": "Entrer l'email de l'utilisateur",
+        "email_label": "Email de l'utilisateur à inviter",
         "email_title": "Email",
         "role_label": "Sélectionner un rôle",
         "role_title": "Rôle",
@@ -100,7 +97,7 @@
     "invitations": {
         "item_no_owner": "Vous avez été invité à rejoindre le projet {project}",
         "item_owner": "{owner} vous a invité à rejoindre {project}",
-        "title": "Mes invitations",
+        "title": "Invitations",
         "no_invitations": "Aucune invitation"
     },
     "key_creation": {
@@ -108,29 +105,28 @@
         "group_name_title": "Groupe",
         "is_plural": "Pluriel",
         "key_name_label": "Nom de la clé de traduction",
-        "key_name_title": "Valeur",
+        "key_name_title": "Nom",
         "new_group": "+ Ajouter un groupe",
-        "title": "Nouvelle clé",
-        "traductions_title": "Valeurs de traduction",
-        "validate_button": "Ajouter la clé"
+        "title": "Ajouter une clé",
+        "validate_button": "Ajouter"
     },
     "key_delete" : {
         "cancel_button": "Annuler",
-        "confirm_button": "Supprimer la clé",
-        "description_1": "Êtes-vous sûr de vouloir supprimer la clé '{value}' ?\n",
+        "confirm_button": "Supprimer",
+        "description_1": "Êtes-vous sûr de vouloir supprimer la clé \"{value}\" ?\n",
         "description_2": "Sa suppression est irrémédiable et vous perdrez la clé et les valeurs associées.",
-        "title": "Supprimer une clé"
+        "title": "Supprimer"
     },
     "language_creation": {
         "confirm_button": "Ajouter",
         "language_name_label": "Nom de la langue",
         "language_name_title": "Nom de la langue",
-        "title": "Nouvelle langue"
+        "title": "Ajouter une langue"
     },
     "language_delete": {
         "cancel_button": "Annuler",
-        "confirm_button": "Oui, supprimer",
-        "description_1": "Êtes-vous sûr de vouloir supprimer {value} ?\n",
+        "confirm_button": "Supprimer",
+        "description_1": "Êtes-vous sûr de vouloir supprimer \"{value}\" ?\n",
         "description_2": "Sa suppression est irrémédiable et vous perdrez toutes les clés et valeurs associées.",
         "title": "Supprimer une langue"
     },
@@ -139,16 +135,15 @@
     },
     "leave_project": {
         "cancel_button": "Annuler",
-        "confirm_button": "Oui, quitter le projet",
+        "confirm_button": "Quitter",
         "description_1": "Êtes-vous sûr de vouloir quitter ce projet ?",
         "description_2": "Vous ne pourrez pas le rejoindre à moins d'y être invité à nouveau.",
         "title": "Quitter le projet"
     },
     "profile_manager": {
-        "change_profile_button": "Modifier mon profil",
-        "disconnect_button": "Me déconnecter",
+        "disconnect_button": "Se déconnecter",
         "email": "Email",
-        "reset_password": "Réinitialiser mon mot de passe",
+        "reset_password": "Réinitialisation du mot de passe",
         "title": "Profil utilisateur",
         "username": "Pseudo",
         "validate_profile_button": "Valider"
@@ -166,18 +161,16 @@
     },
     "project_delete": {
         "cancel_button": "Annuler",
-        "confirm_button": "Oui, supprimer",
-        "description_1": "Êtes-vous sûr de vouloir supprimer {value} ?\n",
+        "confirm_button": "Supprimer",
+        "description_1": "Êtes-vous sûr de vouloir supprimer \"{value}\" ?\n",
         "description_2": "Sa suppression est irrémédiable et vous perdrez toutes les clés et valeurs associées.",
-        "title": "Supprimer {name}"
+        "title": "Supprimer \"{name}\""
     },
     "project_detail": {
         "all_languages": "Toutes les langues",
-        "delete_key_button": "Supprimer la clé",
         "keys": "Clés",
         "plural_key": "Pluriel",
-        "simple_key": "Simple",
-        "tooltip_no_key": "Créez votre première clé"
+        "simple_key": "Singulier"
     },
     "project_manage": {
         "change_settings_button": "Modifier",
@@ -188,7 +181,7 @@
         "color_length": "La couleur est définie par 6 caractères",
         "group_name_length": "Le nom du groupe doit contenir au moins 2 caractères",
         "key_name_length": "Le nom de la clé doit contenir au moins 3 caractères",
-        "language_name_length": "Le nom du langage doit contenir au moins 2 caractères",
+        "language_name_length": "Le nom de la langue doit contenir au moins 2 caractères",
         "mail_valid": "L'email doit être un email valide",
         "not_hexa_value": "Ceci n'est pas une valeur hexadécimale",
         "only_aphabetic_characters": "Uniquement des lettres",
@@ -201,21 +194,18 @@
         "username_length": "Le nom d'utilisateur doit contenir 3 caractères minimum"
     },
     "user_delete": {
-        "cancel_button": "Non, annuler",
-        "confirm_button": "Oui, supprimer",
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer",
         "description_1": "Voulez-vous supprimer cet utilisateur du projet ?",
-        "title": "Supprimer {name}",
+        "title": "Supprimer \"{name}\"",
         "user": "l'utilisateur"
     },
     "users_manage": {
-        "actual_invitations": "Invitations en cours",
-        "actual_users": "Utilisateurs actuels",
         "delete_invitation": "Supprimer l'invitation",
         "role_editor": "Editeur",
         "role_manager": "Manager",
         "role_owner": "Propriétaire",
         "role_translator": "Traducteur",
-        "title": "Utilisateurs",
-        "tooltip_create_invitation": "Inviter un utilisateur"
+        "title": "Utilisateurs"
     }
 }
