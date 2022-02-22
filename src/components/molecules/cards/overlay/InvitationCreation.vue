@@ -113,20 +113,21 @@ export default Vue.extend({
       if ((this.$refs.formCreateInvitation as any).validate() === true) {
         if (this.role === null || this.role === "") {
           this.$notify(this.$t("errors.enter_role").toString(), {color: "red"});
+        } else {
+          this.loading = true;
+          this.$service.invitations.createInvitation(this.projectId, this.email, this.role)
+              .then(() => {
+                this.$notify(this.$t("success.invitation_created").toString(), {color: "primary"});
+                this.closeOverlay();
+                this.$emit('invitationSent');
+              })
+              .catch((e) => {
+                this.$notify(this.$t(e).toString(), {color: "red"});
+                this.email = "";
+                this.role = null;
+              })
+              .finally(() => this.loading = false);
         }
-        this.loading = true;
-        this.$service.invitations.createInvitation(this.projectId, this.email, this.role)
-            .then(() => {
-              this.$notify(this.$t("success.invitation_created").toString(), {color: "primary"});
-              this.closeOverlay();
-              this.$emit('invitationSent');
-            })
-            .catch((e) => {
-              this.$notify(this.$t(e).toString(), {color: "red"});
-              this.email = "";
-              this.role = null;
-            })
-            .finally(() => this.loading = false);
       }
     }
   }
