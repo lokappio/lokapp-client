@@ -1,48 +1,20 @@
-<!-- Project's logo -->
+# Lokapp
+
 <p align="center">
-  <a href="https://www.lokapp.io/">
-    <img src="documentation/logo.png" alt="Logo" width="80">
-  </a>
-
-  <h2 align="center">Lokapp</h2>
-
-  <p align="center">
-    Webapp using our <a href="https://github.com/lokappio/lokapp-api">API</a> to help you manage all your project's translations.
-    <br />
-    <br />
-  </p>
+   <a href="https://www.lokapp.io/">
+     <img width="20%" src="https://raw.githubusercontent.com/lokappio/.github/main/profile/lokapp-logo-circle.png" alt="Lokapp logo" />
+   </a>
 </p>
 
-<!-- Table of Contents -->
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About the project</a>
-      <ul>
-        <li><a href="#built-with">Built with</a></li>
-        <li><a href="#features">Features</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-        <li><a href="#environment-variables">Environment variables</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#usage">Usage</a>
-      <ul>
-        <li><a href="#locally">Locally</a></li>
-        <li><a href="#snake_case">snake_case</a></li>
-        <li><a href="#demo">Demo</a></li>
-      </ul>
-    </li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
-  </ol>
-</details>
+[![Lokapp](https://img.shields.io/badge/Lokapp-https://lokapp.io-02188C.svg)](https://lokapp.io)
+
+Webapp using our [API](https://github.com/lokappio/lokapp-api) to help you manage all your project's translations.
+
+## Table of contents
+
+* [About the project](#about-the-project)
+* [Getting started](#getting-started)
+* [Usage](#usage)
 
 ![Lokapp Screenshot](./documentation/lokapp-cover.png)
 
