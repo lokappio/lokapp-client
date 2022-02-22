@@ -27,7 +27,7 @@
                     </v-btn>
                 </v-form>
 
-                <div class="mt-3 smallLine" @click="forgotPassword">{{ $t("connexion.forgot_password") }}</div>
+                <div class="mt-3 smallLine set-cursor-pointer" @click="forgotPassword">{{ $t("connexion.forgot_password") }}</div>
             </v-tab-item>
 
             <!-- SIGN UP -->
