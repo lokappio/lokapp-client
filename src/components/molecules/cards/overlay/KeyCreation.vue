@@ -15,12 +15,12 @@
 
         <v-form ref="formCreateKey" @submit.prevent="() => false">
           <!-- Key name -->
-          <v-row class="mt-2 pb-0 mb-0">
+          <v-row class="mt-4 pb-0 mb-2">
             <v-col cols="12" class="pb-0 px-0">
               <span class="title-h3">{{ $t("key_creation.key_name_title") }}</span>
             </v-col>
           </v-row>
-          <v-row class="mt-0">
+          <v-row class="mt-0 mb-2">
             <v-col cols="12" class="pa-0">
               <v-text-field
                   :rules="keyNameRules"
@@ -30,6 +30,7 @@
                   :label="$t('key_creation.key_name_label')"
                   solo
                   flat
+                  hide-details="auto"
                   required
                   @keydown.enter="createKeyWithGroup"
               ></v-text-field>
@@ -37,14 +38,14 @@
           </v-row>
 
           <!-- Group -->
-          <v-row class="mt-1 pb-0 mb-0">
+          <v-row class="mt-2 pb-0 mb-2">
             <v-col cols="12" class="pb-0 px-0">
               <span class="title-h3">{{ $t("key_creation.group_name_title") }}</span>
             </v-col>
           </v-row>
 
-          <v-row class="mt-0 pb-0 mb-0">
-            <v-col cols="12" class="py-0 px-0">
+          <v-row class="mt-0 mb-2">
+            <v-col cols="12" class="pb-0 pt-0 px-0">
               <v-menu class="py-0 mb-0" bottom close-on-click>
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -83,7 +84,7 @@
           </v-row>
 
           <!-- Is a plural key -->
-          <v-row class="mt-0 pb-0 mb-0">
+          <v-row class="mt-0 pb-0 mb-4">
             <v-col cols="12" class="py-0 px-0">
               <v-checkbox class="custom-checkbox" hide-details="true" v-model="newKey.isPlural" :label="$t('key_creation.is_plural')"></v-checkbox>
             </v-col>

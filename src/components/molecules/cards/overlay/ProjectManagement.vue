@@ -15,13 +15,13 @@
 
       <v-form ref="formChangeSettings">
         <!-- ProjectName -->
-        <v-row class="mt-2 pb-0 mb-0">
+        <v-row class="mt-4 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("project_creation.project_name_title") }}</span>
           </v-col>
         </v-row>
 
-        <v-row class="mt-0">
+        <v-row class="mt-0 mb-2">
           <v-col cols="12" class="pa-0">
             <v-text-field
                 class="custom-text-field"
@@ -29,6 +29,7 @@
                 v-model="updatedProject.name"
                 :rules="projectNameRules"
                 :label="$t('project_creation.project_name_label')"
+                hide-details="auto"
                 solo
                 flat
                 required
@@ -37,7 +38,7 @@
         </v-row>
 
         <!-- ProjectColor -->
-        <v-row class="mt-0">
+        <v-row class="mt-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("project_creation.color_title") }}</span>
           </v-col>
@@ -69,11 +70,12 @@
         </v-row>
 
         <!-- LANGUAGE -->
-        <v-row class="mt-2" v-if="isCreating">
+        <v-row class="mt-2 mb-2" v-if="isCreating">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t('project_creation.language_name_title') }}</span>
           </v-col>
-
+        </v-row>
+        <v-row class="mt-0 mb-2" v-if="isCreating">
           <v-col cols="12" class="py-0 px-0">
             <v-text-field
                 class="custom-text-field"
@@ -88,7 +90,7 @@
         </v-row>
 
         <!-- DescriptionProject -->
-        <v-row class="mt-2 pb-0">
+        <v-row class="mt-2 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("project_creation.description_title") }} <span class="text-2 grey--text"> {{ $t("common.optional") }}</span></span>
           </v-col>
@@ -101,7 +103,7 @@
                 flat
                 solo
                 no-resize
-                rows="10"
+                rows="6"
                 class="custom-text-area"
                 v-model="updatedProject.description"
             ></v-textarea>

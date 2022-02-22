@@ -1,9 +1,9 @@
 <template>
   <v-card color="white" class="pa-4 pa-md-7 custom-cards">
-    <v-container class="pa-0">
+    <v-container>
       <!-- Title -->
       <v-row :style="{ 'height':'50px' }">
-        <v-col cols="11">
+        <v-col cols="11" class="px-0">
           <h2 class="title-h2">
             {{ this.$t("invitation_creation.title") }}
           </h2>
@@ -15,48 +15,54 @@
 
       <v-form ref="formCreateInvitation" onSubmit="return false;">
         <!-- Email -->
-        <v-row class="ma-0">
+        <v-row class="mt-4 pb-0 mb-2">
           <v-col cols="12" class="pl-0 pb-0">
             <span class="title-h3">{{ $t("invitation_creation.email_title") }}</span>
           </v-col>
         </v-row>
-        <v-row class="ma-0">
-          <v-col cols="12" class="pb-0 pt-1 px-0">
-            <v-text-field :rules="emailRules" class="custom-text-field" background-color="inputBackground" v-model="email" :label="$t('invitation_creation.email_label')" type="email" solo flat
-                          required></v-text-field>
+        <v-row class="mt-0 mb-2">
+          <v-col cols="12" class="pb-0 pt-0 px-0">
+            <v-text-field :rules="emailRules" class="custom-text-field" background-color="inputBackground"
+                          v-model="email" :label="$t('invitation_creation.email_label')" type="email" solo flat
+                          hide-details="auto" required></v-text-field>
           </v-col>
         </v-row>
 
         <!-- Role -->
-        <v-row class="ma-0 pt-0">
+        <v-row class="mt-2 mb-1">
           <v-col cols="12" class="pl-0 py-0">
-                        <span class="title-h3">{{ $t("invitation_creation.role_title") }}
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        icon
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        <v-icon class="mb-1" color="black">mdi-information-outline</v-icon>
-                                    </v-btn>
-                                </template>
+            <span class="title-h3">{{ $t("invitation_creation.role_title") }}
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon class="mb-1" color="black">mdi-information-outline</v-icon>
+                        </v-btn>
+                    </template>
 
-                                <p>{{ $t("invitation_creation.description_owner") }}<br/>
-                                {{ $t("invitation_creation.description_manager") }}<br/>
-                                {{ $t("invitation_creation.description_editor") }}<br/>
-                                {{ $t("invitation_creation.description_translator") }}</p>
-                            </v-tooltip>
-                        </span>
+                    <p>{{ $t("invitation_creation.description_owner") }}<br/>
+                    {{ $t("invitation_creation.description_manager") }}<br/>
+                    {{ $t("invitation_creation.description_editor") }}<br/>
+                    {{ $t("invitation_creation.description_translator") }}</p>
+                </v-tooltip>
+            </span>
           </v-col>
         </v-row>
-        <v-row class="ma-0">
-          <v-col cols="12" class="pb-0 pt-1 px-0">
-            <v-select :label="$t('invitation_creation.role_label')" light solo v-model="role" :items="roles" item-text="text" item-value="value"></v-select>
+        <v-row class="mt-0 mb-1">
+          <v-col cols="12" class="pb-0 pt-0 px-0">
+            <v-select :label="$t('invitation_creation.role_label')" light solo v-model="role" :items="roles"
+                      item-text="text" item-value="value"></v-select>
           </v-col>
         </v-row>
 
-        <action-button :text="$t('invitation_creation.confirm_button').toString()" :handler="inviteUser" block/>
+        <v-row class="mt-1 pb-0">
+          <v-col cols="12" class="pb-0 px-0">
+            <action-button :text="$t('invitation_creation.confirm_button').toString()" :handler="inviteUser" block/>
+          </v-col>
+        </v-row>
       </v-form>
     </v-container>
   </v-card>

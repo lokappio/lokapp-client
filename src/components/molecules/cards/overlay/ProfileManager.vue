@@ -14,27 +14,27 @@
 
       <v-form ref="formUpdateProfile">
         <!-- Username -->
-        <v-row class="mt-4 pb-0 mb-0">
+        <v-row class="mt-4 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ this.$t("profile_manager.username") }} <span class="text-3">{{ this.$t("common.optional") }}</span></span>
           </v-col>
         </v-row>
-        <v-row class="mt-0">
+        <v-row class="mt-0 mb-2">
           <v-col cols="12" class="pb-0 pt-0 px-0">
-            <v-text-field :rules="usernameRules" class="custom-text-field" background-color="inputBackground" v-model="username" solo flat></v-text-field>
+            <v-text-field :rules="usernameRules" class="custom-text-field" hide-details="auto" background-color="inputBackground" v-model="username" solo flat></v-text-field>
           </v-col>
         </v-row>
 
         <!-- Email -->
-        <v-row class="mt-4 pb-0 mb-0">
+        <v-row class="mt-2 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("profile_manager.email") }}</span>
           </v-col>
         </v-row>
 
-        <v-row class="mt-0">
+        <v-row class="mt-0 mb-2">
           <v-col cols="12" class="pb-0 pt-0 px-0">
-            <v-text-field disabled class="custom-text-field" background-color="#7f8182" v-model="user.email" solo flat></v-text-field>
+            <v-text-field disabled class="custom-text-field" hide-details background-color="#7f8182" v-model="user.email" solo flat></v-text-field>
           </v-col>
         </v-row>
 
