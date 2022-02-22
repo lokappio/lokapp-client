@@ -1,34 +1,28 @@
 <template>
-    <v-card color="white" class="pa-4 pa-md-7 custom-cards">
-        <v-container class="pa-0">
-            <!-- Title -->
-            <v-row :style="{ 'height':'50px' }">
-                <v-col cols="11" class="pl-0">
-                    <h2 class="title-h2">{{ this.$t("forgot_password.title") }}</h2>
-                </v-col>
+    <v-card color="white" class="pa-4 custom-cards">
+            <v-card-title class="pa-0">
+              <v-row no-gutters justify="space-between">
+                <h2 class="title-h2">{{ this.$t("forgot_password.title") }}</h2>
+                <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
+              </v-row>
+            </v-card-title>
 
-                <v-col cols="1" class="pr-0">
-                    <v-icon @click="closeOverlay" color="black" class="float-right">mdi-close</v-icon>
-                </v-col>
-            </v-row>
+            <v-form class="mt-3" ref="formSendEmail" onSubmit="return false;">
+                <span class="title-h3">{{ $t('forgot_password.email_title') }}</span>
+                <v-text-field
+                    :rules="emailRules"
+                    class="custom-text-field"
+                    background-color="inputBackground"
+                    v-model="sendEmail"
+                    :label="$t('forgot_password.email_label')"
+                    type="email"
+                    solo
+                    flat
+                    required>
+                </v-text-field>
 
-            <v-form ref="formSendEmail" onSubmit="return false;">
-                <!-- Email -->
-                <v-row class="mt-3 pb-0 mb-0">
-                    <v-col cols="12" class="py-0 px-2">
-                        <span class="title-h3">{{ $t('forgot_password.email_title') }}</span>
-                    </v-col>
-                </v-row>
-
-                <v-row class="mt-0 mb-2">
-                    <v-col cols="12" class="py-0 px-2">
-                        <v-text-field :rules="emailRules" class="custom-text-field" background-color="inputBackground" v-model="sendEmail" :label="$t('forgot_password.email_label')" type="email" solo flat required></v-text-field>
-                    </v-col>
-                </v-row>
-
-                <action-button :loading="loading" :text="$t('forgot_password.confirm_button')" :handler="resetPassword" block/>
+                <action-button :loading="loading" :text="$t('forgot_password.confirm_button').toString()" :handler="resetPassword" block/>
             </v-form>
-        </v-container>
     </v-card>
 </template>
 
