@@ -75,7 +75,7 @@ export default Vue.extend({
     data() {
         return {
             isGenerated: false,
-            selectedPlatform: Platform.ANDROID,
+            selectedPlatform: Platform.ANDROID as Platform,
             files: [] as TranslationFile[]
         };
     },

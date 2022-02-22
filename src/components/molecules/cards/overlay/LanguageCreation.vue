@@ -74,7 +74,7 @@ export default Vue.extend({
       if (this.$refs.formCreateLanguage.validate() === true) {
         this.loading = true;
 
-        this.$service.languages.createLanguage(this.languageName)
+        this.$service.languages.createLanguage(this.languageName.toLowerCase())
             .then((result) => {
               this.loading = false;
               this.$store.commit("UPDATE_PROJECT_LANGUAGES", result);
