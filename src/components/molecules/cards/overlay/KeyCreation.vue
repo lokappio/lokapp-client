@@ -42,20 +42,21 @@
               <span class="title-h3">{{ $t("key_creation.group_name_title") }}</span>
             </v-col>
           </v-row>
+
           <v-row class="mt-0 pb-0 mb-0">
             <v-col cols="12" class="py-0 px-0">
               <v-menu class="py-0 mb-0" bottom close-on-click>
-                <template v-slot:activator="{ on, attrs }">
+                <template v-slot:activator="{ on }">
                   <v-btn
                       class="ml-0"
                       color="primary"
                       dark
-                      v-bind="attrs"
                       v-on="on">
                     {{ currentGroup.name }}
                     <v-icon color="white">mdi-menu-down</v-icon>
                   </v-btn>
                 </template>
+
                 <v-list>
                   <v-list-item v-for="group in groups" :key="group.id">
                     <v-list-item-title class="set-cursor-pointer" @click="currentGroup = group"><span>{{ group.name }}</span></v-list-item-title>
@@ -64,6 +65,7 @@
               </v-menu>
             </v-col>
           </v-row>
+
           <v-row class="mt-4" v-if="currentGroup.isNewGroup">
             <v-col cols="12" class="pa-0">
               <v-text-field
