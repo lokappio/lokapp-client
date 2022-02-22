@@ -109,10 +109,7 @@ export default Vue.extend({
     },
     logMeOut() {
       this.$service.auth.logOut()
-          .then(() => {
-            this.$router.push("/login");
-            this.$notify(this.$t("success.logout").toString(), {color: "primary"});
-          });
+          .then(() => this.$router.push("/login"));
     },
     closeOverlay() {
       this.$emit("close");
