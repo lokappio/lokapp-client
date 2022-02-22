@@ -82,7 +82,7 @@ export default Vue.extend({
     saveGroup() {
       this.$service.groups.updateGroup(this.groupId, this.updateName)
           .then(() => this.updateGroup())
-          .catch((error) => this.$notify(this.$t(error).toString()));
+          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}));
     }
   }
 });

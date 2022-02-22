@@ -96,26 +96,22 @@ export default Vue.extend({
               this.$store.commit('UPDATE_APP_USER', user);
               this.closeOverlay();
             })
-            .catch(() => {
-              this.$notify(this.$t("errors.update_user").toString());
-            });
+            .catch(() => this.$notify(this.$t("errors.update_user").toString(), {color: "red"}));
       }
     },
     resetPassword() {
       this.$service.auth.resetPassword(this.user.email)
           .then(() => {
-            this.$notify(this.$t("success.password_reset").toString());
+            this.$notify(this.$t("success.password_reset").toString(),{color: "primary"});
             this.$service.auth.logOut().then(() => this.$router.push("/login"))
           })
-          .catch(() => {
-            this.$notify(this.$t("errors.reset_password").toString());
-          });
+          .catch(() => this.$notify(this.$t("errors.reset_password").toString(), {color: "red"}));
     },
     logMeOut() {
       this.$service.auth.logOut()
           .then(() => {
             this.$router.push("/login");
-            this.$notify(this.$t("success.logout").toString());
+            this.$notify(this.$t("success.logout").toString(), {color: "primary"});
           });
     },
     closeOverlay() {

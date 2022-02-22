@@ -69,7 +69,7 @@ export default Vue.extend({
             .catch(() => {
               this.updatedValue = Object.assign(Value.map({}), (this.item as translationItem).languages[(this.header as DataTableHeader).value]);
               this.loading = false;
-              this.$notify(this.$t("errors.update_value").toString());
+              this.$notify(this.$t("errors.update_value").toString(), {color: "red"});
             });
       }
     }

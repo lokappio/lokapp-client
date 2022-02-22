@@ -51,7 +51,7 @@ export default Vue.extend({
 
       this.$service.keys.deleteKey((this.item as translationItem).key.id)
           .then(() => this.$emit("deletedKey"))
-          .catch((error) => this.$notify(this.$t(error).toString()))
+          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
           .finally(() => this.loading = false);
     }
   }

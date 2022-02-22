@@ -122,16 +122,16 @@ export default Vue.extend({
         changeErrorText(errorCode) {
             switch (errorCode) {
                 case "auth/user-not-found":
-                    this.$notify(this.$t("errors.user_not_found").toString());
+                    this.$notify(this.$t("errors.user_not_found").toString(), {color: "red"});
                     break;
                 case "auth/wrong-password":
-                    this.$notify(this.$t("errors.wrong_password").toString());
+                    this.$notify(this.$t("errors.wrong_password").toString(), {color: "red"});
                     break;
                 case "auth/email-already-in-use":
-                    this.$notify(this.$t("errors.email_already_in_use").toString());
+                    this.$notify(this.$t("errors.email_already_in_use").toString(), {color: "red"});
                     break;
                 default:
-                    this.$notify(this.$t("errors.unknown_error").toString());
+                    this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
                     break;
             }
         }

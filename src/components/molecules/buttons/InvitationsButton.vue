@@ -78,8 +78,7 @@ export default Vue.extend({
     },
     acceptInvitation(invitation: Invitation) {
       this.$service.invitations.acceptInvitation(invitation)
-          .then(() => this.$notify(this.$t("success.invitation_accepted") as string))
-          .catch(() => this.$notify(this.$t("errors.unknown_error") as string))
+          .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}))
           .finally(() => {
             this.refreshInvitations();
             this.refreshProjects();
@@ -87,8 +86,7 @@ export default Vue.extend({
     },
     declineInvitation(invitation: Invitation) {
       this.$service.invitations.declineInvitation(invitation)
-          .then(() => this.$notify(this.$t("success.invitation_declined") as string))
-          .catch(() => this.$notify(this.$t("errors.unknown_error") as string))
+          .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}))
           .finally(() => this.refreshInvitations());
     },
     refreshProjects(): void {

@@ -48,10 +48,9 @@ export default Vue.extend({
             this.loading = true;
             this.$service.projects.leaveProject(this.projectId)
             .then(() => {
-                this.$notify(this.$t("success.project_leave") as string);
                 this.$router.push("/dashboard");
             }).catch(() => {
-                this.$notify(this.$t("errors.unknown_error") as string);
+                this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
             }).finally(() => {
                 this.closeOverlay();
                 this.loading = false;

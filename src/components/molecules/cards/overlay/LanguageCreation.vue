@@ -78,10 +78,10 @@ export default Vue.extend({
             .then((result) => {
               this.loading = false;
               this.$store.commit("UPDATE_PROJECT_LANGUAGES", result);
-              this.$notify(this.$t("success.language_created").toString());
+
               this.closeLanguageCreation();
             })
-            .catch((error) => this.$notify(this.$t(error).toString()))
+            .catch((error) => this.$notify(this.$t(error).toString(),{color: "red"}))
             .finally(() => this.loading = false);
       }
     },

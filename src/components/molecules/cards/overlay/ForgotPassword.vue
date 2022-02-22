@@ -62,15 +62,15 @@ export default Vue.extend({
             if ((this.$refs.formSendEmail as any).validate() === true) {
                 this.loading = true;
                 this.$service.auth.resetPassword(this.sendEmail)
-                .then(() => {
-                    this.$notify(this.$t("success.password_reset") as string);
-                }).catch((err) => {
+                .then(() => this.$notify(this.$t("success.password_reset").toString(), {color: "primary"}))
+                .catch((err) => {
                     if (err === "unknown_email") {
-                        this.$notify(this.$t("errors.reset_failed") as string);
+                        this.$notify(this.$t("errors.reset_failed").toString(), {color: "red"});
                     } else {
-                        this.$notify(this.$t("errors.unknown_error") as string);
+                        this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
                     }
-                }).finally(() => {
+                })
+                .finally(() => {
                     this.loading = false;
                     this.closeOverlay();
                 });

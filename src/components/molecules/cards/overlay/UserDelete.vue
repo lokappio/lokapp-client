@@ -52,7 +52,7 @@ export default Vue.extend({
       handler: function (isOpen) {
         if (isOpen) {
           if (this.user === null) {
-            this.$notify(this.$t("errors.unknown_error") as string);
+            this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
             this.closeOverlay();
           }
         }
@@ -65,13 +65,8 @@ export default Vue.extend({
     },
     deleteUser(): void {
       this.$service.projects.removeUserFromProject(this.projectId, this.user.userId)
-          .then(() => {
-            this.$notify(this.$t("success.user_delete").toString());
-          })
-          .catch((error) => this.$notify(this.$t(error).toString()))
-          .finally(() => {
-            this.closeOverlay();
-          });
+          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
+          .finally(() => this.closeOverlay());
     }
   }
 });

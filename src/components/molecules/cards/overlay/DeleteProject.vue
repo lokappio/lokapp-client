@@ -50,8 +50,6 @@ export default Vue.extend({
             this.loading = true;
             this.$service.projects.deleteProject(this.project.id)
             .then(() => {
-                this.$notify(this.$t("success.project_deleted") as string);
-
                 if(this.fromDetails) {
                   this.$router.push("/dashboard");
                 } else {
@@ -60,7 +58,7 @@ export default Vue.extend({
 
                 this.closeOverlay();
             }).catch(() => {
-                this.$notify(this.$t("errors.project_deleted") as string);
+                this.$notify(this.$t("errors.project_deleted").toString(),{color: "red"});
             }).finally(() => {
                 this.loading = false;
             });

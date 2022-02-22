@@ -81,7 +81,7 @@ export default Vue.extend({
             this.$emit("saveKey", result);
             setTimeout(() => this.inputIcon = "", 1000);
           })
-          .catch((error) => this.$notify(this.$t(error).toString()))
+          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
           .finally(() => this.loading = false);
     },
     deletedKey() {
