@@ -70,9 +70,9 @@ export default Vue.extend({
   methods: {
     switchQuantity(): Promise<void> {
       this.updateKey.isPlural = !this.updateKey.isPlural;
-      return this.saveKey();
+      return this.saveKey(true);
     },
-    saveKey(): Promise<void> {
+    saveKey(pluralChanged = false): Promise<void> {
       this.loading = true;
 
       return this.$service.keys.updateKey(this.updateKey)
@@ -84,6 +84,10 @@ export default Vue.extend({
           })
           .catch((error) => {
             this.$notify(this.$t(error).toString(), {color: "red"});
+            if(pluralChanged) {
+              //REVERT PLURAL UPDATE
+              this.updateKey.isPlural = !this.updateKey.isPlural;
+            }
           })
           .finally(() => this.loading = false);
     },
