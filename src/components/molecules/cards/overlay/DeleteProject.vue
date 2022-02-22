@@ -20,8 +20,8 @@
                     </v-col>
                 </v-row>
                 <v-row class="mt-2 pb-0">
-                    <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :loading="loading" :handler="closeOverlay" :text="$t('project_delete.cancel_button').toString()"/>
+                    <v-col cols="12" class="pb-0 px-0 text-center">
+                      <v-btn text @click="closeOverlay" color="primary">{{ $t('project_delete.cancel_button').toString() }}</v-btn>
                     </v-col>
                 </v-row>
             </v-container>
@@ -50,8 +50,6 @@ export default Vue.extend({
             this.loading = true;
             this.$service.projects.deleteProject(this.project.id)
             .then(() => {
-                this.$notify(this.$t("success.project_deleted") as string);
-
                 if(this.fromDetails) {
                   this.$router.push("/dashboard");
                 } else {
@@ -59,11 +57,9 @@ export default Vue.extend({
                 }
 
                 this.closeOverlay();
-            }).catch(() => {
-                this.$notify(this.$t("errors.project_deleted") as string);
-            }).finally(() => {
-                this.loading = false;
-            });
+            })
+            .catch(() => this.$notify(this.$t("errors.project_deleted").toString(),{color: "red"}))
+            .finally(() => this.loading = false);
         }
     }
 })

@@ -4,12 +4,12 @@
       <delete-key :dialog-opened="dialogOpenedDelete" :item="item" @close="() => this.dialogOpenedDelete = false" @deletedKey="deletedKey"/>
     </v-dialog>
 
-    <v-row align="center">
-      <v-btn color="primary" icon @click="() => this.dialogOpenedDelete = true" class="white--text mr-1">
+    <v-row align="center" class="my-3">
+      <v-btn v-if="canUpdate" color="primary" icon @click="() => this.dialogOpenedDelete = true" class="white--text mr-1">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
 
-      <v-btn color="primary" small depressed @click="switchQuantity" class="white--text mx-2">
+      <v-btn :disabled="!canUpdate" color="primary" small depressed @click="switchQuantity" class="white--text mx-2">
         {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
       </v-btn>
 
@@ -18,6 +18,7 @@
           single-line
           :rules="keyNameRules"
           @keydown.enter="saveKey"
+          hide-details
           class="mx-2"
       >
         <template v-slot:append>
@@ -26,7 +27,7 @@
         </template>
 
       </v-text-field>
-      <p>{{ keyQuantityName }}</p>
+      <span>{{ keyQuantityName }}</span>
     </v-row>
   </div>
 </template>
@@ -43,7 +44,8 @@ export default Vue.extend({
   components: {DeleteKey},
   props: {
     item: {},
-    projectId: Number
+    projectId: Number,
+    canUpdate: Boolean
   },
   data() {
     return {
@@ -69,9 +71,9 @@ export default Vue.extend({
   methods: {
     switchQuantity(): Promise<void> {
       this.updateKey.isPlural = !this.updateKey.isPlural;
-      return this.saveKey();
+      return this.saveKey(true);
     },
-    saveKey(): Promise<void> {
+    saveKey(pluralChanged = false): Promise<void> {
       this.loading = true;
 
       return this.$service.keys.updateKey(this.updateKey)
@@ -81,7 +83,13 @@ export default Vue.extend({
             this.$emit("saveKey", result);
             setTimeout(() => this.inputIcon = "", 1000);
           })
-          .catch((error) => this.$notify(this.$t(error).toString()))
+          .catch((error) => {
+            this.$notify(this.$t(error).toString(), {color: "red"});
+            if(pluralChanged) {
+              //REVERT PLURAL UPDATE
+              this.updateKey.isPlural = !this.updateKey.isPlural;
+            }
+          })
           .finally(() => this.loading = false);
     },
     deletedKey() {

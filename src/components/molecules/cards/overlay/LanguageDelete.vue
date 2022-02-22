@@ -63,9 +63,8 @@ export default Vue.extend({
                 .then(() => {
                     this.$store.commit("DELETE_PROJECT_LANGUAGE", this.language);
                     this.comebackToLanguageManagement();
-                    this.$notify(this.$t("success.language_deleted").toString());
                 })
-                .catch((error) => this.$notify(this.$t(error).toString()))
+                .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
                 .finally(() => this.loading = false);
         }
     }

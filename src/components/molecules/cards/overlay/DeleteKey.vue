@@ -20,8 +20,8 @@
           </v-col>
         </v-row>
         <v-row class="mt-2 pb-0">
-          <v-col cols="12" class="pb-0 px-0">
-            <action-button block :loading="loading" :handler="closeOverlay" :text="$t('key_delete.cancel_button').toString()"/>
+          <v-col cols="12" class="pb-0 px-0 text-center">
+            <v-btn text @click="closeOverlay" color="primary">{{ $t('key_delete.cancel_button').toString() }}</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -51,7 +51,7 @@ export default Vue.extend({
 
       this.$service.keys.deleteKey((this.item as translationItem).key.id)
           .then(() => this.$emit("deletedKey"))
-          .catch((error) => this.$notify(this.$t(error).toString()))
+          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
           .finally(() => this.loading = false);
     }
   }

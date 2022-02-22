@@ -175,29 +175,25 @@ export default Vue.extend({
 
         this.$service.projects.changeProjectSettings(this.updatedProject)
             .then(() => {
-              this.$notify(this.$t("success.project_updated").toString());
               this.$emit("projectUpdated", this.updatedProject);
               this.closeManageProject();
             })
-            .catch((error) => this.$notify(this.$t(error).toString()))
+            .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
             .finally(() => this.loading = false);
       }
     },
     createNewProject() {
       if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
         this.loading = true;
-        this.$service.projects.createProject(this.updatedProject, this.languageName)
+        this.$service.projects.createProject(this.updatedProject, this.languageName.toLowerCase())
             .then((project) => {
               this.loading = false;
               this.closeManageProject();
-              this.$notify(this.$t("success.project_created").toString());
 
               this.$router.push(`/projects/${project.id}`);
-            }).catch(() => {
-          this.$notify(this.$t("errors.unknown_error").toString());
-        }).finally(() => {
-          this.loading = false;
-        })
+            })
+            .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}))
+            .finally(() => this.loading = false)
       }
     },
     closeManageProject() {

@@ -75,7 +75,7 @@ export default Vue.extend({
     data() {
         return {
             isGenerated: false,
-            selectedPlatform: Platform.ANDROID,
+            selectedPlatform: Platform.ANDROID as Platform,
             files: [] as TranslationFile[]
         };
     },
@@ -138,7 +138,7 @@ export default Vue.extend({
         },
         copyFile(file: TranslationFile) {
             navigator.clipboard.writeText(file.content);
-            this.$notify(this.$t("success.copy").toString());
+            this.$notify(this.$t("success.copy").toString(), {color: "primary"});
         },
         downloadFile(file: TranslationFile): void {
             Export.downloadFile(file.content, file.name);

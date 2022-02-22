@@ -19,27 +19,27 @@
         <v-tabs-items v-model="toggleExclusive">
             <!-- LOGIN -->
             <v-tab-item :key="0" @keyup.enter="validateLogin()">
-                <v-form class="pt-md-10 pl-md-2 pr-md-2 pb-md-3" ref="formLogin">
-                    <v-text-field class="pt-4 pt-md-1" v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
-                    <v-text-field class="pt-2 pt-md-1" v-model="passwordLogin" :rules="passwordLoginRules" type="password" :label=passwordLabel required></v-text-field>
-                    <v-btn color="black" :loading="loading" :disabled="loading" @click="validateLogin" min-height="50" block>
-                        <div class="buttonValid">{{ $t("connexion.login") }}</div>
+                <v-form class="pt-10" ref="formLogin">
+                    <v-text-field v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
+                    <v-text-field class="mt-4 mb-5" v-model="passwordLogin" :rules="passwordLoginRules" type="password" :label=passwordLabel required></v-text-field>
+                    <v-btn color="black" class="white--text" :loading="loading" :disabled="loading" @click="validateLogin" min-height="50" block>
+                      <span class="font-weight-bold">{{ $t("connexion.login") }}</span>
                     </v-btn>
                 </v-form>
 
-                <div class="mt-2 ml-2 smallLine" @click="forgotPassword">{{ $t("connexion.forgot_password") }}</div>
+                <div class="mt-3 smallLine" @click="forgotPassword">{{ $t("connexion.forgot_password") }}</div>
             </v-tab-item>
 
             <!-- SIGN UP -->
             <v-tab-item :key="1" @keyup.enter="validateRegister()">
-                <v-form class="pt-md-10 pl-md-2 pr-md-2 pb-md-3" ref="formRegister">
-                    <v-text-field class="pt-4 pt-md-1" v-model="pseudo" :label=pseudoLabel></v-text-field>
-                    <v-text-field class="pt-2 pt-md-1" v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
-                    <v-text-field class="pt-2 pt-md-1" v-model="password" :rules="passwordRules" type="password" :label=passwordLabel required></v-text-field>
-                    <v-text-field class="pt-2 pt-md-1" v-model="passwordCopy" :rules="passwordCopyRules" type="password" :label=passwordConfirmLabel required></v-text-field>
+                <v-form class="pt-10" ref="formRegister">
+                    <v-text-field class="mb-2" v-model="pseudo" :label=pseudoLabel></v-text-field>
+                    <v-text-field class="mt-4 mb-2" v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
+                    <v-text-field class="mt-4 mb-2" v-model="password" :rules="passwordRules" type="password" :label=passwordLabel required></v-text-field>
+                    <v-text-field class="mt-4 mb-5" v-model="passwordCopy" :rules="passwordCopyRules" type="password" :label=passwordConfirmLabel required></v-text-field>
 
-                    <v-btn color="black" :loading="loading" :disabled="loading" min-height="50" @click="validateRegister" block>
-                        <div class="buttonValid">{{ $t("connexion.register") }}</div>
+                    <v-btn color="black" class="white--text" :loading="loading" :disabled="loading" min-height="50" @click="validateRegister" block>
+                        <span class="font-weight-bold">{{ $t("connexion.register") }}</span>
                     </v-btn>
                 </v-form>
             </v-tab-item>
@@ -122,16 +122,16 @@ export default Vue.extend({
         changeErrorText(errorCode) {
             switch (errorCode) {
                 case "auth/user-not-found":
-                    this.$notify(this.$t("errors.user_not_found").toString());
+                    this.$notify(this.$t("errors.user_not_found").toString(), {color: "red"});
                     break;
                 case "auth/wrong-password":
-                    this.$notify(this.$t("errors.wrong_password").toString());
+                    this.$notify(this.$t("errors.wrong_password").toString(), {color: "red"});
                     break;
                 case "auth/email-already-in-use":
-                    this.$notify(this.$t("errors.email_already_in_use").toString());
+                    this.$notify(this.$t("errors.email_already_in_use").toString(), {color: "red"});
                     break;
                 default:
-                    this.$notify(this.$t("errors.unknown_error").toString());
+                    this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
                     break;
             }
         }
@@ -159,17 +159,9 @@ export default Vue.extend({
     text-transform: none !important;
 }
 
-.buttonValid {
-    color: white;
-    font-weight: 500;
-    font-size: 16px;
-    letter-spacing: 0.1em;
-    text-transform: none !important;
-    line-height: 18px;
-}
-
 .smallLine {
-    font-size: 12px;
+    font-size: 14px;
+    cursor: pointer;
     color: rgba(0, 0, 0, 0.3);
 }
 

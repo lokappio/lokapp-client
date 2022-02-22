@@ -2,12 +2,14 @@
   <!-- SAVE VALUE WHEN INPUT IS UNFOCUSED (Blur) -->
   <v-text-field
       :id="inputId"
+      class="my-3"
       v-if="canWriteValue"
       v-model="updatedValue.name"
       @blur="saveValue()"
       @keydown.enter="blurInput"
       @keydown.tab="blurInput"
       single-line
+      hide-details
   >
     <template v-slot:append>
       <v-progress-circular v-if="loading" size="20" indeterminate color="primary"></v-progress-circular>
@@ -69,7 +71,7 @@ export default Vue.extend({
             .catch(() => {
               this.updatedValue = Object.assign(Value.map({}), (this.item as translationItem).languages[(this.header as DataTableHeader).value]);
               this.loading = false;
-              this.$notify(this.$t("errors.update_value").toString());
+              this.$notify(this.$t("errors.update_value").toString(), {color: "red"});
             });
       }
     }

@@ -78,7 +78,7 @@ export default Vue.extend({
             this.loading = false;
           })
           .catch(() => {
-            this.$notify(this.$t("errors.retrieve_project").toString());
+            this.$notify(this.$t("errors.retrieve_project").toString(), {color: "red"});
             this.$store.commit("SET_CURRENT_PROJECT", null);
             this.backToDashboard();
           });

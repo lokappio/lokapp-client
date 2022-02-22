@@ -72,17 +72,17 @@ See the [Plural](documentation/plurals.md) documentation to learn more about how
 
 Install dependencies
 ```bash
-  yarn install
+  npm install
 ```
 
 Start locally
 ```bash
-  yarn run serve
+  npm run serve
 ```
 
 Build for production
 ```bash
-  yarn run build
+  npm run build
 ```
 
 ### Environment Variables

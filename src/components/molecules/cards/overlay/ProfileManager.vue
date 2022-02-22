@@ -41,7 +41,7 @@
         <!-- Buttons -->
         <v-row class="mt-2 pb-0">
           <v-col cols="12" class="pb-0 px-0">
-            <action-button block :loading="loading" :handler="validateProfile" :text="$t('profile_manager.validate_profile_button')"/>
+            <action-button block :loading="loading" :handler="validateProfile" :text="$t('profile_manager.validate_profile_button').toString()"/>
           </v-col>
         </v-row>
 
@@ -91,32 +91,27 @@ export default Vue.extend({
       if (this.username !== this.user.username) {
         if (this.username.length === 0) this.username = null;
 
+        this.loading = true;
         this.$service.user.updateProfile(this.username)
             .then((user) => {
               this.$store.commit('UPDATE_APP_USER', user);
               this.closeOverlay();
             })
-            .catch(() => {
-              this.$notify(this.$t("errors.update_user").toString());
-            });
+            .catch(() => this.$notify(this.$t("errors.update_user").toString(), {color: "red"}))
+            .finally(() => this.loading = false);
       }
     },
     resetPassword() {
       this.$service.auth.resetPassword(this.user.email)
           .then(() => {
-            this.$notify(this.$t("success.password_reset").toString());
+            this.$notify(this.$t("success.password_reset").toString(),{color: "primary"});
             this.$service.auth.logOut().then(() => this.$router.push("/login"))
           })
-          .catch(() => {
-            this.$notify(this.$t("errors.reset_password").toString());
-          });
+          .catch(() => this.$notify(this.$t("errors.reset_password").toString(), {color: "red"}));
     },
     logMeOut() {
       this.$service.auth.logOut()
-          .then(() => {
-            this.$router.push("/login");
-            this.$notify(this.$t("success.logout").toString());
-          });
+          .then(() => this.$router.push("/login"));
     },
     closeOverlay() {
       this.$emit("close");

@@ -6,7 +6,7 @@
 
       <v-row no-gutters align="center" justify="space-between">
         <v-col cols="12" :md="!projectDetail ? '6' : '12'">
-          <v-row no-gutters align="baseline">
+          <v-row no-gutters align="center">
             <v-col cols="auto">
               <v-btn @click="() => this.dialogOpened = true" color="primary" fab depressed>
                 <v-icon large>mdi-account</v-icon>
@@ -14,7 +14,7 @@
             </v-col>
 
             <v-col cols="10" class="ml-3">
-              <p><span class="title-h1">{{ $t("header.greetings") + " " }}</span><span class="title-h1 primary--text">{{ appUserName }}</span></p>
+              <span class="title-h1">{{ $t("header.greetings") + " " }}<span class="title-h1 primary--text">{{ appUserName }}</span></span>
             </v-col>
           </v-row>
         </v-col>
@@ -59,23 +59,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-.icon-color {
-  background-color: var(--v-primary-base);
-  color: white;
-}
-
-.rounded-button-style {
-  height: 50px !important;
-  width: 50px !important;
-  border-radius: 50%;
-  float: left;
-}
-
-.banner-container {
-  border-radius: 20px;
-  height: 150px;
-  background-color: var(--v-primary-base);
-}
-</style>

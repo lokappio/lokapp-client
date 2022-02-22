@@ -135,7 +135,7 @@ export default Vue.extend({
         deleteInvitation(invitation: ProjectUser) {
             this.$service.invitations.deleteInvitation(invitation.invitationId)
                 .then(() => this.refresh())
-                .catch((error) => this.$notify(this.$t(error).toString()));
+                .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}));
         },
         isUserUpdateRoleDisabled(user: ProjectUser): boolean {
             return (!this.me.roleAbility.canWriteUser ? true : user.role === Role.OWNER) || user.userId === this.me.userId;
@@ -171,9 +171,8 @@ export default Vue.extend({
                         }
                         return 0;
                     });
-                }).catch(() => {
-                this.$notify(this.$t("errors.unknown_error").toString());
-            });
+                })
+                .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}));
         },
         refresh() {
             this.users = [];
@@ -188,7 +187,8 @@ export default Vue.extend({
                     if (this.me.role === Role.OWNER && user.role === Role.OWNER) {
                         this.refresh();
                     }
-                }).catch((error) => this.$notify(this.$t(error).toString()));
+                })
+                .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}));
         },
         deleteUser(user: ProjectUser) {
             this.userToDelete = user;

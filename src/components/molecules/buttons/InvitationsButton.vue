@@ -17,7 +17,7 @@
         </v-card-title>
 
         <v-card-text class="list-invitations-style">
-          <v-list>
+          <v-list v-if="nbOfInvitations > 0">
             <v-list-item class="px-0" v-for="invitation in invitations" :key="invitation.id">
               <v-list-item-content>
                 <v-list-item-title v-if="invitation.ownerUsername" v-text="$t('invitations.item_owner', { owner: invitation.ownerUsername, project: invitation.projectName })"></v-list-item-title>
@@ -42,6 +42,8 @@
               </v-list-item-action>
             </v-list-item>
           </v-list>
+
+          <span v-else>{{ $t('invitations.no_invitations') }}</span>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -76,8 +78,7 @@ export default Vue.extend({
     },
     acceptInvitation(invitation: Invitation) {
       this.$service.invitations.acceptInvitation(invitation)
-          .then(() => this.$notify(this.$t("success.invitation_accepted") as string))
-          .catch(() => this.$notify(this.$t("errors.unknown_error") as string))
+          .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}))
           .finally(() => {
             this.refreshInvitations();
             this.refreshProjects();
@@ -85,8 +86,7 @@ export default Vue.extend({
     },
     declineInvitation(invitation: Invitation) {
       this.$service.invitations.declineInvitation(invitation)
-          .then(() => this.$notify(this.$t("success.invitation_declined") as string))
-          .catch(() => this.$notify(this.$t("errors.unknown_error") as string))
+          .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}))
           .finally(() => this.refreshInvitations());
     },
     refreshProjects(): void {

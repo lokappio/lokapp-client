@@ -19,7 +19,6 @@
               :headers="headers"
               :items="getItems"
               :loading="loading"
-              item-class="text-3"
               disable-pagination
               group-by="group.id"
               elevation="0"
@@ -31,6 +30,7 @@
                   :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
                   :item="item"
                   :projectId="projectId"
+                  :canUpdate="canUpdateKey"
                   v-on:saveKey="(value) => keySaved(value)"
                   v-on:deleteKey="(value) => keyDeleted(value)"
               />
@@ -272,7 +272,7 @@ export default Vue.extend({
   }
 
   table {
-    border-spacing: 0 16px !important;
+    border-spacing: 0 0 !important;
   }
 }
 
