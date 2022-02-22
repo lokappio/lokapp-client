@@ -31,6 +31,7 @@
                   :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
                   :item="item"
                   :projectId="projectId"
+                  :canUpdate="canUpdateKey"
                   v-on:saveKey="(value) => keySaved(value)"
                   v-on:deleteKey="(value) => keyDeleted(value)"
               />

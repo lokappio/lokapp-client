@@ -5,11 +5,11 @@
     </v-dialog>
 
     <v-row align="center">
-      <v-btn color="primary" icon @click="() => this.dialogOpenedDelete = true" class="white--text mr-1">
+      <v-btn v-if="canUpdate" color="primary" icon @click="() => this.dialogOpenedDelete = true" class="white--text mr-1">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
 
-      <v-btn color="primary" small depressed @click="switchQuantity" class="white--text mx-2">
+      <v-btn :disabled="!canUpdate" color="primary" small depressed @click="switchQuantity" class="white--text mx-2">
         {{ updateKey.isPlural ? $t("project_detail.plural_key") : $t("project_detail.simple_key") }}
       </v-btn>
 
@@ -43,7 +43,8 @@ export default Vue.extend({
   components: {DeleteKey},
   props: {
     item: {},
-    projectId: Number
+    projectId: Number,
+    canUpdate: Boolean
   },
   data() {
     return {
@@ -81,7 +82,9 @@ export default Vue.extend({
             this.$emit("saveKey", result);
             setTimeout(() => this.inputIcon = "", 1000);
           })
-          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
+          .catch((error) => {
+            this.$notify(this.$t(error).toString(), {color: "red"});
+          })
           .finally(() => this.loading = false);
     },
     deletedKey() {
