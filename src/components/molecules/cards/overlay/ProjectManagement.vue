@@ -186,7 +186,7 @@ export default Vue.extend({
     createNewProject() {
       if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
         this.loading = true;
-        this.$service.projects.createProject(this.updatedProject, this.languageName)
+        this.$service.projects.createProject(this.updatedProject, this.languageName.toLowerCase())
             .then((project) => {
               this.loading = false;
               this.closeManageProject();
