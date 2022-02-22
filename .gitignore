@@ -6,5 +6,4 @@ firebase.json
 firebase-*
 .idea
 .DS_store
-.env
-.env.development
+.env*
