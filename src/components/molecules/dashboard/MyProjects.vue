@@ -28,13 +28,9 @@
           </v-col>
         </v-row>
 
-        <v-row no-gutters v-else justify="center" class="ma-5">
-          <v-col cols="12">
-            <p><span class="title-h3">{{ $t("dashboard.no_project_in_dashboard") }}</span></p>
-          </v-col>
-
+        <v-row no-gutters v-else class="ma-5">
           <!-- CREATING PROJECT BUTTON -->
-          <v-col cols="12">
+          <v-col cols="12" sm="6" md="4" lg="3" xl="2">
             <ProjectCard />
           </v-col>
         </v-row>
