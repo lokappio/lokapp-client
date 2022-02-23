@@ -17,7 +17,6 @@
         "add_project": "Ajouter un projet",
         "all_projects_title": "Projets",
         "last_update": "Actualisé il y a moins d'une minute | Actualisé il y a une minute | Actualisé il y a {count} minutes",
-        "no_project_in_dashboard": "Il n'y a aucun projet dans ce dashboard"
     },
     "download_project": {
         "download_everything": "Tout télécharger",
