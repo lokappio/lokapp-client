@@ -1,0 +1,208 @@
+{
+    "common": {
+        "optional": "(facultatif)",
+        "search_label": "Rechercher…"
+    },
+    "connexion": {
+        "forgot_password": "Mot de passe oublié ?",
+        "login": "Connexion",
+        "mail": "Email",
+        "nickname": "Pseudo",
+        "password": "Mot de passe",
+        "password_confirmation": "Confirmation du mot de passe",
+        "register": "Inscription",
+        "terms": "Conditions générales d'utilisation"
+    },
+    "dashboard": {
+        "add_project": "Ajouter un projet",
+        "all_projects_title": "Projets",
+        "last_update": "Actualisé il y a moins d'une minute | Actualisé il y a une minute | Actualisé il y a {count} minutes"
+    },
+    "download_project": {
+        "download_everything": "Tout télécharger",
+        "generate_files": "Génerer les fichiers",
+        "no_file_to_download": "Aucun fichier à télécharger",
+        "platform_target": "Plateforme",
+        "title": "Exporter des fichiers"
+    },
+    "dropdown": {
+        "delete_project": "Supprimer le projet",
+        "languages": "Langues",
+        "leave_project": "Quitter le projet",
+        "project": "Paramètres",
+        "users": "Utilisateurs"
+    },
+    "success": {
+        "copy": "Texte copié",
+        "user_delete": "L'utilisateur a été supprimé du projet",
+        "invitation_accepted": "Invitation acceptée",
+        "invitation_created": "Invitation envoyée",
+        "invitation_declined": "Invitation déclinée",
+        "language_created": "Nouvelle langue ajoutée",
+        "language_deleted": "Langue supprimée",
+        "logout": "Déconnecté avec succès",
+        "password_reset": "Un email vous a été envoyé pour réinitialiser votre mot de passe.",
+        "project_created": "Nouveau projet créé",
+        "project_deleted": "Projet supprimé avec succès",
+        "project_leave": "Projet quitté",
+        "project_updated": "Projet mis à jour"
+    },
+    "errors": {
+        "connexion_problem": "Problème de connexion",
+        "email_already_in_use": "L'utilisateur existe déjà",
+        "enter_role": "Veuillez sélectionner un rôle",
+        "invitation_already_exists": "Une invitation a déjà été envoyée à cet utilisateur",
+        "group_already_exists": "Ce groupe existe déjà",
+        "group_create_failed": "Erreur lors de la création du nouveau groupe",
+        "key_name_already_exists": "Ce nom de clé existe déjà dans ce groupe",
+        "language_already_exists": "Cette langue existe déjà",
+        "not_existing_group": "Ce groupe n'existe plus",
+        "not_existing_key": "Cette clé n'existe plus",
+        "not_your_project": "Ceci n'est pas votre projet",
+        "retrieve_project": "Erreur lors de la récupération du projet",
+        "retrieve_languages": "Erreur lors de la récupération des langues",
+        "project_deleted": "Erreur lors de la suppression du projet",
+        "reset_failed": "L'email saisi n'existe pas dans Lokapp",
+        "unauthorized": "Vous n'êtes pas autorisé à réaliser cette action",
+        "unknown_error": "Une erreur est survenue, veuillez recharger",
+        "user_not_found": "L'utilisateur n'existe pas",
+        "wrong_password": "Mauvais mot de passe",
+        "update_user": "La mise à jour de l'utilisateur a échouée",
+        "reset_password": "Une erreur est survenue",
+        "update_value": "Une erreur est survenue lors de la traduction"
+    },
+    "forgot_password": {
+        "email_label": "email@exemple.fr",
+        "email_title": "Email",
+        "title": "Réinitialisation du mot de passe",
+        "confirm_button": "Réinitialiser"
+    },
+    "header": {
+        "banner_title": "“Toutes vos traductions réunies au même endroit”",
+        "greetings": "Bienvenue,"
+    },
+    "invitation_creation": {
+        "confirm_button": "Inviter",
+        "description_editor": "Éditeur : peut modifier le contenu, mais pas les paramètres ou les utilisateurs d'un projet.",
+        "description_manager": "Manager : dispose de tous les droits sur le projet mais ne peut pas le supprimer.",
+        "description_owner": "Propriétaire : dispose de tous les droits sur le projet, y compris sa suppression.",
+        "description_translator": "Traducteur : peut uniquement modifier les valeurs des traductions.",
+        "email_label": "Email de l'utilisateur à inviter",
+        "email_title": "Email",
+        "role_label": "Sélectionner un rôle",
+        "role_title": "Rôle",
+        "title": "Inviter au sein du projet"
+    },
+    "invitations": {
+        "item_no_owner": "Vous avez été invité à rejoindre le projet {project}",
+        "item_owner": "{owner} vous a invité à rejoindre {project}",
+        "title": "Invitations",
+        "no_invitations": "Aucune invitation"
+    },
+    "key_creation": {
+        "group_name_label": "Nom du groupe",
+        "group_name_title": "Groupe",
+        "is_plural": "Pluriel",
+        "key_name_label": "Nom de la clé de traduction",
+        "key_name_title": "Nom",
+        "new_group": "+ Ajouter un groupe",
+        "title": "Ajouter une clé",
+        "validate_button": "Ajouter"
+    },
+    "key_delete" : {
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer",
+        "description_1": "Êtes-vous sûr de vouloir supprimer la clé \"{value}\" ?\n",
+        "description_2": "Sa suppression est irrémédiable et vous perdrez la clé et les valeurs associées.",
+        "title": "Supprimer"
+    },
+    "language_creation": {
+        "confirm_button": "Ajouter",
+        "language_name_label": "Nom de la langue",
+        "language_name_title": "Nom de la langue",
+        "title": "Ajouter une langue"
+    },
+    "language_delete": {
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer",
+        "description_1": "Êtes-vous sûr de vouloir supprimer \"{value}\" ?\n",
+        "description_2": "Sa suppression est irrémédiable et vous perdrez toutes les clés et valeurs associées.",
+        "title": "Supprimer une langue"
+    },
+    "language_manage": {
+        "title": "Gérer les langues"
+    },
+    "leave_project": {
+        "cancel_button": "Annuler",
+        "confirm_button": "Quitter",
+        "description_1": "Êtes-vous sûr de vouloir quitter ce projet ?",
+        "description_2": "Vous ne pourrez pas le rejoindre à moins d'y être invité à nouveau.",
+        "title": "Quitter le projet"
+    },
+    "profile_manager": {
+        "disconnect_button": "Se déconnecter",
+        "email": "Email",
+        "reset_password": "Réinitialisation du mot de passe",
+        "title": "Profil utilisateur",
+        "username": "Pseudo",
+        "validate_profile_button": "Valider"
+    },
+    "project_creation": {
+        "color_title": "Couleur",
+        "confirm_button": "Créer",
+        "description_label": "Description du projet",
+        "description_title": "Description",
+        "language_name_label": "Langue",
+        "language_name_title": "Langue par défaut",
+        "project_name_label": "Nom du projet",
+        "project_name_title": "Nom du projet",
+        "title": "Créer un projet"
+    },
+    "project_delete": {
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer",
+        "description_1": "Êtes-vous sûr de vouloir supprimer \"{value}\" ?\n",
+        "description_2": "Sa suppression est irrémédiable et vous perdrez toutes les clés et valeurs associées.",
+        "title": "Supprimer \"{name}\""
+    },
+    "project_detail": {
+        "all_languages": "Toutes les langues",
+        "keys": "Clés",
+        "plural_key": "Pluriel",
+        "simple_key": "Singulier"
+    },
+    "project_manage": {
+        "change_settings_button": "Modifier",
+        "title": "Paramètres",
+        "validate_settings_button": "Valider"
+    },
+    "rules": {
+        "color_length": "La couleur est définie par 6 caractères",
+        "group_name_length": "Le nom du groupe ne doit pas être vide",
+        "key_name_length": "Le nom de la clé ne doit pas être vide",
+        "language_name_length": "Le nom de la langue ne doit pas être vide",
+        "mail_valid": "L'email doit être un email valide",
+        "not_hexa_value": "Ceci n'est pas une valeur hexadécimale",
+        "password_identical": "Les mots de passe doivent être identiques",
+        "password_length": "6 caractères minimum requis",
+        "password_strong": "Majuscules, minuscules, chiffres et caractères spéciaux requis",
+        "project_name_length": "Le nom du projet ne doit pas être vide",
+        "required": "Requis",
+        "snake_case_only": "Uniquement la casse snake_case est autorisée"
+    },
+    "user_delete": {
+        "cancel_button": "Annuler",
+        "confirm_button": "Supprimer",
+        "description_1": "Voulez-vous supprimer cet utilisateur du projet ?",
+        "title": "Supprimer \"{name}\"",
+        "user": "l'utilisateur"
+    },
+    "users_manage": {
+        "delete_invitation": "Supprimer l'invitation",
+        "role_editor": "Editeur",
+        "role_manager": "Manager",
+        "role_owner": "Propriétaire",
+        "role_translator": "Traducteur",
+        "title": "Utilisateurs"
+    }
+}

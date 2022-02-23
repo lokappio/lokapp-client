@@ -1,0 +1,208 @@
+{
+    "common": {
+        "optional": "(optional)",
+        "search_label": "Search…"
+    },
+    "connexion": {
+        "forgot_password": "Forgotten password?",
+        "login": "Login",
+        "mail": "Email",
+        "nickname": "Username",
+        "password": "Password",
+        "password_confirmation": "Password confirmation",
+        "register": "Register",
+        "terms": "Terms and conditions of use"
+    },
+    "dashboard": {
+        "add_project": "Add a new project",
+        "all_projects_title": "Projects",
+        "last_update": "Updated less than one minute ago | Updated one minute ago | Updated {count} minutes ago"
+    },
+    "download_project": {
+        "download_everything": "Download everything",
+        "generate_files": "Generate files",
+        "no_file_to_download": "No file to download",
+        "platform_target": "Platform",
+        "title": "Export files"
+    },
+    "dropdown": {
+        "delete_project": "Delete project",
+        "languages": "Languages",
+        "leave_project": "Leave project",
+        "project": "Settings",
+        "users": "Users"
+    },
+    "errors": {
+        "connexion_problem": "Connection issue",
+        "email_already_in_use": "User already exists",
+        "enter_role": "Please select a role",
+        "invitation_already_exists": "An invitation has already been sent to this user",
+        "group_already_exists": "This group already exists",
+        "group_create_failed": "Error while creating a new group",
+        "key_name_already_exists": "This key name already exists in this group",
+        "language_already_exists": "This language already exists",
+        "not_existing_group": "This group doesn't exist anymore",
+        "not_existing_key": "This key doesn't exist anymore",
+        "not_your_project": "You do not belong to this project",
+        "project_deleted": "Error while deleting project",
+        "reset_failed": "This email doesn't exist on Lokapp",
+        "reset_password": "An error occurred",
+        "retrieve_languages": "Error while retrieving languages",
+        "retrieve_project": "Error while retrieving project",
+        "unauthorized": "You are not authorized to perform this action",
+        "unknown_error": "An error occurred, please reload",
+        "update_user": "Update failed",
+        "update_value": "Error while saving translation",
+        "user_not_found": "User doesn't exist",
+        "wrong_password": "Wrong password"
+    },
+    "forgot_password": {
+        "email_label": "email@example.com",
+        "email_title": "Email",
+        "title": "Reset password",
+        "confirm_button": "Reset"
+    },
+    "header": {
+        "banner_title": "“All your translations in a single place”",
+        "greetings": "Welcome,"
+    },
+    "invitation_creation": {
+        "confirm_button": "Invite",
+        "description_editor": "Editor: can update the content, but not the settings or the users within the project.",
+        "description_manager": "Manager: can do anything about the project, except deleting it.",
+        "description_owner": "Owner: can do anything about the project, including its deletion.",
+        "description_translator": "Translator: can only update translations",
+        "email_label": "Email of the user to invite",
+        "email_title": "Email",
+        "role_label": "Pick a role",
+        "role_title": "Role",
+        "title": "Invite within the project"
+    },
+    "invitations": {
+        "item_no_owner": "You have been invited to join project \"{project}\"",
+        "item_owner": "{owner} has invited you to join \"{project}\"",
+        "title": "Invitations",
+        "no_invitations": "No invitation"
+    },
+    "key_creation": {
+        "group_name_label": "Enter group's name",
+        "group_name_title": "Group",
+        "is_plural": "Plural",
+        "key_name_label": "Enter key's name",
+        "key_name_title": "Value",
+        "new_group": "+ Add a group",
+        "title": "New key",
+        "validate_button": "Add new key"
+    },
+    "key_delete" : {
+        "cancel_button": "Cancel",
+        "confirm_button": "Delete",
+        "description_1": "Are you sure you want to delete \"{value}\"?\n",
+        "description_2": "Its deletion can't be undone and all its associated values will be deleted.",
+        "title": "Delete"
+    },
+    "language_creation": {
+        "confirm_button": "Add",
+        "language_name_label": "Type language's name",
+        "language_name_title": "Language's name",
+        "title": "Add language"
+    },
+    "language_delete": {
+        "cancel_button": "Cancel",
+        "confirm_button": "Delete",
+        "description_1": "Are you sure you want to delete \"{value}\"?\n",
+        "description_2": "Its deletion can't be undone and all translation keys and values will be deleted.",
+        "title": "Delete language"
+    },
+    "language_manage": {
+        "title": "Manage languages"
+    },
+    "leave_project": {
+        "cancel_button": "Cancel",
+        "confirm_button": "Leave",
+        "description_1": "Are you sure you want to leave this project?",
+        "description_2": "You won't be able to join it again without being invited.",
+        "title": "Leave project"
+    },
+    "profile_manager": {
+        "disconnect_button": "Log out",
+        "email": "Email",
+        "reset_password": "Reset password",
+        "title": "User profile",
+        "username": "Username",
+        "validate_profile_button": "Validate"
+    },
+    "project_creation": {
+        "color_title": "Color",
+        "confirm_button": "Create",
+        "description_label": "Description of this project",
+        "description_title": "Description",
+        "language_name_label": "Language",
+        "language_name_title": "Default language",
+        "project_name_label": "Project's name",
+        "project_name_title": "Project's name",
+        "title": "Create a project"
+    },
+    "project_delete": {
+        "cancel_button": "Cancel",
+        "confirm_button": "Delete",
+        "description_1": "Are you sure you want to delete \"{value}\"?\n",
+        "description_2": "Its deletion cant be undone and all translation keys and values will be deleted.",
+        "title": "Delete \"{name}\""
+    },
+    "project_detail": {
+        "all_languages": "All languages",
+        "keys": "Keys",
+        "plural_key": "Plural",
+        "simple_key": "Singular"
+    },
+    "project_manage": {
+        "change_settings_button": "Update",
+        "title": "Settings",
+        "validate_settings_button": "Validate"
+    },
+    "rules": {
+        "color_length": "Color must be 6 characters long",
+        "group_name_length": "Group's name must not be empty",
+        "key_name_length": "Key's name must not be empty",
+        "language_name_length": "Language's name must not be empty",
+        "mail_valid": "Email must be valid",
+        "not_hexa_value": "This is not an hexadecimal value",
+        "password_identical": "Must be the same password",
+        "password_length": "Password must be at least 6 characters long",
+        "password_strong": "Password must contain at least one capitalized letter, one numeric character and a special character",
+        "project_name_length": "Project's name must not be empty",
+        "required": "Required",
+        "snake_case_only": "Snake case only"
+    },
+    "success": {
+        "copy": "Copied",
+        "invitation_accepted": "Invitation accepted",
+        "invitation_created": "Invitation sent",
+        "invitation_declined": "Invitation declined",
+        "language_created": "New language added",
+        "language_deleted": "Language deleted",
+        "logout": "Log out successfully",
+        "password_reset": "An email has been sent to you to reset your password",
+        "project_created": "New project created",
+        "project_deleted": "Project successfully deleted",
+        "project_leave": "Project left",
+        "project_updated": "Project updated",
+        "user_delete": "The user has been removed from the project"
+    },
+    "user_delete": {
+        "cancel_button": "Cancel",
+        "confirm_button": "Delete",
+        "description_1": "Do you want to remove this user from project?",
+        "title": "Delete \"{name}\"",
+        "user": "this user"
+    },
+    "users_manage": {
+        "delete_invitation": "Delete invitation",
+        "role_editor": "Editor",
+        "role_manager": "Manager",
+        "role_owner": "Owner",
+        "role_translator": "Translator",
+        "title": "Users"
+    }
+}
