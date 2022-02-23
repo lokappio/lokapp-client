@@ -24,7 +24,7 @@
 import {Vue} from "vue-property-decorator";
 import MyProjects from "@/components/molecules/dashboard/MyProjects.vue";
 import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
-import LeftNavBar from "@/components/molecules/LeftNavBar.vue";
+import LeftNavBar from "@/components/molecules/dashboard/LeftNavBar.vue";
 import Project from "@/data/models/api/Project.js";
 
 export default Vue.extend({

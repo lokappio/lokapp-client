@@ -12,10 +12,7 @@
     />
 
     <div class="custom-select">
-        <span class="white--text set-cursor-pointer" v-for="item in items" :key="item.value" @click="switchLocale(item.value)">
-          {{ $i18n.locale === item.value ? item.selected : item.text }}
-          <span class="black--text" v-if="item !== items[items.length - 1]">/</span>
-        </span>
+      <v-select dark :items="items" :value="this.$i18n.locale" @change="(item) => switchLocale(item)" />
     </div>
   </div>
 </template>
@@ -56,7 +53,6 @@ export default Vue.extend({
 .left-nav-bar {
   height: 100%;
   position: relative;
-  margin-left: 10px;
 }
 
 .custom-select {
