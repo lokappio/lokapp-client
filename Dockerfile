@@ -2,9 +2,12 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package.json /app/package.json
+
 RUN apk --no-cache add --virtual native-deps \
-    g++ gcc libgcc libstdc++ linux-headers make python3 && \
-    npm install --quiet node-gyp -g
+  g++ gcc libgcc libstdc++ linux-headers make python2 && \
+  npm install --quiet node-gyp -g &&\
+  npm install --quiet && \
+  apk del native-deps
 
 COPY . /app
 

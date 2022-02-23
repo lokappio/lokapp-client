@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Vue } from "vue-property-decorator";
 import UpBar from "@/components/molecules/login/UpBar.vue";
 import LoginForm from "@/components/molecules/login/LoginForm.vue";
 import Illustration from "@/components/molecules/login/Illustration.vue";
