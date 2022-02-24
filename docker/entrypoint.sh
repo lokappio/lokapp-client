@@ -17,6 +17,7 @@ do
   sed -i 's|VUE_APP_FIREBASE_STORAGE_BUCKET_ENV|'${VUE_APP_FIREBASE_STORAGE_BUCKET}'|g' $file
   sed -i 's|VUE_APP_FIREBASE_MESSAGINGSENDER_ID_ENV|'${VUE_APP_FIREBASE_MESSAGINGSENDER_ID}'|g' $file
   sed -i 's|VUE_APP_FIREBASE_APP_ID_ENV|'${VUE_APP_FIREBASE_APP_ID}'|g' $file
+  sed -i 's|VUE_APP_FIREBASE_MEASUREMENT_ID|'${VUE_APP_FIREBASE_MEASUREMENT_ID}'|g' $file
 
   echo "***************************************************************"
   cat $file;

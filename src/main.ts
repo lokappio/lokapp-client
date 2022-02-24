@@ -13,8 +13,8 @@ import config from "./config/index";
 
 import './plugins/vue-meta';
 
-firebase.initializeApp(config.firebase);
-
+const app = firebase.initializeApp(config.firebase);
+firebase.analytics(app);
 
 Vue.config.productionTip = false
 
