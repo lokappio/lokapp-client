@@ -94,17 +94,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      basicHeaders: [
-        {
-          text: this.$t("project_detail.keys").toString(),
-          align: "start",
-          value: "keys",
-          width: "400px",
-          sortable: false,
-          groupable: false
-        }
-      ] as DataTableHeader[],
-      headers: [] as DataTableHeader[],
       loading: false,
       projectId: -1,
       isOpenCreation: false
@@ -112,18 +101,6 @@ export default Vue.extend({
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
-    this.filterDataWithLanguage(null);
-  },
-  watch: {
-    "actualLanguage": function () {
-      this.filterDataWithLanguage(this.actualLanguage);
-    },
-    "$store.state.currentProject": {
-      deep: true,
-      handler: function () {
-        this.filterDataWithLanguage(this.actualLanguage);
-      }
-    }
   },
   computed: {
     searchValue(): string {
@@ -134,6 +111,47 @@ export default Vue.extend({
     },
     actualLanguage(): number {
       return this.$store.getters.actualLanguage;
+    },
+    headers(): DataTableHeader[] {
+      const languages: Language[] = this.$store.getters.currentProject.languages;
+      const headers: DataTableHeader[] = [
+        {
+          text: this.$t("project_detail.keys").toString(),
+          align: "start",
+          value: "keys",
+          width: "400px",
+          sortable: false,
+          groupable: false
+        }
+      ];
+
+      if (!this.actualLanguage) {
+        languages.forEach((language) => {
+          headers.push({
+            text: language.name,
+            align: "start",
+            value: language.id.toString(),
+            width: "400px",
+            sortable: false,
+            filterable: true,
+            groupable: false
+          });
+        });
+      } else {
+        const language: Language = languages.find((item) => item.id === this.actualLanguage);
+
+        headers.push({
+          text: language.name,
+          align: "start",
+          value: language.id.toString(),
+          width: "400px",
+          sortable: false,
+          filterable: true,
+          groupable: false
+        });
+      }
+
+      return headers;
     },
     getItems(): translationItem[] {
       const currProject: Project = this.$store.state.currentProject;
@@ -186,36 +204,6 @@ export default Vue.extend({
     },
     valueSaved(value: Value) {
       this.$store.commit("UPDATE_PROJECT_VALUE", value);
-    },
-    filterDataWithLanguage(languageId: number): void {
-      const languages: Language[] = this.$store.getters.currentProject.languages;
-      this.headers = Array.from(this.basicHeaders);
-
-      if (languageId == null) {
-        languages.forEach((language) => {
-          this.headers.push({
-            text: language.name,
-            align: "start",
-            value: language.id.toString(),
-            width: "400px",
-            sortable: false,
-            filterable: true,
-            groupable: false
-          });
-        });
-      } else {
-        const language: Language = languages.find((item) => item.id === languageId);
-
-        this.headers.push({
-          text: language.name,
-          align: "start",
-          value: language.id.toString(),
-          width: "400px",
-          sortable: false,
-          filterable: true,
-          groupable: false
-        });
-      }
     }
   }
 });
