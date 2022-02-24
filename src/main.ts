@@ -9,12 +9,14 @@ import './sass/main.scss';
 import './data/di/index.ts';
 
 import firebase from "firebase/app";
+import "firebase/analytics";
+
 import config from "./config/index";
 
 import './plugins/vue-meta';
 
-firebase.initializeApp(config.firebase);
-
+const app = firebase.initializeApp(config.firebase);
+firebase.analytics(app);
 
 Vue.config.productionTip = false
 

@@ -97,6 +97,7 @@ To run the web applicaiton, you need to add the following environment variables 
 * `VUE_APP_FIREBASE_STORAGE_BUCKET`: your firebase storage bucket
 * `VUE_APP_FIREBASE_MESSAGINGSENDER_ID`: your firebase messaging sender id
 * `VUE_APP_FIREBASE_APP_ID`: your firebase app id
+* `VUE_APP_FIREBASE_MEASUREMENT_ID`: your firebase measurement id
 
 
 ## Usage
