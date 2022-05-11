@@ -106,9 +106,6 @@ To run the web applicaiton, you need to add the following environment variables 
 
 Once the site is up and running, go to [http://localhost:8080/](http://localhost:8080/)
 
-### snake_case
-
-By default, all translation keys needs to be written in snake_case.
 
 ### Demo
 
