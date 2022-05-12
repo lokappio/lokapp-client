@@ -5,7 +5,7 @@ import {Role} from "../models/roles/role.enum";
 import ApiService from "./ApiService";
 import Project from "@/data/models/api/Project";
 import {ImportItem} from "@/data/models/types/import";
-import {jsonTranslationFromXML} from "@/data/services/imports/import_android_xml";
+import {jsonTranslationFromXML, jsonTranslationFromXMLFiles} from "@/data/services/imports/import_android_xml";
 import Language from "@/data/models/api/Language";
 
 class ProjectsService {
@@ -22,13 +22,7 @@ class ProjectsService {
   }
 
   public static async importProject(items: ImportItem[]) {
-    let projectImport = new Project();
-    projectImport.languages = items.map((item) => Language.map({name: item.language}));
-    projectImport.groups = [];
-
-    //TODO: Quand plusieurs fichier, le premier sert à remplir groupe et clé du projet,
-    // les autres doivent juste remplir les valeurs
-    projectImport = await jsonTranslationFromXML(projectImport, items[0]);
+    const projectImport = await jsonTranslationFromXMLFiles(items);
 
     console.log(projectImport);
   }
