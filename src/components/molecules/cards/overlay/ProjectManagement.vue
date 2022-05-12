@@ -159,7 +159,7 @@
               <v-row class="my-2" justify="space-between">
                 <v-btn text @click="fromImport = false">{{ $t("project_creation.newProject") }}</v-btn>
 
-                <v-btn icon @click="() => importItems.push({language: '', content: null, extension: null})">
+                <v-btn icon @click="addImportItem">
                   <v-icon color="primary" large>mdi-plus-circle</v-icon>
                 </v-btn>
               </v-row>
@@ -187,7 +187,7 @@ import {colorRules} from "@/data/rules/ColorRules";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
 import {languageNameRules} from "@/data/rules/LanguageRules";
-import {ImportItem} from "@/data/models/types/import";
+import ImportItem from "@/data/models/ImportItem";
 
 export default Vue.extend({
   name: "project-management",
@@ -195,7 +195,7 @@ export default Vue.extend({
   data() {
     return {
       fromImport: true,
-      importItems: [{language: '', content: null, extension: null}] as ImportItem[],
+      importItems: [new ImportItem("", null)] as ImportItem[],
       updatedProject: null as Project,
       writtenColor: "",
       languageName: "",
@@ -230,9 +230,23 @@ export default Vue.extend({
   },
   methods: {
     actionButton() {
-      if(this.isCreating) {
+      if (this.isCreating) {
         if (this.fromImport) {
-          this.$service.projects.importProject(this.importItems)
+          if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
+            this.loading = true;
+
+            this.$service.projects.importProject(this.updatedProject, this.importItems)
+                .then((project) => {
+                  this.loading = false;
+
+                  this.closeManageProject();
+                  this.$router.push(`/projects/${project.id}`);
+                })
+                .catch(() =>
+                    this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"})
+                )
+                .finally(() => this.loading = false);
+          }
         } else {
           this.createNewProject();
         }
@@ -256,7 +270,7 @@ export default Vue.extend({
     createNewProject() {
       if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
         this.loading = true;
-        this.$service.projects.createProject(this.updatedProject, this.languageName.toLowerCase())
+        this.$service.projects.createProject(this.updatedProject, [this.languageName.toLowerCase()])
             .then((project) => {
               this.loading = false;
               this.closeManageProject();
@@ -269,6 +283,9 @@ export default Vue.extend({
     },
     closeManageProject() {
       this.$emit("close");
+    },
+    addImportItem() {
+      this.importItems.push(new ImportItem("", null));
     }
   }
 });

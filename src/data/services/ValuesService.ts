@@ -11,22 +11,22 @@ class ValuesService {
     static get projectId(): number { return store.getters.currentProject.id}
 
 
-    public static async createValue(keyId: number, value: Value): Promise<Value> {
+    public static async createValue(keyId: number, value: Value, projectId: number = this.projectId): Promise<Value> {
         const bodyParameters = {
             name: value.name,
             languageId: value.languageId,
             quantityString: value.quantityString
         };
 
-        const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + keyId + "/values", bodyParameters)
+        const result: AxiosResponse = await ApiService.postAPI(ValuesService.valuesUrl + projectId + "/translations/" + keyId + "/values", bodyParameters)
         return Value.map(result.data);
     }
 
-    public static updateValue(value: Value): Promise<AxiosResponse> {
+    public static updateValue(value: Value, projectId: number = this.projectId): Promise<AxiosResponse> {
         const bodyParameters = {
             name: value.name
         };
-        return ApiService.patchAPI(ValuesService.valuesUrl + this.projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
+        return ApiService.patchAPI(ValuesService.valuesUrl + projectId + "/translations/" + value.keyId + "/values/" + value.id, bodyParameters);
     }
 
     public static getValuesByKeyId(keyId: number, projectId = this.projectId): Promise<Value[]> {

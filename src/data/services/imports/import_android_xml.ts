@@ -1,9 +1,9 @@
 import Project from "@/data/models/api/Project";
 import Group from "@/data/models/api/Group";
 import Key from "@/data/models/api/Key";
-import {ImportItem} from "@/data/models/types/import";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
 import Language from "@/data/models/api/Language";
+import ImportItem from "@/data/models/ImportItem";
 
 export const jsonTranslationFromXML = async function (project: Project, item: ImportItem): Promise<Project> {
   const reader = new FileReader();
@@ -12,6 +12,7 @@ export const jsonTranslationFromXML = async function (project: Project, item: Im
   return new Promise((resolve, reject) => {
     reader.onload = (result) => {
       const xmlString: string = result.target.result.toString();
+
       xmlString.split("\n").forEach((line) => {
         if (line.includes("<!--")) {
           const group = line.split("<!--")[1].split("-->")[0].trim();
@@ -107,18 +108,16 @@ export const jsonValuesFromXML = async (project: Project, item: ImportItem): Pro
   });
 };
 
-export const jsonTranslationFromXMLFiles = async function (items: ImportItem[]): Promise<Project> {
-  let projectImport = new Project();
-  projectImport.languages = items.map((item) => Language.map({name: item.language}));
-  projectImport.groups = [];
 
-  //TODO: FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
+export const jsonTranslationFromXMLFiles = async function (project: Project,items: ImportItem[]): Promise<Project> {
+
+  //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  projectImport = await jsonTranslationFromXML(projectImport, items[0]);
+  project = await jsonTranslationFromXML(project, items[0]);
 
   for (const item of items.slice(1)) {
-    projectImport = await jsonValuesFromXML(projectImport, item);
+    project = await jsonValuesFromXML(project, item);
   }
 
-  return projectImport;
+  return project;
 };
