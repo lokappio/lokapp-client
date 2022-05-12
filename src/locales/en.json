@@ -139,6 +139,9 @@
         "description_title": "Description",
         "language_name_label": "Language",
         "language_name_title": "Default language",
+        "file_label": "Translation file xml, json",
+        "fromImport": "Import files",
+        "newProject": "New empty project",
         "project_name_label": "Project's name",
         "project_name_title": "Project's name",
         "title": "Create a project"
