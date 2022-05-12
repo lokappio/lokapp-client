@@ -6,6 +6,7 @@ import Group from "@/data/models/api/Group";
 import GroupsService from "@/data/services/GroupsService";
 import ValuesService from "@/data/services/ValuesService";
 import store from "@/store/index";
+import Value from "@/data/models/api/Value";
 
 class KeysService {
   static keysUrl: string = config.baseUrl + "/projects/";
@@ -23,15 +24,22 @@ class KeysService {
       });
   }
 
-  public static async createKey(key: Key, group: Group): Promise<Key> {
+  public static async createKey(key: Key, group: Group, projectId: number = this.projectId, values: Value[] = null): Promise<Key> {
     const bodyParameters = {
       name: key.name,
       groupId: group.isNewGroup ? null : group.id,
       groupName: group.name,
-      isPlural: key.isPlural
+      isPlural: key.isPlural,
+      values: values.map((value: Value) => {
+        return {
+          name: value.name,
+          languageId: value.languageId,
+          quantityString: value.quantityString
+        }
+      })
     };
 
-    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + this.projectId + "/translations/", bodyParameters);
+    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/", bodyParameters);
     return Key.map(result.data);
   }
 
