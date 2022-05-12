@@ -67,26 +67,6 @@
           </v-col>
         </v-row>
 
-        <!-- LANGUAGE -->
-        <v-row class="mt-2 mb-2" v-if="isCreating">
-          <v-col cols="12" class="pb-0 px-0">
-            <span class="title-h3">{{ $t('project_creation.language_name_title') }}</span>
-          </v-col>
-        </v-row>
-        <v-row class="mt-0 mb-2" v-if="isCreating">
-          <v-col cols="12" class="py-0 px-0">
-            <v-text-field
-                class="custom-text-field"
-                background-color="inputBackground"
-                v-model="languageName"
-                :rules="languageRules"
-                :label="$t('project_creation.language_name_label')"
-                solo
-                flat
-            ></v-text-field>
-          </v-col>
-        </v-row>
-
         <!-- DescriptionProject -->
         <v-row class="mt-2 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
@@ -108,14 +88,93 @@
           </v-col>
         </v-row>
 
+        <!-- LANGUAGE OR IMPORT -->
+        <div v-if="isCreating">
+          <v-row v-if="!fromImport">
+            <v-col>
+              <v-row class="mt-2 mb-2">
+                <v-col cols="12" class="pb-0 px-0">
+                  <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
+                </v-col>
+              </v-row>
+
+              <v-row class="mt-0 mb-2">
+                <v-col cols="12" class="py-0 px-0">
+                  <v-text-field
+                      class="custom-text-field"
+                      background-color="inputBackground"
+                      v-model="languageName"
+                      :rules="languageRules"
+                      :label="$t('project_creation.language_name_label')"
+                      solo
+                      flat
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-btn text @click="fromImport = true">{{ $t("project_creation.fromImport") }}</v-btn>
+            </v-col>
+          </v-row>
+
+          <v-row v-else class="mt-0 pb-0">
+            <v-col cols="12">
+              <v-row>
+                <v-col cols="12" class="pb-0 px-0">
+                  <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
+                </v-col>
+              </v-row>
+
+              <v-row v-for="(item, index) in importItems" :key="index" align-content="center">
+                <v-col cols="3">
+                  <v-text-field
+                      class="custom-text-field"
+                      background-color="inputBackground"
+                      :label="$t('project_creation.language_name_label')"
+                      :rules="languageRules"
+                      v-model="item.language"
+                      solo
+                      flat
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="max">
+                  <v-file-input
+                      accept=".xml, .json, .strings, .stringsdict"
+                      class="custom-text-field"
+                      background-color="inputBackground"
+                      :label="$t('project_creation.file_label')"
+                      v-model="item.content"
+                      solo
+                      flat
+                  ></v-file-input>
+                </v-col>
+
+                <v-col cols="auto">
+                  <v-btn icon class="mx-2" @click="() => importItems.splice(index, 1)">
+                    <v-icon color="primary">mdi-minus-circle</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+
+              <v-row class="my-2" justify="space-between">
+                <v-btn text @click="fromImport = false">{{ $t("project_creation.newProject") }}</v-btn>
+
+                <v-btn icon @click="() => importItems.push({language: '', content: null, extension: null})">
+                  <v-icon color="primary" large>mdi-plus-circle</v-icon>
+                </v-btn>
+              </v-row>
+            </v-col>
+          </v-row>
+        </div>
+
         <!-- ValidateButton -->
         <v-row class="mt-0 pb-0">
-            <action-button
-                block
-                :loading="loading"
-                :handler="isCreating ? createNewProject : update"
-                :text="isCreating ? $tc('project_creation.confirm_button') : $tc('project_manage.change_settings_button')"
-            />
+          <action-button
+              block
+              :loading="loading"
+              :handler="actionButton"
+              :text="isCreating ? $tc('project_creation.confirm_button') : $tc('project_manage.change_settings_button')"
+          />
         </v-row>
       </v-form>
     </v-container>
@@ -128,16 +187,19 @@ import {colorRules} from "@/data/rules/ColorRules";
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
 import {languageNameRules} from "@/data/rules/LanguageRules";
+import {ImportItem} from "@/data/models/types/import";
 
 export default Vue.extend({
   name: "project-management",
   props: {project: Project, dialogOpened: Boolean},
   data() {
     return {
+      fromImport: true,
+      importItems: [{language: '', content: null, extension: null}] as ImportItem[],
       updatedProject: null as Project,
       writtenColor: "",
       languageName: "",
-      colors: ["02188C", "EA1B32", "88B618","FD6922","17BFDB", "FFCF20", "7F5CE9", "B5B5B5"],
+      colors: ["02188C", "EA1B32", "88B618", "FD6922", "17BFDB", "FFCF20", "7F5CE9", "B5B5B5"],
       projectNameRules: projectNameRules(),
       colorRules: colorRules(),
       languageRules: languageNameRules(),
@@ -167,6 +229,17 @@ export default Vue.extend({
     }
   },
   methods: {
+    actionButton() {
+      if(this.isCreating) {
+        if (this.fromImport) {
+          this.$service.projects.importProject(this.importItems)
+        } else {
+          this.createNewProject();
+        }
+      } else {
+        this.update();
+      }
+    },
     update() {
       if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
         this.loading = true;
@@ -191,7 +264,7 @@ export default Vue.extend({
               this.$router.push(`/projects/${project.id}`);
             })
             .catch(() => this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"}))
-            .finally(() => this.loading = false)
+            .finally(() => this.loading = false);
       }
     },
     closeManageProject() {

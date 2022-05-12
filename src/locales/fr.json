@@ -153,7 +153,10 @@
         "description_label": "Description du projet",
         "description_title": "Description",
         "language_name_label": "Langue",
+        "file_label": "Fichier de traduction xml, json",
         "language_name_title": "Langue par défaut",
+        "fromImport": "Importer des fichiers",
+        "newProject": "Créer un projet vide",
         "project_name_label": "Nom du projet",
         "project_name_title": "Nom du projet",
         "title": "Créer un projet"
