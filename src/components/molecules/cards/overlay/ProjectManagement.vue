@@ -147,7 +147,7 @@
 
                 <v-col cols="max">
                   <v-file-input
-                      accept=".xml, .json, .strings, .stringsdict"
+                      :accept="extensionLimitation"
                       class="custom-text-field"
                       background-color="inputBackground"
                       :label="$t('project_creation.file_label')"
@@ -236,7 +236,10 @@ export default Vue.extend({
   computed: {
     isCreating(): boolean {
       return !this.project;
-    }
+    },
+    extensionLimitation(): string {
+      return this.importItems[0].content != null ? `.${this.importItems[0].extension}` : ".xml, .json, .strings, .stringsdict";
+    },
   },
   methods: {
     actionButton() {
