@@ -128,7 +128,6 @@
                 <v-col cols="12">
                   <v-alert v-if="importError != null" :color="importError.color" outlined text>
                     {{ importError.reason }}
-                    <span>{{ importError.description }}</span>
                   </v-alert>
                 </v-col>
               </v-row>
@@ -247,11 +246,11 @@ export default Vue.extend({
             this.loading = true;
 
             this.$service.projects.importProject(this.updatedProject, this.importItems)
-                .then((project) => {
+                .then((id) => {
                   this.loading = false;
 
-                  //this.closeManageProject();
-                  //this.$router.push(`/projects/${project.id}`);
+                  this.closeManageProject();
+                  this.$router.push(`/projects/${id}`);
                 })
                 .catch((e) => {
                       if(e instanceof ImportError) {

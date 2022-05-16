@@ -27,12 +27,11 @@ class ProjectsService {
     return Project.map(result.data);
   }
 
-  public static async importProject(project: Project, items: ImportItem[]) {
+  public static async importProject(project: Project, items: ImportItem[]): Promise<number> {
     project.languages = items.map((item) => Language.map({name: item.language}));
     project.groups = [];
 
     const projectImport = await ImportService.importFromFiles(project, items);
-    console.log(projectImport);
 
     const createdProject = await this.createProject(project, items.map((item) => item.language));
     createdProject.languages = await LanguagesService.getLanguages(createdProject.id);
@@ -57,7 +56,8 @@ class ProjectsService {
       }));
     }));
 
-    return await this.getEntireProjectById(createdProject.id);
+    localStorage.setItem(createdProject.id.toString(), JSON.stringify(projectImport.warnings));
+    return createdProject.id;
   }
 
   public static async getEntireProjectById(projectId: number): Promise<Project> {

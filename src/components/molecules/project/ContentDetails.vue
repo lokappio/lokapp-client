@@ -13,54 +13,72 @@
 
       <v-row no-gutters v-else class="content">
         <v-col cols="12" class="fill-height">
-          <v-data-table
-              hide-default-footer
-              fixed-header
-              :headers="headers"
-              :items="getItems"
-              :loading="loading"
-              disable-pagination
-              group-by="group.id"
-              elevation="0"
-              class="my-custom-table">
+          <div class="content_wrapper">
+            <v-alert
+                v-for="warning in projectWarnings"
+                :key="warning.reason"
+                color="orange"
+                outlined text
+                dismissible
+            >{{ warning.reason }}
+              <template v-slot:close="{toggle}">
+                <v-btn icon><v-icon color="orange" @click="() =>{
+                  removeWarning(warning);
+                  toggle();
+                }"
+                >mdi-close</v-icon> </v-btn>
+              </template>
+            </v-alert>
 
-            <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
-              <template-item-keys
-                  v-if="header.value === 'keys'"
-                  :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
-                  :item="item"
-                  :projectId="projectId"
-                  :canUpdate="canUpdateKey"
-                  v-on:saveKey="(value) => keySaved(value)"
-                  v-on:deleteKey="(value) => keyDeleted(value)"
-              />
+            <v-data-table
+                hide-default-footer
+                fixed-header
+                :headers="headers"
+                :items="getItems"
+                :loading="loading"
+                disable-pagination
+                group-by="group.id"
+                elevation="0"
+                class="my-custom-table">
 
-              <template-item-values
-                  v-else
-                  :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
-                  :item="item"
-                  :header="header"
-                  :projectId="projectId"
-                  @valueSaved="valueSaved"
-              />
-            </template>
+              <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
+                <template-item-keys
+                    v-if="header.value === 'keys'"
+                    :key="`${item.key.id}_${item.quantity != null ? item.quantity : ''}_${header.value}`"
+                    :item="item"
+                    :projectId="projectId"
+                    :canUpdate="canUpdateKey"
+                    v-on:saveKey="(value) => keySaved(value)"
+                    v-on:deleteKey="(value) => keyDeleted(value)"
+                />
 
-            <!-- Custom header for groups -->
-            <template v-slot:group.header="{group, items, isOpen, toggle}">
-              <template-group-header
-                  :headers="headers"
-                  :groupId="group"
-                  :items="items"
-                  :isOpen="isOpen"
-                  :toggle="toggle"
-              />
-            </template>
+                <template-item-values
+                    v-else
+                    :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
+                    :item="item"
+                    :header="header"
+                    :projectId="projectId"
+                    @valueSaved="valueSaved"
+                />
+              </template>
 
-            <!-- Custom footer on groups -->
-            <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
-              <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
-            </template>
-          </v-data-table>
+              <!-- Custom header for groups -->
+              <template v-slot:group.header="{group, items, isOpen, toggle}">
+                <template-group-header
+                    :headers="headers"
+                    :groupId="group"
+                    :items="items"
+                    :isOpen="isOpen"
+                    :toggle="toggle"
+                />
+              </template>
+
+              <!-- Custom footer on groups -->
+              <template v-if="canUpdateKey" v-slot:group.summary="{ isOpen, group, items }">
+                <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
+              </template>
+            </v-data-table>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -81,6 +99,7 @@ import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
+import ImportError from "@/data/models/ImportError";
 
 export default Vue.extend({
   name: "content-details",
@@ -103,6 +122,11 @@ export default Vue.extend({
     this.projectId = this.$store.getters.currentProject.id;
   },
   computed: {
+    projectWarnings(): ImportError[] {
+      const value = localStorage.getItem(this.projectId.toString());
+
+      return value?.length > 0 ? JSON.parse(value) : [];
+    },
     searchValue(): string {
       return this.$store.state.searchTranslation;
     },
@@ -204,6 +228,12 @@ export default Vue.extend({
     },
     valueSaved(value: Value) {
       this.$store.commit("UPDATE_PROJECT_VALUE", value);
+    },
+    removeWarning(item: ImportError) {
+      const index = this.projectWarnings.indexOf(item);
+      this.projectWarnings.splice(index, 1)
+
+      localStorage.setItem(this.projectId.toString(), JSON.stringify(this.projectWarnings));
     }
   }
 });
@@ -249,15 +279,15 @@ export default Vue.extend({
   background: var(--v-background-base) !important;
 }
 
+.content_wrapper {
+  height: 100% !important;
+  margin-right: 30px !important;
+  overflow-y: scroll;
+}
+
 .my-custom-table {
   background-color: transparent !important;
   height: 100% !important;
-  margin-right: 50px !important;
-
-  .v-data-table__wrapper {
-    height: 100% !important;
-    overflow-y: scroll;
-  }
 
   table {
     border-spacing: 0 0 !important;
