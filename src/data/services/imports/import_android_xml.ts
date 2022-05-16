@@ -13,23 +13,27 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
     const valueXml = items[i].innerHTML; //IF SINGULAR
     const values = items[i].getElementsByTagName("item"); // IF PLURAL
 
-    const group = project.groups.filter(group => keyXml.includes(group.name))
-        ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null)
-      ?? project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
+    let group = project.groups.filter(group => keyXml.includes(group.name))
+      ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
+
+    if (!group) {
+      project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyXml})));
+      group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
+    }
 
     const key = pushToGroup ? Key.map({name: keyXml.replace(group.name + "_", ""), isPlural: isPlural}) : group.keys.find(key => key.name === keyXml.replace(group.name + "_", ""));
 
-    if(isPlural) {
+    if (isPlural) {
       for (let j = 0; j < values.length; j++) {
         const quantity = values[j].getAttribute("quantity");
         const valueXml = values[j].innerHTML;
-        const valueQuantity = Object.values(ValueQuantity).find(value  => value === quantity)
+        const valueQuantity = Object.values(ValueQuantity).find(value => value === quantity);
 
-        if(valueQuantity) {
+        if (valueQuantity) {
           const value = Value.map({name: valueXml, quantityString: valueQuantity, languageName: language});
           key.values.push(value);
         } else {
-          reject(i18n.tc('import_errors.quantity_not_found', null, {"quantity": quantity, "key": keyXml}));
+          reject(i18n.tc("import_errors.quantity_not_found", null, {"quantity": quantity, "key": keyXml}));
         }
       }
     } else {
@@ -38,9 +42,11 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
       key.values.push(value);
     }
 
-    if(pushToGroup) group.keys.push(key);
+    if (pushToGroup) {
+      group.keys.push(key);
+    }
   }
-}
+};
 
 const jsonTranslationFromXML = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
   const reader = new FileReader();
@@ -60,6 +66,9 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
         });
 
         if (project.groups.length === 0 || project.groups.findIndex((group) => group.name === DEFAULT_GROUP_NAME) === -1) {
+          if (project.groups.length === 0) {
+            project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found")));
+          }
           // if no groups were found or no group with name common, create a default one
           project.groups.push(Group.empty(DEFAULT_GROUP_NAME));
         }
@@ -89,11 +98,11 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
       );
 
       resolve(project);
-    }
-  })
-}
+    };
+  });
+};
 
-export const jsonTranslationFromXMLFiles = async function (project: Project,items: ImportItem[]): Promise<Project> {
+export const jsonTranslationFromXMLFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
   project = await jsonTranslationFromXML(project, items[0], true);
