@@ -161,6 +161,9 @@
         "project_name_title": "Nom du projet",
         "title": "Créer un projet"
     },
+    "import_errors": {
+      "quantity_not_found": "Les clés pluriels ne sont pas définies avec les bonnes quantités ('other', 'one' ou 'zero'). Reçu : '{quantity}' sur la clé '{key}'"
+    },
     "project_delete": {
         "cancel_button": "Annuler",
         "confirm_button": "Supprimer",

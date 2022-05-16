@@ -124,6 +124,15 @@
                 </v-col>
               </v-row>
 
+              <v-row class="my-2">
+                <v-col cols="12">
+                  <v-alert v-if="importError != null" :color="importError.color" outlined text>
+                    {{ importError.reason }}
+                    <span>{{ importError.description }}</span>
+                  </v-alert>
+                </v-col>
+              </v-row>
+
               <v-row v-for="(item, index) in importItems" :key="index" align-content="center">
                 <v-col cols="3">
                   <v-text-field
@@ -188,6 +197,7 @@ import Vue from "vue";
 import Project from "@/data/models/api/Project";
 import {languageNameRules} from "@/data/rules/LanguageRules";
 import ImportItem from "@/data/models/ImportItem";
+import ImportError from "@/data/models/ImportError";
 
 export default Vue.extend({
   name: "project-management",
@@ -203,7 +213,8 @@ export default Vue.extend({
       projectNameRules: projectNameRules(),
       colorRules: colorRules(),
       languageRules: languageNameRules(),
-      loading: false
+      loading: false,
+      importError: null as ImportError,
     };
   },
   watch: {
@@ -242,8 +253,13 @@ export default Vue.extend({
                   //this.closeManageProject();
                   //this.$router.push(`/projects/${project.id}`);
                 })
-                .catch(() =>
-                    this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"})
+                .catch((e) => {
+                      if(e instanceof ImportError) {
+                        this.importError = e;
+                      }
+
+                      this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"})
+                    }
                 )
                 .finally(() => this.loading = false);
           }

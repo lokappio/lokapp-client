@@ -4,8 +4,10 @@ import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
 import ImportItem from "@/data/models/ImportItem";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
+import ImportError from "@/data/models/ImportError";
+import i18n from "@/i18n";
 
-const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, language: string, isPlural: boolean, pushToGroup: boolean) => {
+const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, language: string, isPlural: boolean, pushToGroup: boolean, reject: (reason: string) => any) => {
   for (let i = 0; i < items.length; i++) {
     const keyXml = items[i].getAttribute("name");
     const valueXml = items[i].innerHTML; //IF SINGULAR
@@ -21,9 +23,14 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
       for (let j = 0; j < values.length; j++) {
         const quantity = values[j].getAttribute("quantity");
         const valueXml = values[j].innerHTML;
-        const value = Value.map({name: valueXml, quantityString: ValueQuantity[quantity], languageName: language});
+        const valueQuantity = Object.values(ValueQuantity).find(value  => value === quantity)
 
-        key.values.push(value);
+        if(valueQuantity) {
+          const value = Value.map({name: valueXml, quantityString: valueQuantity, languageName: language});
+          key.values.push(value);
+        } else {
+          reject(i18n.tc('import_errors.quantity_not_found', null, {"quantity": quantity, "key": keyXml}));
+        }
       }
     } else {
       // IF SINGULAR
@@ -64,8 +71,22 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
       const plurals = xmlDoc.getElementsByTagName("plural");
       const singular = xmlDoc.getElementsByTagName("string");
 
-      insertValueToKey(singular, project, item.language, false, createGroups);
-      insertValueToKey(plurals, project, item.language, true, createGroups);
+      insertValueToKey(
+        singular,
+        project,
+        item.language,
+        false, createGroups,
+        (error) => reject(new ImportError(error))
+      );
+
+      insertValueToKey(
+        plurals,
+        project,
+        item.language,
+        true,
+        createGroups,
+        (error) => reject(new ImportError(error))
+      );
 
       resolve(project);
     }
