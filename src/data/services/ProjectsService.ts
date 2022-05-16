@@ -12,6 +12,7 @@ import GroupsService from "@/data/services/GroupsService";
 import KeysService from "@/data/services/KeysService";
 import ValuesService from "@/data/services/ValuesService";
 import LanguagesService from "@/data/services/LanguagesService";
+import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 
 class ProjectsService {
   static projectsUrl: string = config.baseUrl + "/projects";
@@ -39,7 +40,7 @@ class ProjectsService {
     // DO NOT CREATE GROUP WITH NAME "COMMON" 'CAUSE IT IS AUTOMATICALLY CREATED WHEN CREATING PROJECT
     await Promise.all(projectImport.groups.map(async (group) => {
       const createdGroup = group.isDefault ?
-        createdProject.groups.find((item) => item.name === "common") :
+        createdProject.groups.find((item) => item.name === DEFAULT_GROUP_NAME) :
         await GroupsService.createGroup(group, createdProject.id);
 
       await Promise.all(group.keys.map(async (key) => {

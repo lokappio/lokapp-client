@@ -2,8 +2,8 @@ import Project from "@/data/models/api/Project";
 import Group from "@/data/models/api/Group";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
-import Language from "@/data/models/api/Language";
 import ImportItem from "@/data/models/ImportItem";
+import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 
 export const jsonTranslationFromXML = async function (project: Project, item: ImportItem): Promise<Project> {
   const reader = new FileReader();
@@ -21,6 +21,11 @@ export const jsonTranslationFromXML = async function (project: Project, item: Im
         }
       });
 
+      if(project.groups.length === 0 || project.groups.findIndex((group) => group.name === DEFAULT_GROUP_NAME) === -1) {
+        // if no groups were found or no group with name common, create a default one
+        project.groups.push(Group.empty(DEFAULT_GROUP_NAME));
+      }
+
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
@@ -31,7 +36,9 @@ export const jsonTranslationFromXML = async function (project: Project, item: Im
         const keyXml = singular[i].getAttribute("name");
         const valueXml = singular[i].innerHTML;
 
-        const group = project.groups.filter(group => keyXml.includes(group.name)).reduce((a, b) => a.name.length > b.name.length ? a : b);
+        const group = project.groups.filter(group => keyXml.includes(group.name))
+          ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null)
+          ?? project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
         const key = Key.map({name: keyXml.replace(group.name + "_", ""), isPlural: false});
         const value = Value.map({name: valueXml, languageName: item.language});
 
@@ -43,7 +50,9 @@ export const jsonTranslationFromXML = async function (project: Project, item: Im
         const keyXml = plurals[i].getAttribute("name");
         const values = plurals[i].getElementsByTagName("item");
 
-        const group = project.groups.filter(group => keyXml.includes(group.name)).reduce((a, b) => a.name.length > b.name.length ? a : b);
+        const group = project.groups.filter(group => keyXml.includes(group.name))
+            ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null)
+          ?? project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
         const key = Key.map({name: keyXml.replace(group.name + "_", ""), isPlural: true});
 
         for (let j = 0; j < values.length; j++) {
@@ -80,7 +89,9 @@ export const jsonValuesFromXML = async (project: Project, item: ImportItem): Pro
         const keyXml = singular[i].getAttribute("name");
         const valueXml = singular[i].innerHTML;
 
-        const group = project.groups.filter(group => keyXml.includes(group.name)).reduce((a, b) => a.name.length > b.name.length ? a : b);
+        const group = project.groups.filter(group => keyXml.includes(group.name))
+            ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null)
+          ?? project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
         const key = group.keys.find(key => key.name === keyXml.replace(group.name + "_", ""));
         const value = Value.map({name: valueXml, languageName: item.language});
 
@@ -91,7 +102,9 @@ export const jsonValuesFromXML = async (project: Project, item: ImportItem): Pro
         const keyXml = plurals[i].getAttribute("name");
         const values = plurals[i].getElementsByTagName("item");
 
-        const group = project.groups.filter(group => keyXml.includes(group.name)).reduce((a, b) => a.name.length > b.name.length ? a : b);
+        const group = project.groups.filter(group => keyXml.includes(group.name))
+            ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null)
+          ?? project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
         const key = group.keys.find(key => key.name === keyXml.replace(group.name + "_", ""));
 
         for (let j = 0; j < values.length; j++) {

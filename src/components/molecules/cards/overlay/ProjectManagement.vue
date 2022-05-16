@@ -239,8 +239,8 @@ export default Vue.extend({
                 .then((project) => {
                   this.loading = false;
 
-                  this.closeManageProject();
-                  this.$router.push(`/projects/${project.id}`);
+                  //this.closeManageProject();
+                  //this.$router.push(`/projects/${project.id}`);
                 })
                 .catch(() =>
                     this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"})
