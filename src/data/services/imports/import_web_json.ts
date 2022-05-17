@@ -4,28 +4,34 @@ import Group from "@/data/models/api/Group";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
+import i18n from "@/i18n";
+import ImportError from "@/data/models/ImportError";
 
-const insertValueToKey = (values: string, keyString: string, keys: Key[], language: string, pushToGroup: boolean, reject: (reason: string) => any) => {
+const insertValueToKey = (project: Project, values: string, keyString: string, keys: Key[], language: string, pushToGroup: boolean, reject: (reason: string) => any) => {
 
   const key = pushToGroup ?
     Key.map({name: keyString, isPlural: false})
     : keys.find(key => key.name === keyString);
 
   const valuesList: string[] = values.split("|");
-  //TODO: IF VALUESLIST.LENGTH < 3 AND VALUE != 1, THROW ERROR quantity_not_found
 
-  key.isPlural = valuesList.length > 1;
-  valuesList.forEach((valueString, index) => {
-    // ZERO | ONE | OTHER
-    const value = Value.map({
-      name: valueString.trim(),
-      quantityString: valuesList.length === 1 ? null : Object.values(ValueQuantity)[index],
-      languageName: language})
+  if(valuesList.length != 1 && valuesList.length != 3) {
+    project.warnings.push(new ImportError(i18n.t("import_errors.quantity_not_found_json", {key: keyString, value: values}).toString()));
+  } else {
+    key.isPlural = valuesList.length > 1;
 
-    key.values.push(value);
-  })
+    valuesList.forEach((valueString, index) => {
+      // ZERO | ONE | OTHER
+      const value = Value.map({
+        name: valueString.trim(),
+        quantityString: valuesList.length === 1 ? null : Object.values(ValueQuantity)[index],
+        languageName: language})
 
-  if(pushToGroup) keys.push(key);
+      key.values.push(value);
+    })
+
+    if(pushToGroup) keys.push(key);
+  }
 }
 
 const jsonTranslationFromJSON = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
@@ -38,43 +44,58 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
       try {
         jsonData = JSON.parse(result.target.result.toString());
       } catch (e) {
-        //TODO: THROW ERROR IF JSON IS NOT VALID
-        console.log("error reading json. Check the format of your json file")
+        reject(new ImportError(i18n.tc("import_errors.json_parse_error")));
       }
 
-      //DEFAULT GROUP
       const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);
 
       for(const groupString in jsonData) {
+        // KEY HAS NO GROUP SO GROUPSTRING REPRESENT KEY, PLACE IT IN COMMON GROUP
         if(typeof jsonData[groupString] === "string") {
-          // GROUPSTRING REPRESENT KEY, PLACE IT IN COMMON GROUP
           let group = project.groups.find(group => group.name === DEFAULT_GROUP_NAME)
           if(group === undefined && createGroups) {
             group = defaultGroup;
           }
 
-          insertValueToKey(jsonData[groupString], groupString, group.keys, item.language, createGroups, reject);
+          insertValueToKey(
+            project,
+            jsonData[groupString],
+            groupString,
+            group.keys,
+            item.language,
+            createGroups,
+            reject
+          );
         } else {
           const group = createGroups ?
             Group.empty(groupString)
             : project.groups.find(group => group.name === groupString);
 
           for(const keyString in jsonData[groupString]) {
-            insertValueToKey(jsonData[groupString][keyString], keyString, group.keys, item.language, createGroups, reject);
+            insertValueToKey(
+              project,
+              jsonData[groupString][keyString],
+              keyString,
+              group.keys,
+              item.language,
+              createGroups,
+              reject
+            );
           }
 
           if(createGroups) project.groups.push(group);
         }
-
       }
 
       if(createGroups) {
         const indexOfCommon = project.groups.findIndex(group => group.name === DEFAULT_GROUP_NAME)
 
+        //IF NO DEFAULT GROUP HAS BEEN FOUND, CREATE IT
         if(indexOfCommon === -1){
           project.groups.push(defaultGroup);
-        } else {
-          // IF DEFAULT GROUP (COMMON) ALREADY EXISTS IN PROJECT, MERGE IT WITH DEFAULT GROUP
+        }
+        // IF DEFAULT GROUP (COMMON) ALREADY EXISTS IN PROJECT, MERGE IT WITH DEFAULT GROUP
+        else {
           project.groups[indexOfCommon].keys = [...defaultGroup.keys, ...project.groups[indexOfCommon].keys];
         }
       }
