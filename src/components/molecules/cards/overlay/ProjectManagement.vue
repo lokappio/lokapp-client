@@ -252,8 +252,8 @@ export default Vue.extend({
                 .then((id) => {
                   this.loading = false;
 
-                  //this.closeManageProject();
-                  //this.$router.push(`/projects/${id}`);
+                  this.closeManageProject();
+                  this.$router.push(`/projects/${id}`);
                 })
                 .catch((e) => {
                       if(e instanceof ImportError) {
