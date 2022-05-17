@@ -27,13 +27,13 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
       for(const groupString in jsonData) {
         let group = createGroups ?
           Group.empty(groupString)
-          : project.groups.find(group => group.name === groupString) ?? defaultGroup;
+          : project.groups.find(group => group.name === groupString);
 
         const groupValues = jsonData[groupString];
 
         if(typeof groupValues === "string") {
-          console.log("GROUPSTRING REPRESENT KEY, PLACE IT IN COMMON GROUP")
-          group = project.groups.find(group => group.name === groupString) ?? defaultGroup;
+          // GROUPSTRING REPRESENT KEY, PLACE IT IN COMMON GROUP
+          group = project.groups.find(group => group.name === groupString) ?? createGroups ? defaultGroup : null;
           const key = createGroups ?
             Key.map({name: groupString, isPlural: false})
             : group.keys.find(key => key.name === groupString);
