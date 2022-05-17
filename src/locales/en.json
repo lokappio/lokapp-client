@@ -146,6 +146,15 @@
         "project_name_title": "Project's name",
         "title": "Create a project"
     },
+    "import_errors": {
+        "json_parse_error": "Error when reading json file. Check the structure of your file.",
+        "quantity_not_found": "The plural keys are not defined with correct quantities (\"other\", \"one\" ou \"zero\"). Received : \"{quantity}\" on key \"{key}\"",
+        "quantity_not_found_json": "The plural keys are not defined with correct format. Expected : \"zero | one | other\", received : \"{value}\" on key \"{key}\". The key has not been inserted.",
+        "no_plural_tag": "No plural key has been found",
+        "no_singular_tag": "No singular key has been found",
+        "no_group_found": "No group has been found in the file. All keys has been set in \"common\" group.",
+        "no_group_found_for_key": "No group has been found for key \"{key}\". The keys has been set in \"common\" group."
+    },
     "project_delete": {
         "cancel_button": "Cancel",
         "confirm_button": "Delete",

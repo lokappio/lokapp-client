@@ -8,7 +8,6 @@ import i18n from "@/i18n";
 import ImportError from "@/data/models/ImportError";
 
 const insertValueToKey = (project: Project, values: string, keyString: string, keys: Key[], language: string, pushToGroup: boolean, reject: (reason: string) => any) => {
-
   const key = pushToGroup ?
     Key.map({name: keyString, isPlural: false})
     : keys.find(key => key.name === keyString);
@@ -16,7 +15,7 @@ const insertValueToKey = (project: Project, values: string, keyString: string, k
   const valuesList: string[] = values.split("|");
 
   if(valuesList.length != 1 && valuesList.length != 3) {
-    project.warnings.push(new ImportError(i18n.t("import_errors.quantity_not_found_json", {key: keyString, value: values}).toString()));
+    if(pushToGroup) project.warnings.push(new ImportError(i18n.t("import_errors.quantity_not_found_json", {key: keyString, value: values}).toString()));
   } else {
     key.isPlural = valuesList.length > 1;
 
@@ -54,6 +53,7 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
         if(typeof jsonData[groupString] === "string") {
           let group = project.groups.find(group => group.name === DEFAULT_GROUP_NAME)
           if(group === undefined && createGroups) {
+            project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null, {key: groupString})));
             group = defaultGroup;
           }
 
