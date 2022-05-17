@@ -4,8 +4,29 @@ import Group from "@/data/models/api/Group";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
-import ImportError from "@/data/models/ImportError";
-import i18n from "@/i18n";
+
+const insertValueToKey = (values: string, keyString: string, keys: Key[], language: string, pushToGroup: boolean, reject: (reason: string) => any) => {
+
+  const key = pushToGroup ?
+    Key.map({name: keyString, isPlural: false})
+    : keys.find(key => key.name === keyString);
+
+  const valuesList: string[] = values.split("|");
+  //TODO: IF VALUESLIST.LENGTH < 3 AND VALUE != 1, THROW ERROR quantity_not_found
+
+  key.isPlural = valuesList.length > 1;
+  valuesList.forEach((valueString, index) => {
+    // ZERO | ONE | OTHER
+    const value = Value.map({
+      name: valueString.trim(),
+      quantityString: valuesList.length === 1 ? null : Object.values(ValueQuantity)[index],
+      languageName: language})
+
+    key.values.push(value);
+  })
+
+  if(pushToGroup) keys.push(key);
+}
 
 const jsonTranslationFromJSON = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
   const reader = new FileReader();
@@ -25,60 +46,23 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
       const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);
 
       for(const groupString in jsonData) {
-        let group = createGroups ?
-          Group.empty(groupString)
-          : project.groups.find(group => group.name === groupString);
-
-        const groupValues = jsonData[groupString];
-
-        if(typeof groupValues === "string") {
+        if(typeof jsonData[groupString] === "string") {
           // GROUPSTRING REPRESENT KEY, PLACE IT IN COMMON GROUP
-          group = project.groups.find(group => group.name === groupString) ?? createGroups ? defaultGroup : null;
-          const key = createGroups ?
-            Key.map({name: groupString, isPlural: false})
-            : group.keys.find(key => key.name === groupString);
-
-          const valueString = jsonData[groupString];
-          const valuesList: string[] = valueString.split("|");
-
-          //TODO: IF VALUESLIST.LENGTH < 3 AND VALUE != 1, THROW ERROR quantity_not_found
-
-          key.isPlural = valuesList.length > 1;
-          valuesList.forEach((valueString, index) => {
-            // ZERO | ONE | OTHER
-            const value = Value.map({
-              name: valueString.trim(),
-              quantityString: valuesList.length === 1 ? null : Object.values(ValueQuantity)[index],
-              languageName: item.language})
-
-            key.values.push(value);
-          })
-
-          if(createGroups) group.keys.push(key);
-        } else {
-          for(const keyString in jsonData[groupString]) {
-            const key = createGroups ?
-              Key.map({name: keyString, isPlural: false})
-              : group.keys.find(key => key.name === keyString);
-
-            const valueString = jsonData[groupString][keyString];
-            const valuesList: string[] = valueString.split("|");
-
-            //TODO: IF VALUESLIST.LENGTH < 3 AND VALUE != 1, THROW ERROR quantity_not_found
-
-            key.isPlural = valuesList.length > 1;
-            valuesList.forEach((valueString, index) => {
-              // ZERO | ONE | OTHER
-              const value = Value.map({
-                name: valueString.trim(),
-                quantityString: valuesList.length === 1 ? null : Object.values(ValueQuantity)[index],
-                languageName: item.language})
-
-              key.values.push(value);
-            })
-
-            if(createGroups) group.keys.push(key);
+          let group = project.groups.find(group => group.name === DEFAULT_GROUP_NAME)
+          if(group === undefined && createGroups) {
+            group = defaultGroup;
           }
+
+          insertValueToKey(jsonData[groupString], groupString, group.keys, item.language, createGroups, reject);
+        } else {
+          const group = createGroups ?
+            Group.empty(groupString)
+            : project.groups.find(group => group.name === groupString);
+
+          for(const keyString in jsonData[groupString]) {
+            insertValueToKey(jsonData[groupString][keyString], keyString, group.keys, item.language, createGroups, reject);
+          }
+
           if(createGroups) project.groups.push(group);
         }
 
