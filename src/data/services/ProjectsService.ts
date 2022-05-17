@@ -32,8 +32,9 @@ class ProjectsService {
     project.groups = [];
 
     const projectImport = await ImportService.importFromFiles(project, items);
+    console.log(projectImport);
 
-    const createdProject = await this.createProject(project, items.map((item) => item.language));
+    /*const createdProject = await this.createProject(project, items.map((item) => item.language));
     createdProject.languages = await LanguagesService.getLanguages(createdProject.id);
     createdProject.groups = await GroupsService.getGroups(createdProject.id);
 
@@ -57,7 +58,7 @@ class ProjectsService {
     }));
 
     localStorage.setItem(createdProject.id.toString(), JSON.stringify(projectImport.warnings));
-    return createdProject.id;
+    return createdProject.id;*/
   }
 
   public static async getEntireProjectById(projectId: number): Promise<Project> {

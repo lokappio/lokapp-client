@@ -226,7 +226,7 @@ export default Vue.extend({
       immediate: true,
       handler: function (isOpened) {
         if (isOpened) {
-          this.updatedProject = Project.map(this.project ?? {color: this.colors[0]});
+          this.updatedProject = Project.map(this.project ?? {name: "eedd",color: this.colors[0]});
           this.writtenColor = this.project?.color ?? this.colors[0];
           this.languageName = "";
         }
@@ -252,8 +252,8 @@ export default Vue.extend({
                 .then((id) => {
                   this.loading = false;
 
-                  this.closeManageProject();
-                  this.$router.push(`/projects/${id}`);
+                  //this.closeManageProject();
+                  //this.$router.push(`/projects/${id}`);
                 })
                 .catch((e) => {
                       if(e instanceof ImportError) {
