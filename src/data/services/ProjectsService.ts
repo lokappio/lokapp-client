@@ -45,7 +45,7 @@ class ProjectsService {
         await GroupsService.createGroup(group, createdProject.id);
 
       await Promise.all(group.keys.map(async (key) => {
-        const createdKey = await KeysService.createKey(
+        await KeysService.createKey(
           key,
           createdGroup,
           createdProject.id,
