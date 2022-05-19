@@ -10,6 +10,7 @@ export default class ImportService {
         return await jsonTranslationFromJSONFiles(project, items);
       case "xml":
         return await jsonTranslationFromXMLFiles(project, items);
+
     }
   }
 }

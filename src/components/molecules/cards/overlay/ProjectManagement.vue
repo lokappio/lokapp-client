@@ -3,7 +3,7 @@
   <v-card color="white" class="pa-4 pa-md-7 custom-cards">
     <v-container>
       <!-- Title -->
-      <v-row :style="{ 'height':'50px' }">
+      <v-row no-gutters :style="{ 'height':'50px' }">
         <v-col cols="11" class="px-0">
           <h2 class="title-h2">{{ this.isCreating ? this.$t("project_creation.title") : this.$t("project_manage.title") }}</h2>
         </v-col>
@@ -15,13 +15,13 @@
 
       <v-form ref="formChangeSettings">
         <!-- ProjectName -->
-        <v-row class="mt-4 pb-0 mb-2">
+        <v-row no-gutters class="mt-4 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("project_creation.project_name_title") }}</span>
           </v-col>
         </v-row>
 
-        <v-row class="mt-0 mb-2">
+        <v-row no-gutters class="mt-0 mb-2">
           <v-col cols="12" class="pa-0">
             <v-text-field
                 class="custom-text-field"
@@ -38,19 +38,19 @@
         </v-row>
 
         <!-- ProjectColor -->
-        <v-row class="mt-0 mb-2">
+        <v-row no-gutters class="mt-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("project_creation.color_title") }}</span>
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row no-gutters>
           <v-col :style="{ 'height':'50px' }" cols="3" class="pa-0">
             <div class="current-project-color" :style="{ 'background-color':'#' + this.updatedProject.color }"></div>
           </v-col>
         </v-row>
 
-        <v-row class="pt-4" justify="start">
+        <v-row no-gutters class="pt-4" justify="start">
           <v-col v-for="color in colors" :key="color" cols="1" class="button-color-picker-container pa-0 my-0 ml-0 mr-4">
             <v-btn
                 class="button-color-picker pa-0 ma-0"
@@ -61,20 +61,20 @@
           </v-col>
         </v-row>
 
-        <v-row class="pt-3" justify="space-between">
+        <v-row no-gutters class="pt-3" justify="space-between">
           <v-col cols="12" class="pa-0">
             <v-text-field :rules="colorRules" class="custom-text-field" background-color="inputBackground" v-model="writtenColor" solo flat prefix="#"></v-text-field>
           </v-col>
         </v-row>
 
         <!-- DescriptionProject -->
-        <v-row class="mt-2 pb-0 mb-2">
+        <v-row no-gutters class="mt-2 pb-0 mb-2">
           <v-col cols="12" class="pb-0 px-0">
             <span class="title-h3">{{ $t("project_creation.description_title") }} <span class="text-2 grey--text"> {{ $t("common.optional") }}</span></span>
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row no-gutters>
           <v-col class="py-0 px-0">
             <v-textarea
                 background-color="inputBackground"
@@ -90,15 +90,15 @@
 
         <!-- LANGUAGE OR IMPORT -->
         <div v-if="isCreating">
-          <v-row v-if="!fromImport">
+          <v-row no-gutters v-if="!fromImport">
             <v-col>
-              <v-row class="mt-2 mb-2">
+              <v-row no-gutters class="mt-2 mb-2">
                 <v-col cols="12" class="pb-0 px-0">
                   <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
                 </v-col>
               </v-row>
 
-              <v-row class="mt-0 mb-2">
+              <v-row no-gutters class="mt-0 mb-2">
                 <v-col cols="12" class="py-0 px-0">
                   <v-text-field
                       class="custom-text-field"
@@ -116,15 +116,15 @@
             </v-col>
           </v-row>
 
-          <v-row v-else class="mt-0 pb-0">
+          <v-row no-gutters v-else class="mt-0 pb-0">
             <v-col cols="12">
-              <v-row>
+              <v-row no-gutters>
                 <v-col cols="12" class="pb-0 px-0">
                   <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
                 </v-col>
               </v-row>
 
-              <v-row class="my-2">
+              <v-row no-gutters class="my-2">
                 <v-col cols="12">
                   <v-alert v-if="importError != null" :color="importError.color" outlined text>
                     {{ importError.reason }}
@@ -132,7 +132,20 @@
                 </v-col>
               </v-row>
 
-              <v-row v-for="(item, index) in importItems" :key="index" align-content="center">
+              <v-row no-gutters>
+                <v-col cols="12">
+                  <v-select
+                      solo
+                      background-color="primary"
+                      dark
+                      :items="platforms"
+                      item-text="name"
+                      v-model="selectedPlatform"
+                  ></v-select>
+                </v-col>
+              </v-row>
+
+              <v-row no-gutters v-for="(item, index) in importItems" :key="index" align-content="center">
                 <v-col cols="3">
                   <v-text-field
                       class="custom-text-field"
@@ -176,7 +189,7 @@
         </div>
 
         <!-- ValidateButton -->
-        <v-row class="mt-0 pb-0">
+        <v-row no-gutters class="mt-0 pb-0">
           <action-button
               block
               :loading="loading"
@@ -197,6 +210,7 @@ import Project from "@/data/models/api/Project";
 import {languageNameRules} from "@/data/rules/LanguageRules";
 import ImportItem from "@/data/models/ImportItem";
 import ImportError from "@/data/models/ImportError";
+import {Platform, PlatformExtension} from "@/data/models/enums/project";
 
 export default Vue.extend({
   name: "project-management",
@@ -204,6 +218,7 @@ export default Vue.extend({
   data() {
     return {
       fromImport: true,
+      selectedPlatform: Platform.ANDROID,
       importItems: [new ImportItem("", null)] as ImportItem[],
       updatedProject: null as Project,
       writtenColor: "",
@@ -238,7 +253,12 @@ export default Vue.extend({
       return !this.project;
     },
     extensionLimitation(): string {
-      return this.importItems[0].content != null ? `.${this.importItems[0].extension}` : ".xml, .json, .strings, .stringsdict";
+      return PlatformExtension(this.selectedPlatform);
+    },
+    platforms(): { id: number; name: string }[] {
+      return Object.values(Platform).map((platform, index) => {
+        return {id: index, name: platform};
+      });
     },
   },
   methods: {
