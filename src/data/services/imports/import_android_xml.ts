@@ -6,8 +6,11 @@ import ImportItem from "@/data/models/ImportItem";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import ImportError from "@/data/models/ImportError";
 import i18n from "@/i18n";
+import {checkAllValuesCreatedAndAdd} from "@/data/services/imports/import_configuration";
 
 const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, language: string, isPlural: boolean, pushToGroup: boolean, reject: (reason: string) => any) => {
+  let needKeyCreation = false;
+
   for (let i = 0; i < items.length; i++) {
     const keyXml = items[i].getAttribute("name");
     const valueXml = items[i].innerHTML; //IF SINGULAR
@@ -21,7 +24,21 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
       group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
     }
 
-    const key = pushToGroup ? Key.map({name: keyXml.replace(group.name + "_", ""), isPlural: isPlural}) : group.keys.find(key => key.name === keyXml.replace(group.name + "_", ""));
+    const keyString = keyXml.replace(group.name + "_", "")
+
+    let key = pushToGroup ?
+      Key.map({name: keyString, isPlural: isPlural})
+      : group.keys.find(key => key.name === keyString);
+
+    if (key === undefined) {
+      /**
+       * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
+       * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
+       */
+
+      key = Key.map({name: keyString, isPlural: isPlural});
+      needKeyCreation = true;
+    }
 
     if (isPlural) {
       if(values.length !== 3) {
@@ -43,10 +60,10 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
     } else {
       // IF SINGULAR
       const value = Value.map({name: valueXml, languageName: language});
-      key.values.push(value);
+      key?.values.push(value);
     }
 
-    if (pushToGroup) {
+    if (pushToGroup || needKeyCreation) {
       group.keys.push(key);
     }
   }
@@ -114,6 +131,8 @@ export const jsonTranslationFromXMLFiles = async function (project: Project, ite
   for (const item of items.slice(1)) {
     project = await jsonTranslationFromXML(project, item, false);
   }
+
+  checkAllValuesCreatedAndAdd(project);
 
   return project;
 };

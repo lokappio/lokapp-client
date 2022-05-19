@@ -6,6 +6,7 @@ import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
 import i18n from "@/i18n";
 import ImportError from "@/data/models/ImportError";
+import {checkAllValuesCreatedAndAdd} from "@/data/services/imports/import_configuration";
 
 const insertValueToKey = (project: Project, values: string, keyString: string, keys: Key[], language: string, pushToGroup: boolean, reject: (reason: string) => any) => {
   let needKeyCreation = false;
@@ -15,8 +16,10 @@ const insertValueToKey = (project: Project, values: string, keyString: string, k
     : keys.find(key => key.name === keyString);
 
   if (key === undefined) {
-    //IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
-    //INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN checkAllValuesCreatedAndAdd METHOD)
+    /**
+     * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
+     * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
+     */
 
     key = Key.map({name: keyString, isPlural: false});
     needKeyCreation = true;
@@ -119,44 +122,6 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
 
       resolve(project);
     };
-  });
-};
-
-const checkAllValuesCreatedAndAdd = (project: Project) => {
-  project.groups.forEach(group => {
-    group.keys.forEach(key => {
-      if (key.isPlural) {
-        //IF KEY *IS* PLURAL, KEY.VALUES.LENGTH SHOULD BE EQUAL TO 3 * project.languages.length
-        //OTHERWISE, ADD MISSING EMPTY VALUES TO KEY
-        const correctNumberOfValues = key.values.length === 3 * project.languages.length;
-
-        if (!correctNumberOfValues) {
-          const missingLanguages = project.languages.filter(language => key.values.find(value => value.languageName === language.name) === undefined);
-
-          missingLanguages.forEach(language => {
-            project.warnings.push(new ImportError(i18n.tc("import_errors.no_values_found", null, {key: key.name, language: language.name})));
-
-            Object.values(ValueQuantity).forEach(quantity => {
-              key.values.push(Value.map({name: "", quantityString: quantity, languageName: language.name}));
-            });
-          });
-        }
-      } else {
-        //IF KEY *IS NOT* PLURAL, KEY.VALUES.LENGTH SHOULD BE EQUAL TO project.languages.length
-        //OTHERWISE, ADD MISSING EMPTY VALUES TO KEY
-        const correctNumberOfValues = key.values.length === project.languages.length;
-
-        if (!correctNumberOfValues) {
-          const missingLanguages = project.languages.filter(language => key.values.find(value => value.languageName === language.name) === undefined);
-
-          missingLanguages.forEach(language => {
-            project.warnings.push(new ImportError(i18n.tc("import_errors.no_values_found", null, {key: key.name, language: language.name})));
-
-            key.values.push(Value.map({name: "", languageName: language.name}));
-          });
-        }
-      }
-    });
   });
 };
 
