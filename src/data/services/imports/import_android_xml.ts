@@ -11,7 +11,7 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
   for (let i = 0; i < items.length; i++) {
     const keyXml = items[i].getAttribute("name");
     const valueXml = items[i].innerHTML; //IF SINGULAR
-    const values = items[i].getElementsByTagName("item"); // IF PLURAL
+    const values: HTMLCollectionOf<Element> = items[i].getElementsByTagName("item"); // IF PLURAL
 
     let group = project.groups.filter(group => keyXml.includes(group.name))
       ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
@@ -24,6 +24,10 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
     const key = pushToGroup ? Key.map({name: keyXml.replace(group.name + "_", ""), isPlural: isPlural}) : group.keys.find(key => key.name === keyXml.replace(group.name + "_", ""));
 
     if (isPlural) {
+      if(values.length !== 3) {
+        reject(i18n.tc("import_errors.quantity_missing", null, {"key": keyXml}));
+      }
+
       for (let j = 0; j < values.length; j++) {
         const quantity = values[j].getAttribute("quantity");
         const valueXml = values[j].innerHTML;
