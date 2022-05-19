@@ -164,11 +164,13 @@
   "import_errors": {
     "json_parse_error": "Erreur lors de la lecture du fichier json. Vérifiez la structure de votre fichier.",
     "quantity_not_found": "Les clés plurielles ne sont pas définies avec les bonnes quantités (\"other\", \"one\" ou \"zero\"). Reçu : \"{quantity}\" sur la clé \"{key}\"",
+    "quantity_missing": "La clé plurielle \"{key}\" ne définie pas toutes les quantités (\"other\", \"one\" ou \"zero\")",
     "quantity_not_found_json": "Les clés plurielles ne sont pas définies avec le bon format. Attendu: \"zero | one | other\", reçu : \"{value}\" sur la clé \"{key}\". \n La clé n'a pas été insérée.",
     "no_plural_tag": "Aucune clé pluriel n'a été trouvée",
     "no_singular_tag": "Aucune clé singulier n'a été trouvée",
     "no_group_found": "Aucun groupe n'a été trouvé dans le fichier. Toutes les clés ont été placé dans le groupe \"common\".",
-    "no_group_found_for_key": "Aucun groupe n'a été trouvé pour la clé \"{key}\". La clé a été placée dans le groupe \"common\"."
+    "no_group_found_for_key": "Aucun groupe n'a été trouvé pour la clé \"{key}\". La clé a été placée dans le groupe \"common\".",
+    "no_values_found": "Aucune valeur n'a été trouvée pour la clé \"{key}\" dans la langue \"{language}\". Une valeur vide a été insérée."
   },
   "project_delete": {
     "cancel_button": "Annuler",

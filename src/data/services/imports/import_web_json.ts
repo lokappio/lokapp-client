@@ -134,6 +134,8 @@ const checkAllValuesCreatedAndAdd = (project: Project) => {
           const missingLanguages = project.languages.filter(language => key.values.find(value => value.languageName === language.name) === undefined);
 
           missingLanguages.forEach(language => {
+            project.warnings.push(new ImportError(i18n.tc("import_errors.no_values_found", null, {key: key.name, language: language.name})));
+
             Object.values(ValueQuantity).forEach(quantity => {
               key.values.push(Value.map({name: "", quantityString: quantity, languageName: language.name}));
             });
@@ -146,9 +148,10 @@ const checkAllValuesCreatedAndAdd = (project: Project) => {
 
         if (!correctNumberOfValues) {
           const missingLanguages = project.languages.filter(language => key.values.find(value => value.languageName === language.name) === undefined);
-          console.log(missingLanguages);
 
           missingLanguages.forEach(language => {
+            project.warnings.push(new ImportError(i18n.tc("import_errors.no_values_found", null, {key: key.name, language: language.name})));
+
             key.values.push(Value.map({name: "", languageName: language.name}));
           });
         }
