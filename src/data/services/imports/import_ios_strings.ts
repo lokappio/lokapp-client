@@ -2,7 +2,7 @@ import Project from "@/data/models/api/Project";
 import ImportItem from "@/data/models/ImportItem";
 import Group from "@/data/models/api/Group";
 import Key from "@/data/models/api/Key";
-import Value from "@/data/models/api/Value";
+import Value, {ValueQuantity} from "@/data/models/api/Value";
 
 
 const stringsFile = async (content: File, createGroups: boolean, project: Project, languageName: string): Promise<Project> => {
@@ -26,10 +26,10 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
             .replace("MARK:", "")
             .trim();
 
-          if(!project.groups.map(group => group.name).includes(group) && createGroups) {
+          if (!project.groups.map(group => group.name).includes(group) && createGroups) {
             project.groups.push(Group.empty(group));
           }
-        } else if(line != "") {
+        } else if (line != "") {
           const keyString = line.split("=")[0].split("\"")[1].split("\"")[0].trim();
           const valueString = line.split("=")[1].split("\"")[1].split("\"")[0].trim();
 
@@ -64,7 +64,7 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
             const group = line.split("<!--")[1].split("-->")[0]
               .replace("MARK: -", "")
               .replace("MARK:", "")
-              .trim()
+              .trim();
 
             if (!project.groups.map(group => group.name).includes(group) && createGroups) {
               project.groups.push(Group.empty(group));
@@ -76,10 +76,37 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(fileString, "text/xml");
 
-      console.log(xmlDoc);
+      const globalDictItems = [...xmlDoc.getElementsByTagName("dict")[0].children];
+
+      globalDictItems.forEach((child, indexGlobal) => {
+        if (child.nodeName === "dict") {
+          const keyString = globalDictItems[indexGlobal - 1].innerHTML;
+          //IF ERROR ON RETRIEVE globalDictItems[indexGlobal - 1], THROW FILE FORMAT ERROR
+
+          const group = project.groups.filter(group => keyString.includes(group.name))
+            ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
+
+          const key = Key.map({name: keyString.replace(group.name + "_", ""), isPlural: true});
+
+          const translations = [...child.getElementsByTagName("dict")[0].children];
+          translations.forEach((tag, index) => {
+            if (tag.nodeName === "key") {
+              const quantityString = tag.innerHTML;
+              const valueQuantity = Object.values(ValueQuantity).find(value => value === quantityString);
+
+              if (valueQuantity) {
+                const value = Value.map({name: translations[index + 1].innerHTML, quantityString: valueQuantity, languageName: languageName});
+                key.values.push(value);
+              }
+            }
+          });
+
+          group.keys.push(key);
+        }
+      });
 
       resolve(project);
-    }
+    };
   });
 };
 
