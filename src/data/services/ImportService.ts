@@ -1,16 +1,21 @@
 import Project from "@/data/models/api/Project";
-import {jsonTranslationFromXMLFiles} from "@/data/services/imports/import_android_xml";
+import {projectTranslationFromXMLFiles} from "@/data/services/imports/import_android_xml";
 import ImportItem from "@/data/models/ImportItem";
-import {jsonTranslationFromJSONFiles} from "@/data/services/imports/import_web_json";
+import {projectTranslationFromJSONFiles} from "@/data/services/imports/import_web_json";
+import {Platform} from "@/data/models/enums/project";
+import {projectTranslationFromStringsFiles} from "@/data/services/imports/import_ios_strings";
 
 export default class ImportService {
-  public static async importFromFiles(project: Project, items: ImportItem[]): Promise<Project> {
-    switch (items[0].extension) {
-      case "json":
-        return await jsonTranslationFromJSONFiles(project, items);
-      case "xml":
-        return await jsonTranslationFromXMLFiles(project, items);
-
+  public static async importFromFiles(project: Project, items: ImportItem[], platform: Platform): Promise<Project> {
+    switch (platform) {
+      case Platform.WEB:
+        return await projectTranslationFromJSONFiles(project, items);
+      case Platform.ANDROID:
+        return await projectTranslationFromXMLFiles(project, items);
+      case Platform.IOS:
+        return await projectTranslationFromStringsFiles(project, items);
+      default:
+        return null;
     }
   }
 }

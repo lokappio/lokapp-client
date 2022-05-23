@@ -202,7 +202,8 @@
     "password_strong": "Majuscules, minuscules, chiffres et caractères spéciaux requis",
     "project_name_length": "Le nom du projet ne doit pas être vide",
     "required": "Requis",
-    "snake_case_only": "Uniquement la casse snake_case est autorisée"
+    "snake_case_only": "Uniquement la casse snake_case est autorisée",
+    "max_files" : "Max. 2 fichiers (.strings et .stringsdict)"
   },
   "user_delete": {
     "cancel_button": "Annuler",
