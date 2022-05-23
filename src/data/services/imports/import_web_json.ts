@@ -53,7 +53,7 @@ const insertValueToKey = (project: Project, values: string, keyString: string, k
 
 const jsonTranslationFromJSON = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
   const reader = new FileReader();
-  reader.readAsText(item.content);
+  reader.readAsText(item.content[0]);
 
   return new Promise((resolve, reject) => {
     reader.onload = (result) => {
@@ -125,7 +125,7 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
   });
 };
 
-export const jsonTranslationFromJSONFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
+export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
   project = await jsonTranslationFromJSON(project, items[0], true);

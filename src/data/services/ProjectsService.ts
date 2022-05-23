@@ -13,6 +13,7 @@ import KeysService from "@/data/services/KeysService";
 import ValuesService from "@/data/services/ValuesService";
 import LanguagesService from "@/data/services/LanguagesService";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
+import {Platform} from "@/data/models/enums/project";
 
 class ProjectsService {
   static projectsUrl: string = config.baseUrl + "/projects";
@@ -27,11 +28,11 @@ class ProjectsService {
     return Project.map(result.data);
   }
 
-  public static async importProject(project: Project, items: ImportItem[]): Promise<number> {
+  public static async importProject(project: Project, items: ImportItem[], platform: Platform): Promise<number> {
     project.languages = items.map((item) => Language.map({name: item.language}));
     project.groups = [];
 
-    const projectImport = await ImportService.importFromFiles(project, items);
+    const projectImport = await ImportService.importFromFiles(project, items, platform);
     console.log(projectImport);
 
     const createdProject = await this.createProject(project, items.map((item) => item.language));

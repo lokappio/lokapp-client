@@ -162,8 +162,10 @@
                   <v-file-input
                       :accept="extensionLimitation"
                       class="custom-text-field"
+                      :multiple="multipleFiles"
                       background-color="inputBackground"
                       :label="$t('project_creation.file_label')"
+                      :rules="fileRules"
                       v-model="item.content"
                       solo
                       flat
@@ -211,6 +213,7 @@ import {languageNameRules} from "@/data/rules/LanguageRules";
 import ImportItem from "@/data/models/ImportItem";
 import ImportError from "@/data/models/ImportError";
 import {Platform, PlatformExtension} from "@/data/models/enums/project";
+import {importRules, iOSImportRules} from "@/data/rules/ImportRules";
 
 export default Vue.extend({
   name: "project-management",
@@ -228,7 +231,7 @@ export default Vue.extend({
       colorRules: colorRules(),
       languageRules: languageNameRules(),
       loading: false,
-      importError: null as ImportError,
+      importError: null as ImportError
     };
   },
   watch: {
@@ -241,7 +244,7 @@ export default Vue.extend({
       immediate: true,
       handler: function (isOpened) {
         if (isOpened) {
-          this.updatedProject = Project.map(this.project ?? {name: "eedd",color: this.colors[0]});
+          this.updatedProject = Project.map(this.project ?? {name: "eedd", color: this.colors[0]});
           this.writtenColor = this.project?.color ?? this.colors[0];
           this.languageName = "";
         }
@@ -260,6 +263,12 @@ export default Vue.extend({
         return {id: index, name: platform};
       });
     },
+    multipleFiles(): boolean {
+      return this.selectedPlatform === Platform.IOS;
+    },
+    fileRules(): any {
+      return this.selectedPlatform === Platform.IOS ? iOSImportRules() : importRules();
+    }
   },
   methods: {
     actionButton() {
@@ -268,7 +277,7 @@ export default Vue.extend({
           if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
             this.loading = true;
 
-            this.$service.projects.importProject(this.updatedProject, this.importItems)
+            this.$service.projects.importProject(this.updatedProject, this.importItems, this.selectedPlatform)
                 .then((id) => {
                   this.loading = false;
 
@@ -276,11 +285,11 @@ export default Vue.extend({
                   this.$router.push(`/projects/${id}`);
                 })
                 .catch((e) => {
-                      if(e instanceof ImportError) {
+                      if (e instanceof ImportError) {
                         this.importError = e;
                       }
 
-                      this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"})
+                      this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
                     }
                 )
                 .finally(() => this.loading = false);

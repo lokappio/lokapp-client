@@ -187,7 +187,8 @@
         "password_strong": "Password must contain at least one capitalized letter, one numeric character and a special character",
         "project_name_length": "Project's name must not be empty",
         "required": "Required",
-        "snake_case_only": "Snake case only"
+        "snake_case_only": "Snake case only",
+        "max_files" : "Max. 2 files (.strings and .stringsdict)"
     },
     "success": {
         "copy": "Copied",
