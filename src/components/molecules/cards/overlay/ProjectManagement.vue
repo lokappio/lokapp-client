@@ -221,7 +221,7 @@ export default Vue.extend({
   data() {
     return {
       fromImport: true,
-      selectedPlatform: Platform.ANDROID,
+      selectedPlatform: Platform.IOS,
       importItems: [new ImportItem("", null)] as ImportItem[],
       updatedProject: null as Project,
       writtenColor: "",
@@ -281,8 +281,8 @@ export default Vue.extend({
                 .then((id) => {
                   this.loading = false;
 
-                  this.closeManageProject();
-                  this.$router.push(`/projects/${id}`);
+                  //this.closeManageProject();
+                  //this.$router.push(`/projects/${id}`);
                 })
                 .catch((e) => {
                       if (e instanceof ImportError) {

@@ -7,6 +7,6 @@ export const importRules = () => [
 export const iOSImportRules = () => [
   (v: string) => !!v || i18n.tc('rules.required'),
   (v: string) => {
-    return !v || v.length < 1 && v.length > 2 || i18n.tc("rules.max_files");
+    return !v || v.length > 0 && v.length <= 2 || i18n.tc("rules.max_files");
   }
 ]
