@@ -3,8 +3,11 @@ import ImportItem from "@/data/models/ImportItem";
 import Group from "@/data/models/api/Group";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
+import ImportError from "@/data/models/ImportError";
+import i18n from "@/i18n";
+import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 
-
+//.strings FILES == WHERE SINGULAR KEYS ARE DEFINED
 const stringsFile = async (content: File, createGroups: boolean, project: Project, languageName: string): Promise<Project> => {
   const reader = new FileReader();
   reader.readAsText(content);
@@ -13,11 +16,11 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
     reader.onload = (result) => {
       const fileString: string = result.target.result.toString();
 
-      console.log(fileString);
       fileString.split("\n").forEach((line) => {
         const includeLineComment = line.includes("//");
         const includeMultipleLineComment = line.includes("/*");
 
+        //IF LINE IS A COMMENT
         if (includeLineComment || includeMultipleLineComment) {
           const group = (includeLineComment ?
             line.split("//")[1].trim() :
@@ -29,17 +32,37 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
           if (!project.groups.map(group => group.name).includes(group) && createGroups) {
             project.groups.push(Group.empty(group));
           }
-        } else if (line != "") {
-          const keyString = line.split("=")[0].split("\"")[1].split("\"")[0].trim();
+        }
+        //IF LINE IS NOT A COMMENT AND NOT EMPTY
+        else if (line != "") {
+          let keyString = line.split("=")[0].split("\"")[1].split("\"")[0].trim();
           const valueString = line.split("=")[1].split("\"")[1].split("\"")[0].trim();
 
-          const group = project.groups.filter(group => keyString.includes(group.name))
+          let group = project.groups.filter(group => keyString.includes(group.name))
             ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
 
-          if (group) {
-            const key = Key.map({name: keyString.replace(group.name + "_", ""), isPlural: false});
-            key.values.push(Value.map({name: valueString, languageName: languageName}));
+          if (!group) {
+            project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyString})));
+            group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
+          }
 
+          keyString = keyString.replace(group.name + "_", "")
+          let key = createGroups ?
+            Key.map({name: keyString, isPlural: false})
+            : group.keys.find(key => key.name === keyString);
+          let needKeyCreation = false;
+
+          if (key === undefined) {
+            /**
+             * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
+             * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
+             */
+            key = Key.map({name: keyString, isPlural: false})
+            needKeyCreation = true;
+          }
+          key.values.push(Value.map({name: valueString, languageName: languageName}));
+
+          if(createGroups || needKeyCreation) {
             group.keys.push(key);
           }
         }
@@ -50,6 +73,7 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
   });
 };
 
+//.stringsdict FILES == WHERE PLURAL KEYS ARE DEFINED
 const stringsDictFile = async (content: File, createGroups: boolean, project: Project, languageName: string): Promise<Project> => {
   const reader = new FileReader();
   reader.readAsText(content);
@@ -57,7 +81,6 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
   return new Promise((resolve, reject) => {
     reader.onload = (result) => {
       const fileString: string = result.target.result.toString();
-      console.log(fileString);
 
       fileString.split("\n").forEach((line) => {
           if (line.includes("<!--")) {
@@ -80,13 +103,31 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
 
       globalDictItems.forEach((child, indexGlobal) => {
         if (child.nodeName === "dict") {
-          const keyString = globalDictItems[indexGlobal - 1].innerHTML;
+          let keyString = globalDictItems[indexGlobal - 1].innerHTML;
           //IF ERROR ON RETRIEVE globalDictItems[indexGlobal - 1], THROW FILE FORMAT ERROR
 
-          const group = project.groups.filter(group => keyString.includes(group.name))
+          let group = project.groups.filter(group => keyString.includes(group.name))
             ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
 
-          const key = Key.map({name: keyString.replace(group.name + "_", ""), isPlural: true});
+          if (!group) {
+            project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyString})));
+            group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
+          }
+
+          keyString = keyString.replace(group.name + "_", "")
+          let key = createGroups ?
+            Key.map({name: keyString, isPlural: true})
+            : group.keys.find(key => key.name === keyString);
+          let needKeyCreation = false;
+
+          if (key === undefined) {
+            /**
+             * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
+             * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
+             */
+            key = Key.map({name: keyString, isPlural: true})
+            needKeyCreation = true;
+          }
 
           const translations = [...child.getElementsByTagName("dict")[0].children];
           translations.forEach((tag, index) => {
@@ -101,7 +142,9 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
             }
           });
 
-          group.keys.push(key);
+          if(createGroups || needKeyCreation) {
+            group.keys.push(key);
+          }
         }
       });
 
@@ -135,7 +178,5 @@ export const projectTranslationFromStringsFiles = async function (project: Proje
     project = await jsonTranslationFromStrings(project, item, false);
   }
 
-  console.log(project);
-
-  return null;
+  return project;
 };

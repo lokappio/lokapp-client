@@ -169,7 +169,17 @@
                       v-model="item.content"
                       solo
                       flat
-                  ></v-file-input>
+                  >
+                    <template v-slot:selection="{ text }">
+                      <v-chip
+                          small
+                          label
+                          color="primary"
+                      >
+                        {{ text }}
+                      </v-chip>
+                    </template>
+                  </v-file-input>
                 </v-col>
 
                 <v-col cols="auto">
