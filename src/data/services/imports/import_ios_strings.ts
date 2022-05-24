@@ -6,6 +6,37 @@ import Value, {ValueQuantity} from "@/data/models/api/Value";
 import ImportError from "@/data/models/ImportError";
 import i18n from "@/i18n";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
+import {checkAllValuesCreatedAndAdd} from "@/data/services/imports/import_configuration";
+
+const insertValueToKey = (keyString: string, values: Value[], isPluralKey: boolean, project: Project, createGroups: boolean) => {
+  let group = project.groups.filter(group => keyString.includes(group.name))
+    ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
+
+  if (!group) {
+    project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyString})));
+    group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
+  }
+
+  keyString = keyString.replace(group.name + "_", "")
+  let key = createGroups ?
+    Key.map({name: keyString, isPlural: isPluralKey})
+    : group.keys.find(key => key.name === keyString);
+  let needKeyCreation = false;
+
+  if (key === undefined) {
+    /**
+     * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
+     * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
+     */
+    key = Key.map({name: keyString, isPlural: isPluralKey})
+    needKeyCreation = true;
+  }
+  key.values.push(...values);
+
+  if(createGroups || needKeyCreation) {
+    group.keys.push(key);
+  }
+}
 
 //.strings FILES == WHERE SINGULAR KEYS ARE DEFINED
 const stringsFile = async (content: File, createGroups: boolean, project: Project, languageName: string): Promise<Project> => {
@@ -20,7 +51,7 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
         const includeLineComment = line.includes("//");
         const includeMultipleLineComment = line.includes("/*");
 
-        //IF LINE IS A COMMENT
+        //IF LINE IS A COMMENT,
         if (includeLineComment || includeMultipleLineComment) {
           const group = (includeLineComment ?
             line.split("//")[1].trim() :
@@ -35,36 +66,10 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
         }
         //IF LINE IS NOT A COMMENT AND NOT EMPTY
         else if (line != "") {
-          let keyString = line.split("=")[0].split("\"")[1].split("\"")[0].trim();
+          const keyString = line.split("=")[0].split("\"")[1].split("\"")[0].trim();
           const valueString = line.split("=")[1].split("\"")[1].split("\"")[0].trim();
 
-          let group = project.groups.filter(group => keyString.includes(group.name))
-            ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
-
-          if (!group) {
-            project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyString})));
-            group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
-          }
-
-          keyString = keyString.replace(group.name + "_", "")
-          let key = createGroups ?
-            Key.map({name: keyString, isPlural: false})
-            : group.keys.find(key => key.name === keyString);
-          let needKeyCreation = false;
-
-          if (key === undefined) {
-            /**
-             * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
-             * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
-             */
-            key = Key.map({name: keyString, isPlural: false})
-            needKeyCreation = true;
-          }
-          key.values.push(Value.map({name: valueString, languageName: languageName}));
-
-          if(createGroups || needKeyCreation) {
-            group.keys.push(key);
-          }
+          insertValueToKey(keyString, [Value.map({name: valueString, languageName: languageName})], false, project, createGroups);
         }
       });
     };
@@ -100,35 +105,12 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
       const xmlDoc = parser.parseFromString(fileString, "text/xml");
 
       const globalDictItems = [...xmlDoc.getElementsByTagName("dict")[0].children];
-
       globalDictItems.forEach((child, indexGlobal) => {
         if (child.nodeName === "dict") {
-          let keyString = globalDictItems[indexGlobal - 1].innerHTML;
+          const keyString = globalDictItems[indexGlobal - 1].innerHTML;
           //IF ERROR ON RETRIEVE globalDictItems[indexGlobal - 1], THROW FILE FORMAT ERROR
 
-          let group = project.groups.filter(group => keyString.includes(group.name))
-            ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
-
-          if (!group) {
-            project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyString})));
-            group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
-          }
-
-          keyString = keyString.replace(group.name + "_", "")
-          let key = createGroups ?
-            Key.map({name: keyString, isPlural: true})
-            : group.keys.find(key => key.name === keyString);
-          let needKeyCreation = false;
-
-          if (key === undefined) {
-            /**
-             * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
-             * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
-             */
-            key = Key.map({name: keyString, isPlural: true})
-            needKeyCreation = true;
-          }
-
+          const values: Value[] = [];
           const translations = [...child.getElementsByTagName("dict")[0].children];
           translations.forEach((tag, index) => {
             if (tag.nodeName === "key") {
@@ -137,14 +119,12 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
 
               if (valueQuantity) {
                 const value = Value.map({name: translations[index + 1].innerHTML, quantityString: valueQuantity, languageName: languageName});
-                key.values.push(value);
+                values.push(value);
               }
             }
           });
 
-          if(createGroups || needKeyCreation) {
-            group.keys.push(key);
-          }
+          insertValueToKey(keyString, values, true, project, createGroups);
         }
       });
 
@@ -177,6 +157,8 @@ export const projectTranslationFromStringsFiles = async function (project: Proje
   for (const item of items.slice(1)) {
     project = await jsonTranslationFromStrings(project, item, false);
   }
+
+  checkAllValuesCreatedAndAdd(project);
 
   return project;
 };
