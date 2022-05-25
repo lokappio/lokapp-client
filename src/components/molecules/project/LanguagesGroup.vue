@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-dialog v-model="dialogOpened" max-width="500px">
+        <v-dialog v-model="dialogOpened" max-width="800px">
             <LanguageCreation :dialog-opened="dialogOpened" @close="() => this.dialogOpened = false" />
         </v-dialog>
 

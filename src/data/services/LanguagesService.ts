@@ -4,6 +4,10 @@ import ApiService from "./ApiService";
 import store from "@/store/index";
 import Value from "@/data/models/api/Value";
 import ValuesService from "@/data/services/ValuesService";
+import ImportService from "@/data/services/ImportService";
+import Project from "@/data/models/api/Project";
+import ImportItem from "@/data/models/ImportItem";
+import {Platform} from "@/data/models/enums/project";
 
 class LanguagesService {
   static languagesUrl: string = config.baseUrl + "/projects/";
@@ -17,6 +21,11 @@ class LanguagesService {
       .then((response) => {
         return response.data.map((item: any) => Language.map(item));
       });
+  }
+
+  public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform) {
+    const projectImport = await ImportService.importFromFiles(project, [item], platform);
+    console.log(projectImport);
   }
 
   public static createLanguage(languageName: string): Promise<{ language: Language; values: Value[] } | void> {
