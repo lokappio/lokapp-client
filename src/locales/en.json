@@ -147,9 +147,9 @@
         "title": "Create a project"
     },
     "import_errors": {
-        "json_parse_error": "Error while reading json file. Check the structure of your file.",
-        "stringsdict_parse_error": "Error while reading stringsdict file. Check the structure of your file.",
-        "reading_file_error": "An error occurred while reading the file {file}",
+        "json_parse_error": "Error while reading \"{file}\" json file. Check the structure of your file.",
+        "stringsdict_parse_error": "Error while reading \"{file}\" stringsdict file. Check the structure of your file.",
+        "reading_file_error": "An error occurred while reading the file \"{file}\"",
         "quantity_not_found": "The plural keys are not defined with correct quantities (\"other\", \"one\" ou \"zero\"). Received : \"{quantity}\" on key \"{key}\"",
         "quantity_missing": "The plural key \"{key}\" doen't define all quantities (\"other\", \"one\" ou \"zero\")",
         "quantity_not_found_json": "The plural keys are not defined with correct format. Expected : \"zero | one | other\", received : \"{value}\" on key \"{key}\". The key has not been inserted.",
