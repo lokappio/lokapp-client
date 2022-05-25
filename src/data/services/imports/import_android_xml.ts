@@ -71,7 +71,7 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
 
 const jsonTranslationFromXML = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
   const reader = new FileReader();
-  reader.readAsText(item.content[0]);
+  reader.readAsText(item.content as File);
 
   return new Promise((resolve, reject) => {
     reader.onload = (result) => {
@@ -122,7 +122,7 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
     };
 
     reader.onerror = () => {
-      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: item.content[0].name})));
+      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: (item.content as File).name})));
     }
   });
 };

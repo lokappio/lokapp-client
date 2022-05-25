@@ -206,7 +206,14 @@ export default Vue.extend({
 
             //this.closeLanguageCreation();
           })
-          .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
+          .catch((e) => {
+                if (e instanceof ImportError) {
+                  this.importError = e;
+                }
+
+                this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
+              }
+          )
           .finally(() => this.loading = false);
     },
     createNewLanguage() {

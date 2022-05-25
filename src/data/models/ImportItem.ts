@@ -1,6 +1,6 @@
 export default class ImportItem {
   language: string;
-  content: File[];
+  content: File[] | File;
 
   constructor(language: string, content: File[]) {
     this.language = language;
