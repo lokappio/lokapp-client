@@ -146,7 +146,7 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
 };
 
 const jsonTranslationFromStrings = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
-  for (const content of item.content) {
+  for (const content of (item.content as File[])) {
     const extension = content.name.split(".").pop();
 
     switch (extension) {

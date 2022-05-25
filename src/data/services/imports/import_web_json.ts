@@ -53,7 +53,7 @@ const insertValueToKey = (project: Project, values: string, keyString: string, k
 
 const jsonTranslationFromJSON = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
   const reader = new FileReader();
-  reader.readAsText(item.content[0]);
+  reader.readAsText(item.content as File);
 
   return new Promise((resolve, reject) => {
     reader.onload = (result) => {
@@ -61,7 +61,7 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
       try {
         jsonData = JSON.parse(result.target.result.toString());
       } catch (e) {
-        reject(new ImportError(i18n.tc("import_errors.json_parse_error", null, {file: item.content[0].name})));
+        reject(new ImportError(i18n.tc("import_errors.json_parse_error", null, {file: (item.content as File).name})));
       }
 
       const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);
