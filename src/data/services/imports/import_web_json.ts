@@ -61,7 +61,7 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
       try {
         jsonData = JSON.parse(result.target.result.toString());
       } catch (e) {
-        reject(new ImportError(i18n.tc("import_errors.json_parse_error")));
+        reject(new ImportError(i18n.tc("import_errors.json_parse_error", null, {file: item.content[0].name})));
       }
 
       const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);

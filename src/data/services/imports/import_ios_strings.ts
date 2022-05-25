@@ -110,12 +110,12 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
           let keyString;
           try {
             if(globalDictItems[indexGlobal - 1].nodeName !== "key"){
-              reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error")));
+              reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: content.name})));
             }
 
             keyString = globalDictItems[indexGlobal - 1].innerHTML;
           } catch (_) {
-            reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error")));
+            reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: content.name})));
           }
 
           const values: Value[] = [];
