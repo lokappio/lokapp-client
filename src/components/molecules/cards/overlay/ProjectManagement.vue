@@ -145,6 +145,21 @@
                 </v-col>
               </v-row>
 
+              <v-row no-gutters>
+                <v-col cols="12">
+                  <v-expansion-panels class="mb-3" accordion flat>
+                    <v-expansion-panel>
+                      <v-expansion-panel-header class="pa-0">{{ $t("imports.expansion_title") }}</v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-alert v-for="(example, index) in expectedFormatExplain" :key="index" color="primary" text>
+                          <pre>{{example}}</pre>
+                        </v-alert>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </v-col>
+              </v-row>
+
               <v-row no-gutters v-for="(item, index) in importItems" :key="index" align-content="center">
                 <v-col cols="3">
                   <v-text-field
@@ -222,7 +237,7 @@ import Project from "@/data/models/api/Project";
 import {languageNameRules} from "@/data/rules/LanguageRules";
 import ImportItem from "@/data/models/ImportItem";
 import ImportError from "@/data/models/ImportError";
-import {Platform, PlatformExtension} from "@/data/models/enums/project";
+import {Platform, PlatformExtension, PlatformFileExpected} from "@/data/models/enums/project";
 import {importRules, iOSImportRules} from "@/data/rules/ImportRules";
 
 export default Vue.extend({
@@ -273,6 +288,9 @@ export default Vue.extend({
         return {id: index, name: platform};
       });
     },
+    expectedFormatExplain(): string[] {
+      return PlatformFileExpected(this.selectedPlatform);
+    },
     multipleFiles(): boolean {
       return this.selectedPlatform === Platform.IOS;
     },
@@ -291,8 +309,8 @@ export default Vue.extend({
                 .then((id) => {
                   this.loading = false;
 
-                  //this.closeManageProject();
-                  //this.$router.push(`/projects/${id}`);
+                  this.closeManageProject();
+                  this.$router.push(`/projects/${id}`);
                 })
                 .catch((e) => {
                       if (e instanceof ImportError) {
