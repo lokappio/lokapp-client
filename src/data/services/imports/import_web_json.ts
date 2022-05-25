@@ -122,6 +122,10 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
 
       resolve(project);
     };
+
+    reader.onerror = () => {
+      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: item.content[0].name})));
+    }
   });
 };
 

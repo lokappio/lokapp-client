@@ -130,6 +130,10 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
 
       resolve(project);
     };
+
+    reader.onerror = () => {
+      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: content.name})));
+    }
   });
 };
 
