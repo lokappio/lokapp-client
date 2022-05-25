@@ -181,8 +181,10 @@
 
                 <v-col cols="max">
                   <v-file-input
+                      prepend-icon=""
+                      prepend-inner-icon="mdi-paperclip"
                       :accept="extensionLimitation"
-                      class="custom-text-field"
+                      class="custom-text-field ml-5"
                       :multiple="multipleFiles"
                       background-color="inputBackground"
                       :label="$t('project_creation.file_label')"

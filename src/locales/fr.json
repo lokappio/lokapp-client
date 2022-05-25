@@ -120,7 +120,9 @@
     "confirm_button": "Ajouter",
     "language_name_label": "Nom de la langue",
     "language_name_title": "Nom de la langue",
-    "title": "Ajouter une langue"
+    "title": "Ajouter une langue",
+    "fromImport": "Importer une langue",
+    "newLanguage": "Créer une langue vide"
   },
   "language_delete": {
     "cancel_button": "Annuler",

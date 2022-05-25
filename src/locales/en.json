@@ -105,7 +105,9 @@
         "confirm_button": "Add",
         "language_name_label": "Type language's name",
         "language_name_title": "Language's name",
-        "title": "Add language"
+        "title": "Add language",
+        "fromImport": "Import à language",
+        "newLanguage": "Create an empty language"
     },
     "language_delete": {
         "cancel_button": "Cancel",
