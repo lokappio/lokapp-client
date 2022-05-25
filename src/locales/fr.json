@@ -163,6 +163,7 @@
   },
   "import_errors": {
     "json_parse_error": "Erreur lors de la lecture du fichier json. Vérifiez la structure de votre fichier.",
+    "stringsdict_parse_error": "Erreur lors de la lecture du fichier stringsdict. Vérifiez la structure de votre fichier.",
     "reading_file_error": "Une erreur est survenue lors de la lecture du fichier {file}",
     "quantity_not_found": "Les clés plurielles ne sont pas définies avec les bonnes quantités (\"other\", \"one\" ou \"zero\"). Reçu : \"{quantity}\" sur la clé \"{key}\"",
     "quantity_missing": "La clé plurielle \"{key}\" ne définie pas toutes les quantités (\"other\", \"one\" ou \"zero\")",
