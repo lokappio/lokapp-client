@@ -161,6 +161,14 @@
     "project_name_title": "Nom du projet",
     "title": "Créer un projet"
   },
+  "imports": {
+    "expansion_title": "Format de fichier attendu",
+    "title_explanation": "Si le format de fichier est incorrect, l'import ne pourra pas être fait.",
+    "strings_file_expected": "// MARK: - GroupName OR // GroupName \n\"GroupName_keyName\" = \"a singular value\";",
+    "stringsdict_file_expected": "<plist version=\"1.0\">\n<dict>\n\t<!-- MARK: - GroupName --> OR <!-- GroupName -->\n\t<key>GroupName_key</key>\n\t<dict>\n\t\t...\n\t\t<dict>\n\t\t\t...\n\t\t\t<key>other</key>\n\t\t\t<string>other value</string>\n\t\t\t<key>one</key>\n\t\t\t<string>one value</string>\n\t\t\t<key>zero</key>\n\t\t\t<string>zero value</string>\n\t\t\t...\n\t\t</dict>\n\t</dict>\n</dict>\n</plist>",
+    "json_expected_content": "{\n\t\"groupName\" : {\n\t\t\"singularKey\": \"a singular value\",\n\t\t\"pluralKey\": \"zero value | one value | other values\"\n\t}, \n\t\"withoutGroup\": \"a key without group\",\n}",
+    "xml_file_expected": "<resources>\n\t<!--groupName-->\n\t<plural name=\"groupName_pluralKey\">\n\t\t<item quantity=\"other\">other value</item>\n\t\t<item quantity=\"one\">one value</item>\n\t\t<item quantity=\"zero\">zero value</item>\n\t</plural>\n\t<string name=\"groupName_singularKey\">singular value</string>\n</ressources>"
+  },
   "import_errors": {
     "json_parse_error": "Erreur lors de la lecture du fichier json \"{file}\". Vérifiez la structure de votre fichier.",
     "stringsdict_parse_error": "Erreur lors de la lecture du fichier stringsdict \"{file}\". Vérifiez la structure de votre fichier.",
