@@ -42,6 +42,7 @@ Export your translations into specific files for Android, iOS or Web (JSON) proj
 #### Projects
 
 Create as many projects as you want, each one with its own languages, translations and users. 
+You can import a project from existing files you own.
 
 #### Roles and invitations
 
