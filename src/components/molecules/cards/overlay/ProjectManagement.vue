@@ -92,9 +92,13 @@
         <div v-if="isCreating">
           <v-row no-gutters v-if="!fromImport">
             <v-col>
-              <v-row no-gutters class="mt-2 mb-2">
-                <v-col cols="12" class="pb-0 px-0">
+              <v-row no-gutters class="mt-2 mb-2 align-center">
+                <v-col class="pb-0 px-0">
                   <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
+                </v-col>
+
+                <v-col cols="auto">
+                  <v-btn class="my-2" text @click="fromImport = true">{{ $t("project_creation.fromImport") }}</v-btn>
                 </v-col>
               </v-row>
 
@@ -111,16 +115,18 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-
-              <v-btn text @click="fromImport = true">{{ $t("project_creation.fromImport") }}</v-btn>
             </v-col>
           </v-row>
 
           <v-row no-gutters v-else class="mt-0 pb-0">
             <v-col cols="12">
-              <v-row no-gutters>
-                <v-col cols="12" class="pb-0 px-0">
+              <v-row no-gutters class="align-center">
+                <v-col class="pb-0 px-0">
                   <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
+                </v-col>
+
+                <v-col cols="auto">
+                  <v-btn text @click="fromImport = false">{{ $t("project_creation.newProject") }}</v-btn>
                 </v-col>
               </v-row>
 
@@ -204,9 +210,7 @@
                 </v-col>
               </v-row>
 
-              <v-row class="my-2" justify="space-between">
-                <v-btn text @click="fromImport = false">{{ $t("project_creation.newProject") }}</v-btn>
-
+              <v-row no-gutters class="mb-3">
                 <v-btn icon @click="addImportItem">
                   <v-icon color="primary" large>mdi-plus-circle</v-icon>
                 </v-btn>
