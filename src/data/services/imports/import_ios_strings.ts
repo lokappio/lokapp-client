@@ -72,9 +72,9 @@ const stringsFile = async (content: File, createGroups: boolean, project: Projec
           insertValueToKey(keyString, [Value.map({name: valueString, languageName: languageName})], false, project, createGroups);
         }
       });
-    };
 
-    resolve(project);
+      resolve(project);
+    };
   });
 };
 
