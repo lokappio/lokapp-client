@@ -107,8 +107,16 @@ const stringsDictFile = async (content: File, createGroups: boolean, project: Pr
       const globalDictItems = [...xmlDoc.getElementsByTagName("dict")[0].children];
       globalDictItems.forEach((child, indexGlobal) => {
         if (child.nodeName === "dict") {
-          const keyString = globalDictItems[indexGlobal - 1].innerHTML;
-          //IF ERROR ON RETRIEVE globalDictItems[indexGlobal - 1], THROW FILE FORMAT ERROR
+          let keyString;
+          try {
+            if(globalDictItems[indexGlobal - 1].nodeName !== "key"){
+              reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error")));
+            }
+
+            keyString = globalDictItems[indexGlobal - 1].innerHTML;
+          } catch (_) {
+            reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error")));
+          }
 
           const values: Value[] = [];
           const translations = [...child.getElementsByTagName("dict")[0].children];
