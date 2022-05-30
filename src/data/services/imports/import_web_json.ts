@@ -124,12 +124,12 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
     };
 
     reader.onerror = () => {
-      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: item.content[0].name})));
+      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: (item.content as File).name})));
     }
   });
 };
 
-export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
+export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
   project = await jsonTranslationFromJSON(project, items[0], true);

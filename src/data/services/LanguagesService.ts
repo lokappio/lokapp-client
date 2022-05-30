@@ -8,6 +8,7 @@ import ImportService from "@/data/services/ImportService";
 import Project from "@/data/models/api/Project";
 import ImportItem from "@/data/models/ImportItem";
 import {Platform} from "@/data/models/enums/project";
+import projectsService from "@/data/services/ProjectsService";
 
 class LanguagesService {
   static languagesUrl: string = config.baseUrl + "/projects/";
@@ -24,12 +25,37 @@ class LanguagesService {
   }
 
   public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform) {
-    const projectImport = await ImportService.importFromFiles(project, [item], platform);
+    const projectFromStore = Object.assign(Project.map({}), project);
+    projectFromStore.languages.push(Language.map({name: item.language}));
+
+    const projectImport = await ImportService.importFromFiles(projectFromStore, [item], platform, true);
+
     console.log(projectImport);
+    const values: Value[] = projectImport.groups.map((group) => {
+      return group.keys.map((key) => {
+        return key.values.filter((value) => value.languageId === null || value.languageId === undefined && value.keyId === null || value.keyId === undefined);
+      });
+    }).flat(2);
+
+    //CREATE NEW LANGUAGE. API CREATE EMPTY VALUES FOR EACH EXISTING KEYS FOR THE NEW LANGUAGE.
+    const languageWithEmptyValues = await this.createLanguage(item.language, values);
+    //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
+
+    return await projectsService.getEntireProjectById(projectImport.id);
   }
 
-  public static createLanguage(languageName: string): Promise<{ language: Language; values: Value[] } | void> {
-    const bodyParameters = {name: languageName};
+  public static createLanguage(languageName: string, values?: Value[]): Promise<{ language: Language; values: Value[] } | void> {
+    const bodyParameters = {
+      name: languageName,
+      values: values.map((value: Value) => {
+        return {
+          name: value.name,
+          keyId: value.keyId,
+          languageId: value.languageId,
+          quantityString: value.quantityString
+        }
+      })
+    };
 
     return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)
       .then(async (result) => {

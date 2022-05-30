@@ -127,7 +127,7 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
   });
 };
 
-export const projectTranslationFromXMLFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
+export const projectTranslationFromXMLFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
   project = await jsonTranslationFromXML(project, items[0], true);
