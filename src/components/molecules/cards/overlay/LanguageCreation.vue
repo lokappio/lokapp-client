@@ -202,6 +202,7 @@ export default Vue.extend({
       this.$service.languages.createLanguageFromImport(this.$store.getters.currentProject, this.importItem, this.selectedPlatform)
           .then((result) => {
             this.loading = false;
+            //TODO : reload page DetailProject
             //this.$store.commit("UPDATE_PROJECT_LANGUAGES", result);
 
             //this.closeLanguageCreation();

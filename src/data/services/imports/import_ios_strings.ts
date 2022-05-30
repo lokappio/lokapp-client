@@ -31,7 +31,10 @@ const insertValueToKey = (keyString: string, values: Value[], isPluralKey: boole
     key = Key.map({name: keyString, isPlural: isPluralKey})
     needKeyCreation = true;
   }
-  key.values.push(...values);
+  key.values.push(...values.map(value => {
+    value.keyId = key.id;
+    return value;
+  }));
 
   if(createGroups || needKeyCreation) {
     group.keys.push(key);
@@ -162,11 +165,13 @@ const jsonTranslationFromStrings = async (project: Project, item: ImportItem, cr
   return project;
 };
 
-export const projectTranslationFromStringsFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
+export const projectTranslationFromStringsFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //READ ALL FILES (strings + stringsdist)
-  project = await jsonTranslationFromStrings(project, items[0], true);
+  if(!fromExistingProject) {
+    project = await jsonTranslationFromStrings(project, items[0], true);
+  }
 
-  for (const item of items.slice(1)) {
+  for (const item of fromExistingProject ? items : items.slice(1)) {
     project = await jsonTranslationFromStrings(project, item, false);
   }
 

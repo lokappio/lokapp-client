@@ -6,14 +6,14 @@ import {Platform} from "@/data/models/enums/project";
 import {projectTranslationFromStringsFiles} from "@/data/services/imports/import_ios_strings";
 
 export default class ImportService {
-  public static async importFromFiles(project: Project, items: ImportItem[], platform: Platform): Promise<Project> {
+  public static async importFromFiles(project: Project, items: ImportItem[], platform: Platform, fromExistingProject = false): Promise<Project> {
     switch (platform) {
       case Platform.WEB:
-        return await projectTranslationFromJSONFiles(project, items);
+        return await projectTranslationFromJSONFiles(project, items, fromExistingProject);
       case Platform.ANDROID:
-        return await projectTranslationFromXMLFiles(project, items);
+        return await projectTranslationFromXMLFiles(project, items, fromExistingProject);
       case Platform.IOS:
-        return await projectTranslationFromStringsFiles(project, items);
+        return await projectTranslationFromStringsFiles(project, items, fromExistingProject);
       default:
         return null;
     }
