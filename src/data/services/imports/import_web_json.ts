@@ -39,7 +39,8 @@ const insertValueToKey = (project: Project, values: string, keyString: string, k
       const value = Value.map({
         name: valueString.trim(),
         quantityString: valuesList.length === 1 ? null : Object.values(ValueQuantity)[index],
-        languageName: language
+        languageName: language,
+        keyId: key.id
       });
 
       key.values.push(value);

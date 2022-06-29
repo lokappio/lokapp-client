@@ -51,7 +51,12 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
         const valueQuantity = Object.values(ValueQuantity).find(value => value === quantity);
 
         if (valueQuantity) {
-          const value = Value.map({name: valueXml, quantityString: valueQuantity, languageName: language});
+          const value = Value.map({
+            name: valueXml,
+            quantityString: valueQuantity,
+            languageName: language,
+            keyId: key.id,
+          });
           key.values.push(value);
         } else {
           reject(i18n.tc("import_errors.quantity_not_found", null, {"quantity": quantity, "key": keyXml}));
@@ -59,7 +64,11 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
       }
     } else {
       // IF SINGULAR
-      const value = Value.map({name: valueXml, languageName: language});
+      const value = Value.map({
+        name: valueXml,
+        languageName: language,
+        keyId: key.id,
+      });
       key?.values.push(value);
     }
 
@@ -130,7 +139,7 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
 export const projectTranslationFromXMLFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  project = await jsonTranslationFromXML(project, items[0], true);
+  project = await jsonTranslationFromXML(project, items[0], !fromExistingProject);
 
   for (const item of items.slice(1)) {
     project = await jsonTranslationFromXML(project, item, false);
