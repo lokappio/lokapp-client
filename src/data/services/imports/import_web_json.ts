@@ -133,7 +133,7 @@ const jsonTranslationFromJSON = async (project: Project, item: ImportItem, creat
 export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  project = await jsonTranslationFromJSON(project, items[0], true);
+  project = await jsonTranslationFromJSON(project, items[0], !fromExistingProject);
 
   for (const item of items.slice(1)) {
     project = await jsonTranslationFromJSON(project, item, false);

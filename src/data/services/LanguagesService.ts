@@ -25,19 +25,17 @@ class LanguagesService {
   }
 
   public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform) {
-    const projectFromStore = Object.assign(Project.map({}), project);
+    const projectFromStore = Object.assign(Project.map({}), JSON.parse(JSON.stringify(project)));
     projectFromStore.languages.push(Language.map({name: item.language}));
 
     const projectImport = await ImportService.importFromFiles(projectFromStore, [item], platform, true);
 
-    console.log(projectImport);
     const values: Value[] = projectImport.groups.map((group) => {
       return group.keys.map((key) => {
         return key.values.filter((value) => (value.id === null || value.id === undefined) && (value.keyId !== undefined && value.keyId !== null));
       });
     }).flat(2);
 
-    //CREATE NEW LANGUAGE. API CREATE EMPTY VALUES FOR EACH EXISTING KEYS FOR THE NEW LANGUAGE.
     const languageWithEmptyValues = await this.createLanguage(item.language, values);
     //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
 
