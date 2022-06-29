@@ -18,7 +18,7 @@ export const checkAllValuesCreatedAndAdd = (project: Project) => {
             project.warnings.push(new ImportError(i18n.tc("import_errors.no_values_found", null, {key: key.name, language: language.name})));
 
             Object.values(ValueQuantity).forEach(quantity => {
-              key.values.push(Value.map({name: "", quantityString: quantity, languageName: language.name}));
+              key.values.push(Value.map({name: "", quantityString: quantity, languageName: language.name, keyId: key.id}));
             });
           });
         }
@@ -33,7 +33,7 @@ export const checkAllValuesCreatedAndAdd = (project: Project) => {
           missingLanguages.forEach(language => {
             project.warnings.push(new ImportError(i18n.tc("import_errors.no_values_found", null, {key: key.name, language: language.name})));
 
-            key.values.push(Value.map({name: "", languageName: language.name}));
+            key.values.push(Value.map({name: "", languageName: language.name, keyId: key.id}));
           });
         }
       }
