@@ -142,6 +142,7 @@ import {Platform, PlatformExtension, PlatformFileExpected} from "@/data/models/e
 import ImportItem from "@/data/models/ImportItem.ts";
 import {importRules, iOSImportRules} from "@/data/rules/ImportRules";
 import ImportError from "@/data/models/ImportError";
+import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
   name: "language-creation",
@@ -200,12 +201,9 @@ export default Vue.extend({
       this.loading = true;
 
       this.$service.languages.createLanguageFromImport(this.$store.getters.currentProject, this.importItem, this.selectedPlatform)
-          .then((result) => {
+          .then((result: Project) => {
             this.loading = false;
-            //TODO : reload page DetailProject
-            //this.$store.commit("UPDATE_PROJECT_LANGUAGES", result);
-
-            //this.closeLanguageCreation();
+            this.$store.commit("SET_CURRENT_PROJECT", result);
           })
           .catch((e) => {
                 if (e instanceof ImportError) {

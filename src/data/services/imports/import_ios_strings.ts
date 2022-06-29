@@ -168,7 +168,7 @@ const jsonTranslationFromStrings = async (project: Project, item: ImportItem, cr
 export const projectTranslationFromStringsFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //READ ALL FILES (strings + stringsdist)
   if(!fromExistingProject) {
-    project = await jsonTranslationFromStrings(project, items[0], true);
+    project = await jsonTranslationFromStrings(project, items[0], !fromExistingProject);
   }
 
   for (const item of fromExistingProject ? items : items.slice(1)) {
