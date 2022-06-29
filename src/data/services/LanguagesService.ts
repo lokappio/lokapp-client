@@ -36,7 +36,7 @@ class LanguagesService {
         return key.values.filter((value) => (value.id === null || value.id === undefined) && (value.keyId !== undefined && value.keyId !== null));
       });
     }).flat(2);
-  console.log(values);
+
     //CREATE NEW LANGUAGE. API CREATE EMPTY VALUES FOR EACH EXISTING KEYS FOR THE NEW LANGUAGE.
     const languageWithEmptyValues = await this.createLanguage(item.language, values);
     //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
