@@ -204,6 +204,7 @@ export default Vue.extend({
           .then((result: Project) => {
             this.loading = false;
             this.$store.commit("SET_CURRENT_PROJECT", result);
+            this.closeLanguageCreation();
           })
           .catch((e) => {
                 if (e instanceof ImportError) {
