@@ -164,7 +164,7 @@ export default Vue.extend({
       if (isOpened) {
         //ON RE-OPENED, RESET DATA
         this.languageName = "";
-        this.$refs.formCreateLanguage.resetValidation();
+        (this.$refs.formCreateLanguage as Vue & { resetValidation: () => any }).resetValidation();
       }
     }
   },
@@ -189,7 +189,7 @@ export default Vue.extend({
   },
   methods: {
     create() {
-      if (this.$refs.formCreateLanguage.validate() === true) {
+      if ((this.$refs.formCreateLanguage as Vue & { validate: () => boolean }).validate() === true) {
         if (this.fromImport) {
           this.createNewLanguageFromImport();
         } else {

@@ -10,8 +10,9 @@ const mockedProject = Project.map({
   createdAt: new Date(Date.now()),
   updatedAt: new Date(Date.now()),
 });
+const mockedEmptyProject: Project = Object.assign({}, mockedProject);
 
 mockedProject.groups= [commonGroup];
 mockedProject.languages= [frLanguage];
 
-export {mockedProject}
+export {mockedProject, mockedEmptyProject}
