@@ -42,6 +42,7 @@ Export your translations into specific files for Android, iOS or Web (JSON) proj
 #### Projects
 
 Create as many projects as you want, each one with its own languages, translations and users. 
+You can import a project from existing files you own.
 
 #### Roles and invitations
 
@@ -106,9 +107,6 @@ To run the web applicaiton, you need to add the following environment variables 
 
 Once the site is up and running, go to [http://localhost:8080/](http://localhost:8080/)
 
-### snake_case
-
-By default, all translation keys needs to be written in snake_case.
 
 ### Demo
 
