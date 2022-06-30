@@ -31,7 +31,7 @@ export default class Project {
   updatedAt: Date;
   description: string;
   languages: Language[] = [];
-  groups: Group[];
+  groups: Group[] = [];
 
   warnings: ImportError[] = [];
 
