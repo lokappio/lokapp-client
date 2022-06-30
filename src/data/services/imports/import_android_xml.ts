@@ -78,13 +78,8 @@ const insertValueToKey = (items: HTMLCollectionOf<Element>, project: Project, la
   }
 };
 
-const jsonTranslationFromXML = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
-  const reader = new FileReader();
-  reader.readAsText(item.content as File);
-
-  return new Promise((resolve, reject) => {
-    reader.onload = (result) => {
-      const xmlString: string = result.target.result.toString();
+const jsonTranslationFromXML = async (data: string, project: Project, item: ImportItem, createGroups: boolean, resolve: Function, reject: (reason: any) => any): Promise<void> => {
+      const xmlString: string = data;
 
       if (createGroups) {
         xmlString.split("\n").forEach((line) => {
@@ -128,21 +123,36 @@ const jsonTranslationFromXML = async (project: Project, item: ImportItem, create
       );
 
       resolve(project);
-    };
-
-    reader.onerror = () => {
-      reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: (item.content as File).name})));
-    }
-  });
 };
+
+const readFile = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
+  if (typeof item.content === "string") {
+    return new Promise((resolve, reject) => {
+      jsonTranslationFromXML(item.content as string, project, item, createGroups, resolve, reject);
+    })
+  } else {
+    const reader = new FileReader();
+    reader.readAsText(item.content as File);
+
+    return new Promise((resolve, reject) => {
+      reader.onload = (result) => {
+        jsonTranslationFromXML(result.target.result.toString(), project, item, createGroups, resolve, reject);
+      }
+
+      reader.onerror = () => {
+        reject(new ImportError(i18n.tc("import_errors.reading_file_error", null, {file: (item.content as File).name})));
+      }
+    })
+  }
+}
 
 export const projectTranslationFromXMLFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  project = await jsonTranslationFromXML(project, items[0], !fromExistingProject);
+  project = await readFile(project, items[0], !fromExistingProject);
 
   for (const item of items.slice(1)) {
-    project = await jsonTranslationFromXML(project, item, false);
+    project = await readFile(project, item, false);
   }
 
   checkAllValuesCreatedAndAdd(project);

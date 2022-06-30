@@ -117,6 +117,7 @@ const jsonTranslationFromJSON = async (data: string, project: Project, item: Imp
 
   resolve(project);
 }
+
 const readFile = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
   if (typeof item.content === "string") {
     return new Promise((resolve, reject) => {
