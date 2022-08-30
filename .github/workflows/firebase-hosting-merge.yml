@@ -10,16 +10,16 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: print secrets
-      env:
-        DOT_ENV: '${{ secrets.DOT_ENV }}'
-        DOT_FIREBASERC: '${{ secrets.DOT_FIREBASERC }}'
-        FIREBASE_JSON: '${{ secrets.FIREBASE_JSON }}'
-      run: |
-          echo $DOT_ENV >> .env
-          echo $DOT_FIREBASERC >> .firebaserc
-          echo $FIREBASE_JSON >> firebase.json
-      shell: bash
+      - name: print secrets
+        env:
+          DOT_ENV: '${{ secrets.DOT_ENV }}'
+          DOT_FIREBASERC: '${{ secrets.DOT_FIREBASERC }}'
+          FIREBASE_JSON: '${{ secrets.FIREBASE_JSON }}'
+        run: |
+            echo $DOT_ENV >> .env
+            echo $DOT_FIREBASERC >> .firebaserc
+            echo $FIREBASE_JSON >> firebase.json
+        shell: bash
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
