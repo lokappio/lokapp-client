@@ -1,8 +1,8 @@
-import {mixGroupAndKeyName, replaceMarkers} from "./export_configuration";
+import { mixGroupAndKeyName, replaceMarkers } from "./export_configuration";
 import Language from "../../models/api/Language";
-import {LocalizedGroup, Plural} from "@/data/models/api/Project";
-import {KeyType, Platform} from "@/data/models/enums/project";
-import {FileData} from "@/data/models/types/export";
+import { LocalizedGroup, Plural } from "@/data/models/api/Project";
+import { KeyType, Platform } from "@/data/models/enums/project";
+import { FileData } from "@/data/models/types/export";
 import xmlFormatter from "xml-formatter";
 
 const generateAndroidStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
@@ -14,8 +14,6 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     localizedProject.forEach((localizedGroup) => {
         if (localizedGroup.name != null) {
             const commentEl = xmlDoc.createComment(localizedGroup.name);
-            const breakLineEl = xmlDoc.createTextNode("\r\n");
-            resourcesEl.appendChild(breakLineEl);
             resourcesEl.appendChild(commentEl);
         }
 
@@ -25,7 +23,6 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                   .replace(/"/g, "\\\"")
                   .replace(/'/g, '\\\'')
                   .replace(/%/g, '%%');
-
                 const stringEl = xmlDoc.createElement("string");
                 stringEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
                 stringEl.innerHTML = `"${replaceMarkers(value, platform)}"`;
@@ -51,7 +48,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     });
 
     xmlDoc.appendChild(resourcesEl);
-    return {language: language.name.toLowerCase(), content: xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), {collapseContent: true})};
+    return { language: language.name.toLowerCase(), content: xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), { collapseContent: true }) };
 };
 
 export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
