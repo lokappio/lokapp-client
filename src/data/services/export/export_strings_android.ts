@@ -23,7 +23,8 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
             if (localization.type === KeyType.SINGULAR) {
                 const value = (localization[language.id]?.toString() ?? "")
                   .replace(/"/g, "\\\"")
-                  .replace(/'/g, '\\\'');
+                  .replace(/'/g, '\\\'')
+                  .replace(/%/g, '%%');
 
                 const stringEl = xmlDoc.createElement("string");
                 stringEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
@@ -39,7 +40,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                     if (value !== undefined) {
                         const itemEl = xmlDoc.createElement("item");
                         itemEl.setAttribute("quantity", value[0]);
-                        itemEl.innerHTML = `"${replaceMarkers(value[1].replace(/"/g, "\\\"").replace(/'/g, '\\\''), platform)}"`;
+                        itemEl.innerHTML = `"${replaceMarkers(value[1].replace(/"/g, "\\\"").replace(/'/g, '\\\'').replace(/%/g, '%%'), platform)}"`;
                         pluralEl.appendChild(itemEl);
                     }
                 });
