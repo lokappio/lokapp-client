@@ -16,9 +16,10 @@ jobs:
           DOT_FIREBASERC: '${{ secrets.DOT_FIREBASERC }}'
           FIREBASE_JSON: '${{ secrets.FIREBASE_JSON }}'
         run: |
-            echo $DOT_ENV >> .env
-            echo $DOT_FIREBASERC >> .firebaserc
-            echo $FIREBASE_JSON >> firebase.json
+            echo $DOT_ENV > .env
+            echo $DOT_FIREBASERC > .firebaserc
+            echo $FIREBASE_JSON > firebase.json
+            ls .
         shell: bash
       - uses: actions/checkout@v2
       - run: npm ci && npm run build
