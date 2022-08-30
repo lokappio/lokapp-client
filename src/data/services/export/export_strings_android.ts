@@ -14,6 +14,8 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     localizedProject.forEach((localizedGroup) => {
         if (localizedGroup.name != null) {
             const commentEl = xmlDoc.createComment(localizedGroup.name);
+            const breakLineEl = xmlDoc.createTextNode("\r");
+            resourcesEl.appendChild(breakLineEl);
             resourcesEl.appendChild(commentEl);
         }
 
@@ -39,8 +41,8 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                         itemEl.setAttribute("quantity", value[0]);
                         itemEl.innerHTML = replaceMarkers(
                           value[1]
-                            .replace(/"/g, "\\\"")
-                            .replace(/'/g, '\\\''),
+                          .replace(/"/g, "\\\"")
+                          .replace(/'/g, '\\\''),
                           platform
                         );
                         pluralEl.appendChild(itemEl);
