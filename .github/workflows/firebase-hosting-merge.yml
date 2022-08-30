@@ -9,26 +9,27 @@ name: Deploy to Firebase Hosting on merge
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    env:
+      VUE_APP_I18N_FALLBACK_LOCALE: '${{ secrets.VUE_APP_I18N_FALLBACK_LOCALE }}'
+      VUE_APP_BASE_URL: '${{ secrets.VUE_APP_BASE_URL }}'
+      VUE_APP_FIREBASE_API_KEY: '${{ secrets.VUE_APP_FIREBASE_API_KEY }}'
+      VUE_APP_FIREBASE_AUTH_DOMAIN: '${{ secrets.VUE_APP_FIREBASE_AUTH_DOMAIN }}'
+      VUE_APP_FIREBASE_PROJECT_ID: '${{ secrets.VUE_APP_FIREBASE_PROJECT_ID }}'
+      VUE_APP_FIREBASE_STORAGE_BUCKET: '${{ secrets.VUE_APP_FIREBASE_STORAGE_BUCKET }}'
+      VUE_APP_FIREBASE_MESSAGINGSENDER_ID: '${{ secrets.VUE_APP_FIREBASE_MESSAGINGSENDER_ID }}'
+      VUE_APP_FIREBASE_APP_ID: '${{ secrets.VUE_APP_FIREBASE_APP_ID }}'
+      NODE_ENV: 'production'
     steps:
       - uses: actions/checkout@v2
       - name: Build
         env:
           DOT_FIREBASERC: '${{ secrets.DOT_FIREBASERC }}'
           FIREBASE_JSON: '${{ secrets.FIREBASE_JSON }}'
-          NODE_ENV: 'production'
-          VUE_APP_I18N_FALLBACK_LOCALE: '${{ secrets.VUE_APP_I18N_FALLBACK_LOCALE }}'
-          VUE_APP_BASE_URL: '${{ secrets.VUE_APP_BASE_URL }}'
-          VUE_APP_FIREBASE_API_KEY: '${{ secrets.VUE_APP_FIREBASE_API_KEY }}'
-          VUE_APP_FIREBASE_AUTH_DOMAIN: '${{ secrets.VUE_APP_FIREBASE_AUTH_DOMAIN }}'
-          VUE_APP_FIREBASE_PROJECT_ID: '${{ secrets.VUE_APP_FIREBASE_PROJECT_ID }}'
-          VUE_APP_FIREBASE_STORAGE_BUCKET: '${{ secrets.VUE_APP_FIREBASE_STORAGE_BUCKET }}'
-          VUE_APP_FIREBASE_MESSAGINGSENDER_ID: '${{ secrets.VUE_APP_FIREBASE_MESSAGINGSENDER_ID }}'
-          VUE_APP_FIREBASE_APP_ID: '${{ secrets.VUE_APP_FIREBASE_APP_ID }}'
         run: |
             echo $DOT_FIREBASERC > .firebaserc
             echo $FIREBASE_JSON > firebase.json
-            npm ci && npm run build
         shell: bash
+      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
