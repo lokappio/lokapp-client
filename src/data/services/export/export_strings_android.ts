@@ -14,7 +14,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     localizedProject.forEach((localizedGroup) => {
         if (localizedGroup.name != null) {
             const commentEl = xmlDoc.createComment(localizedGroup.name);
-            const breakLineEl = xmlDoc.createTextNode("\r");
+            const breakLineEl = xmlDoc.createTextNode("\r\n");
             resourcesEl.appendChild(breakLineEl);
             resourcesEl.appendChild(commentEl);
         }
