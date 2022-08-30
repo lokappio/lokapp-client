@@ -23,6 +23,7 @@
           <v-row class="mt-0 mb-2">
             <v-col cols="12" class="pa-0">
               <v-text-field
+                  autofocus
                   :rules="keyNameRules"
                   class="custom-text-field"
                   background-color="inputBackground"
