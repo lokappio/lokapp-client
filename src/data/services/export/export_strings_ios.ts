@@ -93,9 +93,10 @@ const generateIOSStringFile = (language: Language, localizedProject: LocalizedGr
   const platform = Platform.IOS;
   let exportedString = "";
 
-  localizedProject.forEach((localizedGroup) => {
+  localizedProject.forEach((localizedGroup, index) => {
     if (localizedGroup.name != null) {
-      exportedString += "// MARK: - " + localizedGroup.name + "\n\n";
+      exportedString += index > 0 ? "\r\n" : "";
+      exportedString += "// MARK: - " + localizedGroup.name + "\r\n\r\n";
     }
 
     localizedGroup.localizations

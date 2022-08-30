@@ -14,6 +14,8 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     localizedProject.forEach((localizedGroup) => {
         if (localizedGroup.name != null) {
             const commentEl = xmlDoc.createComment(localizedGroup.name);
+            const breakLineEl = xmlDoc.createTextNode("\r\n");
+            resourcesEl.appendChild(breakLineEl);
             resourcesEl.appendChild(commentEl);
         }
 
@@ -25,7 +27,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
 
                 const stringEl = xmlDoc.createElement("string");
                 stringEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
-                stringEl.innerHTML = replaceMarkers(value, platform);
+                stringEl.innerHTML = `"${replaceMarkers(value, platform)}"`;
                 resourcesEl.appendChild(stringEl);
             } else {
                 const pluralEl = xmlDoc.createElement("plural");
@@ -37,12 +39,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                     if (value !== undefined) {
                         const itemEl = xmlDoc.createElement("item");
                         itemEl.setAttribute("quantity", value[0]);
-                        itemEl.innerHTML = replaceMarkers(
-                          value[1]
-                            .replace(/"/g, "\\\"")
-                            .replace(/'/g, '\\\''),
-                          platform
-                        );
+                        itemEl.innerHTML = `"${replaceMarkers(value[1].replace(/"/g, "\\\"").replace(/'/g, '\\\''), platform)}"`;
                         pluralEl.appendChild(itemEl);
                     }
                 });
