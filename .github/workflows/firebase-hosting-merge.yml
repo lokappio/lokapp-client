@@ -18,10 +18,9 @@ jobs:
       VUE_APP_FIREBASE_STORAGE_BUCKET: '${{ secrets.VUE_APP_FIREBASE_STORAGE_BUCKET }}'
       VUE_APP_FIREBASE_MESSAGINGSENDER_ID: '${{ secrets.VUE_APP_FIREBASE_MESSAGINGSENDER_ID }}'
       VUE_APP_FIREBASE_APP_ID: '${{ secrets.VUE_APP_FIREBASE_APP_ID }}'
-      NODE_ENV: 'production'
     steps:
       - uses: actions/checkout@v2
-      - name: Build
+      - name: Create Firebase conf
         env:
           DOT_FIREBASERC: '${{ secrets.DOT_FIREBASERC }}'
           FIREBASE_JSON: '${{ secrets.FIREBASE_JSON }}'
