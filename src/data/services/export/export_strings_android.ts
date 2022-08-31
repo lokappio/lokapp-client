@@ -28,7 +28,7 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                 stringEl.innerHTML = `"${replaceMarkers(value, platform)}"`;
                 resourcesEl.appendChild(stringEl);
             } else {
-                const pluralEl = xmlDoc.createElement("plural");
+                const pluralEl = xmlDoc.createElement("plurals");
                 pluralEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
 
                 const value: Plural = (localization[language.id] as Plural) ?? new Plural();
