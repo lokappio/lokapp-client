@@ -102,7 +102,9 @@ const generateIOSStringFile = (language: Language, localizedProject: LocalizedGr
     localizedGroup.localizations
       .filter((localization) => localization.type === KeyType.SINGULAR)
       .forEach((localization) => {
-        const value = (localization[language.id]?.toString() ?? "").replace(/"/g, "\\\"");
+        const value = (localization[language.id]?.toString() ?? "")
+        .replace(/"/g, "\\\"")
+        .replace(/%/g, '%%');
         exportedString += `"${mixGroupAndKeyName(localizedGroup.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
       });
   });
