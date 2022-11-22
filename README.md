@@ -88,7 +88,11 @@ Build for production
 
 ### Environment Variables
 
-To run the web applicaiton, you need to add the following environment variables to your .env file (You can copy the .env.sample file and change the content):
+To run the web applicaiton, you need to add the following environment variables to your .env file (You can copy the .env.example file and change its content):
+
+```
+cp .env.example .env
+```
 
 * `VUE_APP_I18N_FALLBACK_LOCALE`: the default language of Lokapp. If the browser language isn't supported yet by Lokapp, this language will be used. Default: english.
 * `VUE_APP_BASE_URL`: the base URL of the Lokapp's API.

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve:dev": "vue-cli-service serve --mode development",
+    "serve:prod": "vue-cli-service serve --mode production",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
@@ -44,7 +45,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^6.0.1",
-    "sass": "^1.32.0",
+    "sass": "^1.32.13",
     "sass-loader": "^10.0.0",
     "typescript": "~3.9.3",
     "vue-cli-plugin-i18n": "~2.0.0",
