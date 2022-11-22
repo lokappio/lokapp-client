@@ -1,13 +1,13 @@
 <template>
   <div class="my-projects-container">
-    <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => this.isOpenCreation = false"></key-creation>
+    <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => isOpenCreation = false"></key-creation>
     <v-container fluid>
 
       <Header class="header"/>
 
       <v-row no-gutters v-if="getItems.length <= 0" align-content="start" justify="center">
         <v-col cols="4">
-          <action-button v-if="canUpdateKey" block :handler="() => this.isOpenCreation = true" :text="''" addIcon/>
+          <action-button v-if="canUpdateKey" block :handler="() => isOpenCreation = true" :text="''" addIcon/>
         </v-col>
       </v-row>
 
@@ -257,7 +257,7 @@ export default Vue.extend({
   }
   .content {
     position: absolute;
-    top: calc($base-height + 20px);
+    top: calc(#{$base-height} + 20px);
     bottom: 0;
     width: 100%;
   }

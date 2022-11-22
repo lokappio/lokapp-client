@@ -45,7 +45,7 @@ class LanguagesService {
   public static createLanguage(languageName: string, values?: Value[]): Promise<{ language: Language; values: Value[] } | void> {
     const bodyParameters = {
       name: languageName,
-      values: values.map((value: Value) => {
+      values: (values ?? []).map((value: Value) => {
         return {
           name: value.name,
           keyId: value.keyId,
