@@ -175,6 +175,7 @@ export default class Project {
       name: this.name,
       color: this.color,
       description: this.description,
+      groups: this.groups,
     }
   }
 }

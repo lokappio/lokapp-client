@@ -8,12 +8,17 @@ class AuthService {
   static authUrl: string = config.baseUrl + "/auth";
 
   public static getToken(): Promise<string | null> {
-    const currentUser = FirebaseHelper.currentUser();
+    return new Promise((resolve, reject) => {
+      const currentUser = FirebaseHelper.currentUser();
 
-    if (currentUser) {
-      return currentUser.getIdToken(true);
-    }
-    return Promise.resolve(null);
+      if (currentUser) {
+        currentUser.getIdToken()
+          .then(resolve)
+          .catch(reject);
+      } else {
+        resolve(null);
+      }
+    });
   }
 
   public static logIn(email: string, password: string) {

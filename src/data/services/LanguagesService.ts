@@ -36,7 +36,7 @@ class LanguagesService {
       });
     }).flat(2);
 
-    const languageWithEmptyValues = await this.createLanguage(item.language, values);
+    await this.createLanguage(item.language, values);
     //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
 
     return await projectsService.getEntireProjectById(projectImport.id);

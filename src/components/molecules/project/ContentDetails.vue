@@ -54,7 +54,7 @@
 
                 <template-item-values
                     v-else
-                    :key="`${item.key.id}_${item.languages[header.value].id}_${header.value}`"
+                    :key="`${item.key.id}_${item.languages[header.value]?.id}_${header.value}`"
                     :item="item"
                     :header="header"
                     :projectId="projectId"
@@ -137,7 +137,8 @@ export default Vue.extend({
       return this.$store.getters.actualLanguage;
     },
     headers(): DataTableHeader[] {
-      const languages: Language[] = this.$store.getters.currentProject.languages;
+      const languages: Language[] = this.$store.getters.currentProject.languages.filter((e) => e !== undefined);
+
       const headers: DataTableHeader[] = [
         {
           text: this.$t("project_detail.keys").toString(),

@@ -317,6 +317,7 @@ export default Vue.extend({
 
                   this.closeManageProject();
                   this.$router.push(`/projects/${id}`);
+                  window && window.location.reload();
                 })
                 .catch((e) => {
                       if (e instanceof ImportError) {
@@ -326,7 +327,9 @@ export default Vue.extend({
                       this.$notify(this.$t("errors.unknown_error").toString(), {color: "red"});
                     }
                 )
-                .finally(() => this.loading = false);
+                .finally(() => {
+                  this.loading = false
+                });
           }
         } else {
           this.createNewProject();

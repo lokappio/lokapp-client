@@ -3,7 +3,6 @@ import { AxiosResponse } from "axios";
 import ApiService from "./ApiService";
 import Group from "@/data/models/api/Group";
 import store from '@/store/index';
-import Project from "@/data/models/api/Project";
 
 class GroupsService {
     static groupsUrl: string = config.baseUrl + "/projects/";

@@ -7,12 +7,6 @@ import Project from "@/data/models/api/Project";
 import Language from "@/data/models/api/Language";
 import ImportItem from "@/data/models/ImportItem";
 import ImportService from "@/data/services/ImportService";
-import Group from "@/data/models/api/Group";
-import GroupsService from "@/data/services/GroupsService";
-import KeysService from "@/data/services/KeysService";
-import ValuesService from "@/data/services/ValuesService";
-import LanguagesService from "@/data/services/LanguagesService";
-import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import {Platform} from "@/data/models/enums/project";
 
 class ProjectsService {
@@ -33,30 +27,7 @@ class ProjectsService {
     project.groups = [];
 
     const projectImport = await ImportService.importFromFiles(project, items, platform);
-    console.log(projectImport);
-
     const createdProject = await this.createProject(project, items.map((item) => item.language));
-    createdProject.languages = await LanguagesService.getLanguages(createdProject.id);
-    createdProject.groups = await GroupsService.getGroups(createdProject.id);
-
-    // DO NOT CREATE GROUP WITH NAME "COMMON" 'CAUSE IT IS AUTOMATICALLY CREATED WHEN CREATING PROJECT
-    await Promise.all(projectImport.groups.map(async (group) => {
-      const createdGroup = group.isDefault ?
-        createdProject.groups.find((item) => item.name === DEFAULT_GROUP_NAME) :
-        await GroupsService.createGroup(group, createdProject.id);
-
-      await Promise.all(group.keys.map(async (key) => {
-        await KeysService.createKey(
-          key,
-          createdGroup,
-          createdProject.id,
-          key.values.map((value) => {
-            value.languageId = createdProject.languages.find((language) => language.name === value.languageName).id
-            return value;
-          })
-        );
-      }));
-    }));
 
     localStorage.setItem(createdProject.id.toString(), JSON.stringify(projectImport.warnings));
     return createdProject.id;

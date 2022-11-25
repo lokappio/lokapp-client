@@ -1,9 +1,10 @@
 import Project from "@/data/models/api/Project";
-import {projectTranslationFromXMLFiles} from "@/data/services/imports/import_android_xml";
 import ImportItem from "@/data/models/ImportItem";
-import {projectTranslationFromJSONFiles} from "@/data/services/imports/import_web_json";
-import {Platform} from "@/data/models/enums/project";
-import {projectTranslationFromStringsFiles} from "@/data/services/imports/import_ios_strings";
+import { Platform } from "@/data/models/enums/project";
+
+import { projectTranslationFromXMLFiles } from "@/data/services/imports/import_android_xml";
+import { projectTranslationFromJSONFiles } from "@/data/services/imports/import_web_json";
+import { projectTranslationFromStringsFiles } from "@/data/services/imports/import_ios_strings";
 
 export default class ImportService {
   public static async importFromFiles(project: Project, items: ImportItem[], platform: Platform, fromExistingProject = false): Promise<Project> {

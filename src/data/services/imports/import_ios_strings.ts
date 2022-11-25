@@ -1,78 +1,41 @@
 import Project from "@/data/models/api/Project";
 import ImportItem, {ItemIOS} from "@/data/models/ImportItem";
-import Group from "@/data/models/api/Group";
-import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
 import ImportError from "@/data/models/ImportError";
 import i18n from "@/i18n";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import {checkAllValuesCreatedAndAdd} from "@/data/services/imports/import_configuration";
+import IOSParser from "./ios_parser";
+import { insertValuesToProject, KeyGroups } from "./utils";
+import Key from "@/data/models/api/Key";
 
-const insertValueToKey = (keyString: string, values: Value[], isPluralKey: boolean, project: Project, createGroups: boolean) => {
-  let group = project.groups.filter(group => keyString.includes(group.name))
-    ?.reduce((a, b) => a?.name?.length > b?.name?.length ? a : b, null);
+const stringsDictTranslation = (data: string, project: Project, createGroups: boolean, languageName: string, fileName: string): Project => {
+  let groups: KeyGroups = {};
 
-  if (!group) {
-    project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null,{key: keyString})));
-    group = project.groups.find((group) => group.name === DEFAULT_GROUP_NAME);
-  }
-
-  keyString = keyString.replace(group.name + "_", "")
-  let key = createGroups ?
-    Key.map({name: keyString, isPlural: isPluralKey})
-    : group.keys.find(key => key.name === keyString);
-  let needKeyCreation = false;
-
-  if (key === undefined) {
-    /**
-     * IF SEVERAL FILES, MEANS THAT KEY EXIST IN SECOND FILE BUT NOT FIRST
-     * INSERT KEY TO GROUP (EMPTY VALUES ARE CREATED IN {@link checkAllValuesCreatedAndAdd} METHOD)
-     */
-    key = Key.map({name: keyString, isPlural: isPluralKey})
-    needKeyCreation = true;
-  }
-  key.values.push(...values.map(value => {
-    value.keyId = key.id;
-    return value;
-  }));
-
-  if(createGroups || needKeyCreation) {
-    group.keys.push(key);
-  }
-}
-
-const stringsDictTranslation = async (data: string, project: Project, createGroups: boolean, languageName: string, resolve: Function, reject: (reason: any) => any, fileName: string): Promise<void> => {
-  const fileString: string = data;
-
-  fileString.split("\n").forEach((line) => {
-      if (line.includes("<!--")) {
-        const group = line.split("<!--")[1].split("-->")[0]
-          .replace("MARK: -", "")
-          .replace("MARK:", "")
-          .trim();
-
-        if (!project.groups.map(group => group.name).includes(group) && createGroups) {
-          project.groups.push(Group.empty(group));
-        }
-      }
+  const groupNames = data.match(/<!--\s*MARK:\s+([A-z0-9]+)\s*-->/);
+  if (groupNames) {
+    for (const group of groupNames) {
+      groups[group] = [];
     }
-  );
+  }
 
+  const fileString: string = data;
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(fileString, "text/xml");
 
   const globalDictItems = [...xmlDoc.getElementsByTagName("dict")[0].children];
   globalDictItems.forEach((child, indexGlobal) => {
     if (child.nodeName === "dict") {
-      let keyString;
+      let keyString: string = null;
+
       try {
-        if(globalDictItems[indexGlobal - 1].nodeName !== "key"){
-          reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName})));
+        if (globalDictItems[indexGlobal - 1].nodeName !== "key"){
+          throw new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName}));
         }
 
         keyString = globalDictItems[indexGlobal - 1].innerHTML;
       } catch (_) {
-        reject(new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName})));
+        throw new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName}));
       }
 
       const values: Value[] = [];
@@ -89,58 +52,66 @@ const stringsDictTranslation = async (data: string, project: Project, createGrou
         }
       });
 
-      insertValueToKey(keyString, values, true, project, createGroups);
+      if (keyString === null) {
+        throw new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName}));
+      }
+
+      const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
+      let groupName = groupNames.find(group => keyString.startsWith(group)) || DEFAULT_GROUP_NAME;
+
+      groups[groupName].push(Key.map({
+        name: keyString.replace(groupName, "").trim(),
+        values: values,
+      }));
     }
   });
 
-  resolve(project);
+  return insertValuesToProject(project, groups, createGroups, languageName);
 }
 
-const stringsTranslation = async (data: string, project: Project, createGroups: boolean, languageName: string, resolve: Function, reject: (reason: any) => any): Promise<void> => {
-  const fileString: string = data;
+const stringsTranslation = (data: string, project: Project, createGroups: boolean, languageName: string): Project => {
+  const tokens = IOSParser(data);
 
-  fileString.split("\n").forEach((line) => {
-    const includeLineComment = line.includes("//");
-    const includeMultipleLineComment = line.includes("/*");
+  let currentGroupName = DEFAULT_GROUP_NAME;
 
-    //IF LINE IS A COMMENT,
-    if (includeLineComment || includeMultipleLineComment) {
-      const group = (includeLineComment ?
-        line.split("//")[1].trim() :
-        line.split("/*")[1].split("*/")[0])
-        .replace("MARK: -", "")
-        .replace("MARK:", "")
-        .trim();
+  let groups: KeyGroups = {};
 
-      if (!project.groups.map(group => group.name).includes(group) && createGroups) {
-        project.groups.push(Group.empty(group));
-      }
+  for (const token of tokens) {
+    if (token.type === "section") {
+      currentGroupName = token.value;
+      continue;
     }
-    //IF LINE IS NOT A COMMENT AND NOT EMPTY
-    else if (line != "") {
-      const keyString = line.split("=")[0].split("\"")[1].split("\"")[0].trim();
-      const valueString = line.split("=")[1].split("\"")[1].split("\"")[0].trim();
 
-      insertValueToKey(keyString, [Value.map({name: valueString, languageName: languageName})], false, project, createGroups);
+    if (!groups.hasOwnProperty(currentGroupName)) {
+      groups[currentGroupName] = [];
     }
-  });
 
-  resolve(project);
+    let key = Key.map({
+      name: token.value.key,
+      values: [Value.map({name: token.value.value, languageName: languageName})]
+    });
+
+    groups[currentGroupName].push(key);
+  }
+
+  return insertValuesToProject(project, groups, createGroups, languageName);
 }
 
 //.strings FILES == WHERE SINGULAR KEYS ARE DEFINED
 const stringsFile = async (content: File | string, createGroups: boolean, project: Project, languageName: string): Promise<Project> => {
   if(typeof content === "string") {
-    return new Promise((resolve, reject) => {
-      stringsTranslation(content, project, createGroups, languageName, resolve, reject);
-    })
+    return stringsTranslation(content, project, createGroups, languageName);
   } else {
-    const reader = new FileReader();
-    reader.readAsText(content);
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsText(content);
 
-    return new Promise((resolve, reject) => {
       reader.onload = (result) => {
-        stringsTranslation(result.target.result.toString(), project, createGroups, languageName, resolve, reject);
+        try {
+          resolve(stringsTranslation(result.target.result.toString(), project, createGroups, languageName));
+        } catch (e) {
+          reject(e);
+        }
       };
 
       reader.onerror = () => {
@@ -152,17 +123,19 @@ const stringsFile = async (content: File | string, createGroups: boolean, projec
 
 //.stringsdict FILES == WHERE PLURAL KEYS ARE DEFINED
 const stringsDictFile = async (content: File | string, createGroups: boolean, project: Project, languageName: string): Promise<Project> => {
-  if(typeof content === "string") {
-    return new Promise((resolve, reject) => {
-      stringsDictTranslation(content, project, createGroups, languageName, resolve, reject, "");
-    })
+  if (typeof content === "string") {
+    return stringsDictTranslation(content, project, createGroups, languageName, "");
   } else {
-    const reader = new FileReader();
-    reader.readAsText(content);
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsText(content);
 
-    return new Promise((resolve, reject) => {
       reader.onload = (result) => {
-        stringsDictTranslation(result.target.result.toString(), project, createGroups, languageName, resolve, reject, content.name);
+        try {
+          resolve(stringsDictTranslation(result.target.result.toString(), project, createGroups, languageName, content.name));
+        } catch (e) {
+          reject(e);
+        }
       };
 
       reader.onerror = () => {
@@ -191,7 +164,7 @@ const jsonTranslationFromStrings = async (project: Project, item: ImportItem, cr
 
 export const projectTranslationFromStringsFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
   //READ ALL FILES (strings + stringsdist)
-  if(!fromExistingProject) {
+  if (!fromExistingProject) {
     project = await jsonTranslationFromStrings(project, items[0], !fromExistingProject);
   }
 
