@@ -320,6 +320,8 @@ export default Vue.extend({
                   window && window.location.reload();
                 })
                 .catch((e) => {
+                      console.error(e);
+
                       if (e instanceof ImportError) {
                         this.importError = e;
                       }

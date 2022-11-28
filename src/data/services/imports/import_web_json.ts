@@ -1,13 +1,15 @@
 import Project from "@/data/models/api/Project";
 import ImportItem from "@/data/models/ImportItem";
-import Group from "@/data/models/api/Group";
 import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import i18n from "@/i18n";
 import ImportError from "@/data/models/ImportError";
-import {checkAllValuesCreatedAndAdd} from "@/data/services/imports/import_configuration";
-import { insertValueToKey } from "./utils";
+import { insertValuesToProject, KeyGroups } from "./utils";
+import Key from "@/data/models/api/Key";
+import Value from "@/data/models/api/Value";
 
-const jsonTranslationFromJSON = (data: string, project: Project, item: ImportItem, createGroups: boolean): Project => {
+const jsonTranslationFromJSON = (data: string, project: Project, item: ImportItem): Project => {
+  const groups: KeyGroups = {};
+
   let jsonData: Record<string, any>;
   try {
     jsonData = JSON.parse(data);
@@ -15,66 +17,50 @@ const jsonTranslationFromJSON = (data: string, project: Project, item: ImportIte
     throw new ImportError(i18n.tc("import_errors.json_parse_error", null, {file: (item.content as File).name}));
   }
 
-  const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);
-
-  for (const groupString in jsonData) {
-    // KEY HAS NO GROUP SO GROUPSTRING REPRESENT KEY, PLACE IT IN COMMON GROUP
-    if (typeof jsonData[groupString] === "string") {
-      let group = project.groups.find(group => group.name === DEFAULT_GROUP_NAME);
-      if (group === undefined && createGroups) {
-        project.warnings.push(new ImportError(i18n.tc("import_errors.no_group_found_for_key", null, {key: groupString})));
-        group = defaultGroup;
-      }
-
-      insertValueToKey(
-        project,
-        jsonData[groupString],
-        groupString,
-        group.keys,
-        item.language,
-        createGroups,
-      );
+  for (const [groupString, groupsData] of Object.entries(jsonData)) {
+    if (typeof groupsData === "string") {
+      // IF NO GROUPS, DEFAULT GROUP
+      groups[DEFAULT_GROUP_NAME] = groups[DEFAULT_GROUP_NAME] || [];
+      groups[DEFAULT_GROUP_NAME].push(Key.map({
+        name: groupString,
+        values: [Value.map({
+          name: groupsData,
+          languageName: item.language,
+        })],
+      }));
     } else {
-      const group = createGroups ?
-        Group.empty(groupString)
-        : project.groups.find(group => group.name === groupString);
+      groups[groupString] = groups[groupString] || [];
 
-      for (const keyString in jsonData[groupString]) {
-        insertValueToKey(
-          project,
-          jsonData[groupString][keyString],
-          keyString,
-          group.keys,
-          item.language,
-          createGroups,
-        );
-      }
-
-      if (createGroups) {
-        project.groups.push(group);
+      for (const [key, maybeValues] of Object.entries(groupsData)) {
+        if (typeof groupsData === "string") {
+          // IF ONLY STRING FOR VALUE, SINGLE VALUE
+          groups[groupString].push(Key.map({
+            name: key,
+            values: [Value.map({
+              name: maybeValues as string,
+              languageName: item.language,
+            })],
+          }));
+        } else {
+          // IF ARRAY OF VALUES, MULTIPLE VALUES
+          groups[groupString].push(Key.map({
+            name: key,
+            values: (maybeValues as string[]).map(value => Value.map({
+              name: value,
+              languageName: item.language,
+            })),
+          }));
+        }
       }
     }
   }
 
-  if (createGroups) {
-    const indexOfCommon = project.groups.findIndex(group => group.name === DEFAULT_GROUP_NAME);
-
-    //IF NO DEFAULT GROUP HAS BEEN FOUND, CREATE IT
-    if (indexOfCommon === -1) {
-      project.groups.push(defaultGroup);
-    }
-    // IF DEFAULT GROUP (COMMON) ALREADY EXISTS IN PROJECT, MERGE IT WITH DEFAULT GROUP
-    else {
-      project.groups[indexOfCommon].keys = [...defaultGroup.keys, ...project.groups[indexOfCommon].keys];
-    }
-  }
-
-  return project;
+  return insertValuesToProject(project, groups, item.language);
 }
 
-const readFile = async (project: Project, item: ImportItem, createGroups: boolean): Promise<Project> => {
+const readFile = async (project: Project, item: ImportItem): Promise<Project> => {
   if (typeof item.content === "string") {
-    return jsonTranslationFromJSON(item.content as string, project, item, createGroups);
+    return jsonTranslationFromJSON(item.content as string, project, item);
   } else {
     return await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -82,7 +68,7 @@ const readFile = async (project: Project, item: ImportItem, createGroups: boolea
 
       reader.onload = (result) => {
         try {
-          resolve(jsonTranslationFromJSON(result.target.result.toString(), project, item, createGroups));
+          resolve(jsonTranslationFromJSON(result.target.result.toString(), project, item));
         } catch (e) {
           reject(e);
         }
@@ -95,16 +81,14 @@ const readFile = async (project: Project, item: ImportItem, createGroups: boolea
   }
 };
 
-export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[], fromExistingProject: boolean): Promise<Project> {
+export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
   //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
   // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  project = await readFile(project, items[0], !fromExistingProject);
+  project = await readFile(project, items[0]);
 
   for (const item of items.slice(1)) {
-    project = await readFile(project, item, false);
+    project = await readFile(project, item);
   }
-
-  checkAllValuesCreatedAndAdd(project);
 
   return project;
 };

@@ -207,6 +207,7 @@ export default Vue.extend({
             this.closeLanguageCreation();
           })
           .catch((e) => {
+                console.error(e);
                 if (e instanceof ImportError) {
                   this.importError = e;
                 }

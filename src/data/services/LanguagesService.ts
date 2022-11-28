@@ -28,7 +28,7 @@ class LanguagesService {
     const projectFromStore = Object.assign(Project.map({}), JSON.parse(JSON.stringify(project)));
     projectFromStore.languages.push(Language.map({name: item.language}));
 
-    const projectImport = await ImportService.importFromFiles(projectFromStore, [item], platform, true);
+    const projectImport = await ImportService.importFromFiles(projectFromStore, [item], platform);
 
     const values: Value[] = projectImport.groups.map((group) => {
       return group.keys.map((key) => {
