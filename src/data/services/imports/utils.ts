@@ -33,8 +33,7 @@ export function descape(data: string): string {
 export type KeyGroups = { [grouName: string]: Key[] };
 
 export const insertValueToKey = (project: Project, values: string[], keyString: string, groupName: string, language: string) => {
-const allKeys = project.groups.find(e => e.name === "groupName").keys;
-
+  const allKeys = project.groups.find(e => e.name === groupName).keys;
   const maybeKey = allKeys.find(key => key.name === keyString);
   const key = maybeKey === undefined ? Key.map({
     name: keyString,
@@ -45,18 +44,25 @@ const allKeys = project.groups.find(e => e.name === "groupName").keys;
   if (values.length != 1 && values.length != 3) {
     project.warnings.push(new ImportError(i18n.t("import_errors.quantity_not_found_json", {key: keyString, value: values}).toString()));
   } else {
+    // MUTATE KEY
     key.isPlural = values.length > 1;
-
-    key.values = values.map((valueString, i) =>
+    key.values = [...key.values,...values.map((valueString, i) =>
       Value.map({
         name: valueString.trim(),
         quantityString: values.length === 1 ? null : Object.values(ValueQuantity)[i],
         languageName: language,
-        keyId: key.id
+        keyId: key.id || undefined,
       })
-    );
+    )];
 
-    keys.push(key);
+    // MUTATE PROJECT
+    const resGroups = project.groups.filter(group => group.name !== groupName);
+    const resKeys = project.groups.find(e => e.name === groupName).keys.filter(e => e.name !== keyString);
+
+    project.groups = [...resGroups, Group.map({
+      name: groupName,
+      keys: [...resKeys, key],
+    })];
   }
 };
 

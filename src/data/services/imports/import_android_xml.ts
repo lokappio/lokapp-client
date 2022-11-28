@@ -2,7 +2,7 @@ import Project from "@/data/models/api/Project";
 import ImportItem from "@/data/models/ImportItem";
 import ImportError from "@/data/models/ImportError";
 import i18n from "@/i18n";
-import { insertValuesToProject, KeyGroups } from "./utils";
+import { descape, insertValuesToProject, KeyGroups } from "./utils";
 import { DEFAULT_GROUP_NAME } from "@/data/helpers/constants";
 import Key from "@/data/models/api/Key";
 import Value, { ValueQuantity } from "@/data/models/api/Value";
@@ -14,21 +14,20 @@ const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Pro
     const keyXml = items[i].getAttribute("name");
     const valueXml = items[i].innerHTML;
 
-    const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
+    const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
     const groupName: string = groupNames.find(group => keyXml.startsWith(group)) || DEFAULT_GROUP_NAME;
     const keyString = keyXml.replace(groupName + "_", "")
 
-    if (!groups[groupName]) groups[groupName] = [];
+    if (groups[groupName] === undefined) groups[groupName] = [];
 
     groups[groupName].push(Key.map({
-      name: keyString,
+      name: keyString.replace(groupName + "_", ""),
       values: [
         Value.map({
-          name: valueXml,
+          name: descape(valueXml),
           languageName: language,
         })
       ],
-      isPlural: false,
     }));
   }
 
@@ -42,7 +41,7 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
     const keyXml = items[i].getAttribute("name");
     const valuesXml: HTMLCollectionOf<Element> = items[i].getElementsByTagName("item");
 
-    const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
+    const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
     const groupName: string = groupNames.find(group => keyXml.startsWith(group)) || DEFAULT_GROUP_NAME;
 
     if (!groups[groupName]) groups[groupName] = [];
@@ -55,7 +54,7 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
 
     const values: Value[] = [];
 
-    for (let j = 0; j < values.length; j++) {
+    for (let j = 0; j < valuesXml.length; j++) {
       const quantity = valuesXml[j].getAttribute("quantity");
       const valueXml = valuesXml[j].innerHTML;
       const valueQuantity = Object.values(ValueQuantity).find(value => value === quantity);
@@ -76,7 +75,6 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
       Key.map({
         name: keyString,
         values,
-        isPlural: true,
       })
     );
   }

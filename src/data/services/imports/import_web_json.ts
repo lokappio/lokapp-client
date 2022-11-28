@@ -32,22 +32,21 @@ const jsonTranslationFromJSON = (data: string, project: Project, item: ImportIte
       groups[groupString] = groups[groupString] || [];
 
       for (const [key, maybeValues] of Object.entries(groupsData)) {
-        if (typeof groupsData === "string") {
+        if (typeof maybeValues === "string") {
           // IF ONLY STRING FOR VALUE, SINGLE VALUE
           groups[groupString].push(Key.map({
             name: key,
             values: [Value.map({
               name: maybeValues as string,
-              languageName: item.language,
             })],
           }));
         } else {
+          console.log(maybeValues);
           // IF ARRAY OF VALUES, MULTIPLE VALUES
           groups[groupString].push(Key.map({
             name: key,
             values: (maybeValues as string[]).map(value => Value.map({
               name: value,
-              languageName: item.language,
             })),
           }));
         }

@@ -14,6 +14,7 @@ export default class Group {
 
     group.id = data.id;
     group.name = data.name;
+    group.keys = data.keys;
 
     return group;
   }

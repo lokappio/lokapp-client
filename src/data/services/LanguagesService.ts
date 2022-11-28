@@ -29,7 +29,6 @@ class LanguagesService {
     projectFromStore.languages.push(Language.map({name: item.language}));
 
     const projectImport = await ImportService.importFromFiles(projectFromStore, [item], platform);
-
     const values: Value[] = projectImport.groups.map((group) => {
       return group.keys.map((key) => {
         return key.values.filter((value) => (value.id === null || value.id === undefined) && (value.keyId !== undefined && value.keyId !== null));
@@ -37,8 +36,8 @@ class LanguagesService {
     }).flat(2);
 
     await this.createLanguage(item.language, values);
-    //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
 
+    //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
     return await projectsService.getEntireProjectById(projectImport.id);
   }
 

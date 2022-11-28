@@ -45,8 +45,10 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
           const valueQuantity = Object.values(ValueQuantity).find(value => value === quantityString);
 
           if (valueQuantity) {
-            const value = Value.map({name: translations[index + 1].innerHTML, quantityString: valueQuantity, languageName: languageName});
-            values.push(value);
+            values.push(Value.map({
+              name: translations[index + 1].innerHTML,
+              quantityString: valueQuantity,
+            }));
           }
         }
       });
@@ -55,13 +57,12 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
         throw new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName}));
       }
 
-      const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
+      const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
       const groupName = groupNames.find(group => keyString.startsWith(group)) || DEFAULT_GROUP_NAME;
 
       groups[groupName].push(Key.map({
-        name: keyString.replace(groupName, "").trim(),
+        name: keyString.replace(groupName + "_", "").trim(),
         values: values,
-        isPlural: true,
       }));
     }
   });
@@ -86,12 +87,10 @@ const stringsTranslation = (data: string, project: Project, languageName: string
         }
 
         groups[currentGroupName].push(Key.map({
-          name: token.value.key,
+          name: token.value.key.replace(currentGroupName + "_", ""),
           values: [Value.map({
             name: token.value.value,
-            languageName: languageName,
           })],
-          isPlural: false,
         }));
         break;
     }
