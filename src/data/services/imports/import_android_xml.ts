@@ -21,7 +21,7 @@ const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Pro
     if (groups[groupName] === undefined) groups[groupName] = [];
 
     groups[groupName].push(Key.map({
-      name: keyString.replace(groupName + "_", ""),
+      name: keyString,
       values: [
         Value.map({
           name: descape(valueXml),
