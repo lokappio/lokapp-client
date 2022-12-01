@@ -16,7 +16,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
   const groupNames = data.matchAll(/<!--\s*MARK:\s+-\s+([A-z_0-9]+)\s*-->/g);
   if (groupNames) {
     for (const match of groupNames) {
-      let groupName = match[1]
+      const groupName = match[1]
       groups[groupName] = [];
       project.groups.push(Group.empty(groupName));
     }
@@ -82,7 +82,7 @@ const stringsTranslation = (data: string, project: Project, languageName: string
   const groupNames = data.matchAll(/\/\/\s*MARK:\s+-\s+([A-z_0-9]+)/g);
   if (groupNames) {
     for (const match of groupNames) {
-      let groupName = match[1]
+      const groupName = match[1]
       groups[groupName] = [];
       project.groups.push(Group.empty(groupName));
     }

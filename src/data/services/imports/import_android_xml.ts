@@ -89,7 +89,7 @@ const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem
   const groupNames = data.matchAll(/<!--\s*MARK:\s+-\s+([A-z0-9]+)\s*-->/g);
   if (groupNames) {
     for (const match of groupNames) {
-      let groupName = match[1]
+      const groupName = match[1]
       groups[groupName] = [];
       project.groups.push(Group.empty(groupName));
     }

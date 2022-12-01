@@ -70,7 +70,7 @@ export const insertValuesToProject = (project: Project, keygroups: KeyGroups, la
   const indexOfCommon = project.groups.findIndex(group => group.name === DEFAULT_GROUP_NAME);
   const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);
 
-  let newProject: Project = Project.map(project);
+  const newProject: Project = Project.map(project);
 
   //IF NO DEFAULT GROUP HAS BEEN FOUND, CREATE IT
   if (indexOfCommon === -1) {
