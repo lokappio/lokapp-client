@@ -70,13 +70,15 @@ export const insertValuesToProject = (project: Project, keygroups: KeyGroups, la
   const indexOfCommon = project.groups.findIndex(group => group.name === DEFAULT_GROUP_NAME);
   const defaultGroup = Group.empty(DEFAULT_GROUP_NAME);
 
+  let newProject: Project = Project.map(project);
+
   //IF NO DEFAULT GROUP HAS BEEN FOUND, CREATE IT
   if (indexOfCommon === -1) {
-    project.groups.push(defaultGroup);
+    newProject.groups.push(defaultGroup);
   }
   // IF DEFAULT GROUP (COMMON) ALREADY EXISTS IN PROJECT, MERGE IT WITH DEFAULT GROUP
   else {
-    project.groups[indexOfCommon].keys = [...defaultGroup.keys, ...project.groups[indexOfCommon].keys];
+    newProject.groups[indexOfCommon].keys = [...defaultGroup.keys, ...project.groups[indexOfCommon].keys];
   }
 
   for (const groupName of Object.keys(keygroups)) {
@@ -89,9 +91,9 @@ export const insertValuesToProject = (project: Project, keygroups: KeyGroups, la
     for (const key of keys) {
       const values = key.values.map(e => e.name);
 
-      insertValueToKey(project, values, key.name, groupName, languageName);
+      insertValueToKey(newProject, values, key.name, groupName, languageName);
     }
   }
 
-  return project;
+  return newProject;
 }

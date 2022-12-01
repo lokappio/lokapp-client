@@ -32,24 +32,13 @@ const jsonTranslationFromJSON = (data: string, project: Project, item: ImportIte
       groups[groupString] = groups[groupString] || [];
 
       for (const [key, maybeValues] of Object.entries(groupsData)) {
-        if (typeof maybeValues === "string") {
-          // IF ONLY STRING FOR VALUE, SINGLE VALUE
-          groups[groupString].push(Key.map({
-            name: key,
-            values: [Value.map({
-              name: maybeValues as string,
-            })],
-          }));
-        } else {
-          console.log(maybeValues);
-          // IF ARRAY OF VALUES, MULTIPLE VALUES
-          groups[groupString].push(Key.map({
-            name: key,
-            values: (maybeValues as string[]).map(value => Value.map({
-              name: value,
-            })),
-          }));
-        }
+        // IF ARRAY OF VALUES, MULTIPLE VALUES
+        groups[groupString].push(Key.map({
+          name: key,
+          values: (maybeValues as string).split(/[^\\]\|/).map(value => Value.map({
+            name: value,
+          })),
+        }));
       }
     }
   }
@@ -57,7 +46,7 @@ const jsonTranslationFromJSON = (data: string, project: Project, item: ImportIte
   return insertValuesToProject(project, groups, item.language);
 }
 
-const readFile = async (project: Project, item: ImportItem): Promise<Project> => {
+export const importWebJson = async (project: Project, item: ImportItem): Promise<Project> => {
   if (typeof item.content === "string") {
     return jsonTranslationFromJSON(item.content as string, project, item);
   } else {
@@ -78,16 +67,4 @@ const readFile = async (project: Project, item: ImportItem): Promise<Project> =>
       };
     });
   }
-};
-
-export const projectTranslationFromJSONFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
-  //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
-  // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  project = await readFile(project, items[0]);
-
-  for (const item of items.slice(1)) {
-    project = await readFile(project, item);
-  }
-
-  return project;
 };

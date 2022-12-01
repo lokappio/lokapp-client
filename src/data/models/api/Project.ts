@@ -44,6 +44,8 @@ export default class Project {
     project.description = data?.description ?? "";
     project.createdAt = data.createdAt;
     project.updatedAt = data.updatedAt;
+    project.languages = data.languages ?? [];
+    project.groups = data.groups ?? [];
 
     return project;
   }

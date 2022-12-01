@@ -6,6 +6,7 @@ import { descape, insertValuesToProject, KeyGroups } from "./utils";
 import { DEFAULT_GROUP_NAME } from "@/data/helpers/constants";
 import Key from "@/data/models/api/Key";
 import Value, { ValueQuantity } from "@/data/models/api/Value";
+import Group from "@/data/models/api/Group";
 
 const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Project, language: string): Project => {
   const groups: KeyGroups = {};
@@ -85,12 +86,15 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
 const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem): Project => {
   const groups: KeyGroups = {};
 
-  const groupNames = data.match(/<!--\s*MARK:\s+([A-z0-9]+)\s*-->/);
+  const groupNames = data.matchAll(/<!--\s*MARK:\s+-\s+([A-z0-9]+)\s*-->/g);
   if (groupNames) {
-    for (const group of groupNames) {
-      groups[group] = [];
+    for (const match of groupNames) {
+      let groupName = match[1]
+      groups[groupName] = [];
+      project.groups.push(Group.empty(groupName));
     }
   }
+
 
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(data, "text/xml");
@@ -104,7 +108,7 @@ const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem
   return project;
 };
 
-const readFile = async (project: Project, item: ImportItem): Promise<Project> => {
+export const importAndroidXml = async (project: Project, item: ImportItem): Promise<Project> => {
   if (typeof item.content === "string") {
     return jsonTranslationFromXML(item.content as string, project, item);
   } else {
@@ -126,15 +130,3 @@ const readFile = async (project: Project, item: ImportItem): Promise<Project> =>
     })
   }
 }
-
-export const projectTranslationFromXMLFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
-  //FIRST FILE IS USED TO FILL THE GROUPS AND KEYS OF THE PROJECT (AND ADD VALUES)
-  // NEXT FILES ARE USED TO ADD THE VALUES ONLY
-  project = await readFile(project, items[0]);
-
-  for (const item of items.slice(1)) {
-    project = await readFile(project, item);
-  }
-
-  return project;
-};

@@ -1,8 +1,8 @@
 import { descape } from "./utils";
 
 interface Token {
-  type: string;
-  value: any;
+  key: string;
+  value: string;
 }
 
 function match(data: string, index: number, regex: RegExp, label?: string): string {
@@ -35,9 +35,6 @@ function ignore(data: string, index: number, newline: boolean): number {
     // Ignore comments then multiline comments
     if (part[0] === '/') {
       if (part[1] === '/') {
-        // !!! Do not ignore if it's a MARK: comment !!!
-        const nextWordIndex = ignore(part, 2, false);
-        if (part[2 + nextWordIndex] === 'M') break;
         curr += match(part, 0, /^\/\/[^\n\r]*[\n\r]+/, 'single line comment').length;
         continue;
       }
@@ -52,48 +49,6 @@ function ignore(data: string, index: number, newline: boolean): number {
   }
 
   return curr;
-}
-
-function parseSection(data: string, index: number): [Token, number] {
-  let subindex = 0;
-
-  const part = data.slice(index, data.length);
-
-  // Parse double slash
-  subindex += match(part, subindex, /^\/\//, 'double slash').length;
-
-  // Ignore whitespaces
-  subindex += ignore(part, subindex, false);
-
-  // Parse MARK:
-  subindex += match(part, subindex, /^MARK:/, 'MARK:').length;
-
-  // Ignore whitespaces
-  subindex += ignore(part, subindex, false);
-
-  // Parse - (dash)
-  subindex += match(part, subindex, /^-/, 'dash').length;
-
-  // Ignore whitespaces
-  subindex += ignore(part, subindex, false);
-
-  // Parse section name
-  const sectionName = match(part, subindex, /^[A-Za-z0-9_]+/, 'section name');
-  subindex += sectionName.length;
-
-  // Ignore whitespaces
-  subindex += ignore(part, subindex, false);
-
-  // Parse new line
-  subindex += match(part, subindex, /^[\n\r]+/, 'new line').length;
-
-  return [
-    {
-      type: 'section',
-      value: sectionName,
-    },
-    subindex,
-  ];
 }
 
 function parseKeyVal(data: string, index: number): [Token, number] {
@@ -126,11 +81,8 @@ function parseKeyVal(data: string, index: number): [Token, number] {
 
   return [
     {
-      value: {
-        key: descape(key),
-        value: descape(value),
-      },
-      type: 'entry',
+      key: descape(key),
+      value: descape(value),
     },
     subindex,
   ];
@@ -149,14 +101,6 @@ const parse = (data: string): Token[] => {
     // Parse key value
     if (c === '"') {
       const [token, addIndex] = parseKeyVal(data, index);
-      index = index + addIndex;
-      res.push(token);
-    }
-
-    // Parse section
-    if (c === '/') {
-      const [token, addIndex] = parseSection(data, index);
-
       index = index + addIndex;
       res.push(token);
     }

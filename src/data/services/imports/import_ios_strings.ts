@@ -7,14 +7,18 @@ import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import IOSParser from "./ios_parser";
 import { insertValuesToProject, KeyGroups } from "./utils";
 import Key from "@/data/models/api/Key";
+import Group from "@/data/models/api/Group";
 
 const stringsDictTranslation = (data: string, project: Project, languageName: string, fileName: string): Project => {
   const groups: KeyGroups = {};
+  groups[DEFAULT_GROUP_NAME] = [];
 
-  const groupNames = data.match(/<!--\s*MARK:\s+([A-z0-9]+)\s*-->/);
+  const groupNames = data.matchAll(/<!--\s*MARK:\s+-\s+([A-z_0-9]+)\s*-->/g);
   if (groupNames) {
-    for (const group of groupNames) {
-      groups[group] = [];
+    for (const match of groupNames) {
+      let groupName = match[1]
+      groups[groupName] = [];
+      project.groups.push(Group.empty(groupName));
     }
   }
 
@@ -66,34 +70,34 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
       }));
     }
   });
-
   return insertValuesToProject(project, groups, languageName);
 }
 
 const stringsTranslation = (data: string, project: Project, languageName: string): Project => {
   const tokens = IOSParser(data);
 
-  let currentGroupName = DEFAULT_GROUP_NAME;
-
   const groups: KeyGroups = {};
-  for (const token of tokens) {
-    switch (token.type) {
-      case "section":
-        currentGroupName = token.value;
-        break;
-      case "entry":
-        if (groups[currentGroupName] === undefined) {
-          groups[currentGroupName] = [];
-        }
+  groups[DEFAULT_GROUP_NAME] = [];
 
-        groups[currentGroupName].push(Key.map({
-          name: token.value.key.replace(currentGroupName + "_", ""),
-          values: [Value.map({
-            name: token.value.value,
-          })],
-        }));
-        break;
+  const groupNames = data.matchAll(/\/\/\s*MARK:\s+-\s+([A-z_0-9]+)/g);
+  if (groupNames) {
+    for (const match of groupNames) {
+      let groupName = match[1]
+      groups[groupName] = [];
+      project.groups.push(Group.empty(groupName));
     }
+  }
+
+  for (const token of tokens) {
+    const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
+    const groupName = groupNames.find(group => token.key.startsWith(group)) || DEFAULT_GROUP_NAME;
+
+    groups[groupName].push(Key.map({
+      name: token.key.replace(groupName + "_", ""),
+      values: [Value.map({
+        name: token.value,
+      })],
+    }));
   }
 
   return insertValuesToProject(project, groups, languageName);
@@ -147,27 +151,15 @@ const stringsDictFile = async (content: File | string, project: Project, languag
   }
 };
 
-const jsonTranslationFromStrings = async (project: Project, item: ImportItem): Promise<Project> => {
+export const importIOSStrings = async (project: Project, item: ImportItem): Promise<Project> => {
   for (const content of (item.content as (ItemIOS | File)[])) {
     const extension = item.fromTest ? (content as ItemIOS).extension : (content as File).name.split(".").pop();
 
     switch (extension) {
       case "strings":
-        project = await stringsFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
-        break;
+        return await stringsFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
       case "stringsdict":
-        project = await stringsDictFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
-        break;
+        return await stringsDictFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
     }
   }
-
-  return project;
-};
-
-export const projectTranslationFromStringsFiles = async function (project: Project, items: ImportItem[]): Promise<Project> {
-  for (const item of items) {
-    project = await jsonTranslationFromStrings(project, item);
-  }
-
-  return project;
 };
