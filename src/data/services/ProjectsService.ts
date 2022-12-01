@@ -27,7 +27,7 @@ class ProjectsService {
     project.groups = [];
 
     const projectImport = await ImportService.importFromFiles(project, items, platform);
-    const createdProject = await this.createProject(project, items.map((item) => item.language));
+    const createdProject = await this.createProject(projectImport, items.map((item) => item.language));
 
     localStorage.setItem(createdProject.id.toString(), JSON.stringify(projectImport.warnings));
     return createdProject.id;
@@ -37,7 +37,6 @@ class ProjectsService {
     return await ApiService.getAPI(`${ProjectsService.projectsUrl}/${projectId}/details`)
       .then((response) => Project.mapEntire(response.data));
   }
-
 
   public static changeProjectSettings(project: Project): Promise<Project | void> {
     const bodyParameters = {

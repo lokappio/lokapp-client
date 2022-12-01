@@ -6,11 +6,8 @@ import { descape, insertValuesToProject, KeyGroups } from "./utils";
 import { DEFAULT_GROUP_NAME } from "@/data/helpers/constants";
 import Key from "@/data/models/api/Key";
 import Value, { ValueQuantity } from "@/data/models/api/Value";
-import Group from "@/data/models/api/Group";
 
-const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Project, language: string): Project => {
-  const groups: KeyGroups = {};
-
+const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Project, language: string, groups: KeyGroups): Project => {
   for (let i = 0; i < items.length; i++) {
     const keyXml = items[i].getAttribute("name");
     const valueXml = items[i].innerHTML;
@@ -18,8 +15,6 @@ const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Pro
     const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
     const groupName: string = groupNames.find(group => keyXml.startsWith(group)) || DEFAULT_GROUP_NAME;
     const keyString = keyXml.replace(groupName + "_", "")
-
-    if (groups[groupName] === undefined) groups[groupName] = [];
 
     groups[groupName].push(Key.map({
       name: keyString,
@@ -35,17 +30,13 @@ const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Pro
   return insertValuesToProject(project, groups, language);
 };
 
-const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Project, language: string) => {
-  const groups: KeyGroups = {};
-
+const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Project, language: string, groups: KeyGroups) => {
   for (let i = 0; i < items.length; i++) {
     const keyXml = items[i].getAttribute("name");
     const valuesXml: HTMLCollectionOf<Element> = items[i].getElementsByTagName("item");
 
     const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
     const groupName: string = groupNames.find(group => keyXml.startsWith(group)) || DEFAULT_GROUP_NAME;
-
-    if (!groups[groupName]) groups[groupName] = [];
 
     const keyString = keyXml.replace(groupName + "_", "")
 
@@ -86,15 +77,15 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
 const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem): Project => {
   const groups: KeyGroups = {};
 
-  const groupNames = data.matchAll(/<!--\s*MARK:\s+-\s+([A-z0-9]+)\s*-->/g);
+  const groupNames = data.matchAll(/<!--\s*([A-z_0-9]+)\s*-->/g);
+  groups[DEFAULT_GROUP_NAME] = [];
+
   if (groupNames) {
     for (const match of groupNames) {
       const groupName = match[1]
       groups[groupName] = [];
-      project.groups.push(Group.empty(groupName));
     }
   }
-
 
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(data, "text/xml");
@@ -102,8 +93,8 @@ const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem
   const plurals = xmlDoc.getElementsByTagName("plural");
   const singular = xmlDoc.getElementsByTagName("string");
 
-  project = insertValueToKeyPlural(plurals, project, item.language);
-  project = insertValueToKeySingular(singular, project, item.language);
+  project = insertValueToKeyPlural(plurals, project, item.language, groups);
+  project = insertValueToKeySingular(singular, project, item.language, groups);
 
   return project;
 };

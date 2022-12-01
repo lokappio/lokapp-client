@@ -9,6 +9,7 @@ import Value from "@/data/models/api/Value";
 
 const jsonTranslationFromJSON = (data: string, project: Project, item: ImportItem): Project => {
   const groups: KeyGroups = {};
+  groups[DEFAULT_GROUP_NAME] = groups[DEFAULT_GROUP_NAME] || [];
 
   let jsonData: Record<string, any>;
   try {
@@ -20,7 +21,6 @@ const jsonTranslationFromJSON = (data: string, project: Project, item: ImportIte
   for (const [groupString, groupsData] of Object.entries(jsonData)) {
     if (typeof groupsData === "string") {
       // IF NO GROUPS, DEFAULT GROUP
-      groups[DEFAULT_GROUP_NAME] = groups[DEFAULT_GROUP_NAME] || [];
       groups[DEFAULT_GROUP_NAME].push(Key.map({
         name: groupString,
         values: [Value.map({

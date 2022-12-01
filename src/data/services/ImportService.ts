@@ -24,8 +24,6 @@ export default class ImportService {
       }
     }
 
-    console.log(JSON.stringify(res));
-
     if (res !== null) {
       checkAllValuesCreatedAndAdd(res);
     }

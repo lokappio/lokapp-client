@@ -7,7 +7,6 @@ import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import IOSParser from "./ios_parser";
 import { insertValuesToProject, KeyGroups } from "./utils";
 import Key from "@/data/models/api/Key";
-import Group from "@/data/models/api/Group";
 
 const stringsDictTranslation = (data: string, project: Project, languageName: string, fileName: string): Project => {
   const groups: KeyGroups = {};
@@ -18,7 +17,6 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
     for (const match of groupNames) {
       const groupName = match[1]
       groups[groupName] = [];
-      project.groups.push(Group.empty(groupName));
     }
   }
 
@@ -32,7 +30,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
       let keyString: string = null;
 
       try {
-        if (globalDictItems[indexGlobal - 1].nodeName !== "key"){
+        if (globalDictItems[indexGlobal - 1].nodeName !== "key") {
           throw new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName}));
         }
 
@@ -84,7 +82,6 @@ const stringsTranslation = (data: string, project: Project, languageName: string
     for (const match of groupNames) {
       const groupName = match[1]
       groups[groupName] = [];
-      project.groups.push(Group.empty(groupName));
     }
   }
 

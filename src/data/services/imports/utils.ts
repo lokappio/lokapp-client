@@ -84,8 +84,8 @@ export const insertValuesToProject = (project: Project, keygroups: KeyGroups, la
   for (const groupName of Object.keys(keygroups)) {
     const keys = keygroups[groupName];
 
-    if (!project.groups.map(g => g.name).includes(groupName)) {
-      project.groups.push(Group.empty(groupName));
+    if (!newProject.groups.map(g => g.name).includes(groupName)) {
+      newProject.groups.push(Group.empty(groupName));
     }
 
     for (const key of keys) {
