@@ -45,11 +45,11 @@ class KeysService {
       })
     }));
 
-    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/create_keys", bodyParameters);
+    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/keys", bodyParameters);
     return result.data.map(Key.map);
   }
 
-  public static async createKey(key: Key, group: Group, projectId: number = this.projectId, values: Value[] = null): Promise<Key> {
+  public static async createKey(key: Key, group: Group, projectId: number = this.projectId, values: Value[] = []): Promise<Key> {
     const bodyParameters = {
       name: key.name,
       groupId: group.isNewGroup ? null : group.id,
@@ -64,7 +64,7 @@ class KeysService {
       })
     };
 
-    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/create_key", bodyParameters);
+    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations", bodyParameters);
     return Key.map(result.data);
   }
 
