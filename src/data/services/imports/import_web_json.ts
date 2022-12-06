@@ -11,6 +11,10 @@ const jsonTranslationFromJSON = (data: string, project: Project, item: ImportIte
   const groups: KeyGroups = {};
   groups[DEFAULT_GROUP_NAME] = groups[DEFAULT_GROUP_NAME] || [];
 
+  for (const groupName of project.groups) {
+    groups[groupName.name] = [];
+  }
+
   let jsonData: Record<string, any>;
   try {
     jsonData = JSON.parse(data);

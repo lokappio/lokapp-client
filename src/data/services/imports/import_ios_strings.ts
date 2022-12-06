@@ -12,12 +12,16 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
   const groups: KeyGroups = {};
   groups[DEFAULT_GROUP_NAME] = [];
 
-  const groupNames = data.matchAll(/<!--\s*MARK:\s+-\s+([A-z_0-9]+)\s*-->/g);
+  const groupNames = data.matchAll(/<!--\s*MARK:\s+([A-z_0-9]+)\s*-->/g);
   if (groupNames) {
     for (const match of groupNames) {
       const groupName = match[1]
       groups[groupName] = [];
     }
+  }
+
+  for (const groupName of project.groups) {
+    groups[groupName.name] = [];
   }
 
   const fileString: string = data;
@@ -59,7 +63,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
         throw new ImportError(i18n.tc("import_errors.stringsdict_parse_error", null, {file: fileName}));
       }
 
-      const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
+      const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
       const groupName = groupNames.find(group => keyString.startsWith(group)) || DEFAULT_GROUP_NAME;
 
       groups[groupName].push(Key.map({
@@ -68,6 +72,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
       }));
     }
   });
+
   return insertValuesToProject(project, groups, languageName);
 }
 
@@ -85,12 +90,18 @@ const stringsTranslation = (data: string, project: Project, languageName: string
     }
   }
 
+  for (const groupName of project.groups) {
+    groups[groupName.name] = [];
+  }
+
   for (const token of tokens) {
-    const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
+    const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
     const groupName = groupNames.find(group => token.key.startsWith(group)) || DEFAULT_GROUP_NAME;
 
+    const keyString = token.key.replace(groupName + "_", "")
+
     groups[groupName].push(Key.map({
-      name: token.key.replace(groupName + "_", ""),
+      name: keyString,
       values: [Value.map({
         name: token.value,
       })],

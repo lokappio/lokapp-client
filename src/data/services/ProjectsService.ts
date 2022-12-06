@@ -27,6 +27,7 @@ class ProjectsService {
     project.groups = [];
 
     const projectImport = await ImportService.importFromFiles(project, items, platform);
+
     const createdProject = await this.createProject(projectImport, items.map((item) => item.language));
 
     localStorage.setItem(createdProject.id.toString(), JSON.stringify(projectImport.warnings));

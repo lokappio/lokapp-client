@@ -35,7 +35,7 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
     const keyXml = items[i].getAttribute("name");
     const valuesXml: HTMLCollectionOf<Element> = items[i].getElementsByTagName("item");
 
-    const groupNames = project.groups.map(e => e.name).sort((a, b) => b.length - a.length);
+    const groupNames = Object.keys(groups).sort((a, b) => b.length - a.length);
     const groupName: string = groupNames.find(group => keyXml.startsWith(group)) || DEFAULT_GROUP_NAME;
 
     const keyString = keyXml.replace(groupName + "_", "")
@@ -79,6 +79,10 @@ const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem
 
   const groupNames = data.matchAll(/<!--\s*([A-z_0-9]+)\s*-->/g);
   groups[DEFAULT_GROUP_NAME] = [];
+
+  for (const groupName of project.groups) {
+    groups[groupName.name] = [];
+  }
 
   if (groupNames) {
     for (const match of groupNames) {
