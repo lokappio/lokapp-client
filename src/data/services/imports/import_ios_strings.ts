@@ -1,18 +1,19 @@
+import { DEFAULT_GROUP_NAME } from "@/data/helpers/constants";
+import Key from "@/data/models/api/Key";
 import Project from "@/data/models/api/Project";
-import ImportItem, {ItemIOS} from "@/data/models/ImportItem";
-import Value, {ValueQuantity} from "@/data/models/api/Value";
+import Value, { ValueQuantity } from "@/data/models/api/Value";
 import ImportError from "@/data/models/ImportError";
+import ImportItem, { ItemIOS } from "@/data/models/ImportItem";
 import i18n from "@/i18n";
-import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 import IOSParser from "./ios_parser";
 import { insertValuesToProject, KeyGroups } from "./utils";
-import Key from "@/data/models/api/Key";
 
 const stringsDictTranslation = (data: string, project: Project, languageName: string, fileName: string): Project => {
   const groups: KeyGroups = {};
   groups[DEFAULT_GROUP_NAME] = [];
 
-  const groupNames = data.matchAll(/<!--\s*MARK:\s+([A-z_0-9]+)\s*-->/g);
+  const groupNames = data.matchAll(/<!--\s*MARK:\s+([A-z_0-9-]+)\s*-->/g);
+  
   if (groupNames) {
     for (const match of groupNames) {
       const groupName = match[1]
@@ -29,6 +30,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
   const xmlDoc = parser.parseFromString(fileString, "text/xml");
 
   const globalDictItems = [...xmlDoc.getElementsByTagName("dict")[0].children];
+
   globalDictItems.forEach((child, indexGlobal) => {
     if (child.nodeName === "dict") {
       let keyString: string = null;
@@ -45,6 +47,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
 
       const values: Value[] = [];
       const translations = [...child.getElementsByTagName("dict")[0].children];
+
       translations.forEach((tag, index) => {
         if (tag.nodeName === "key") {
           const quantityString = tag.innerHTML;
@@ -76,13 +79,14 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
   return insertValuesToProject(project, groups, languageName);
 }
 
+
 const stringsTranslation = (data: string, project: Project, languageName: string): Project => {
   const tokens = IOSParser(data);
 
   const groups: KeyGroups = {};
   groups[DEFAULT_GROUP_NAME] = [];
 
-  const groupNames = data.matchAll(/\/\/\s*MARK:\s+-\s+([A-z_0-9]+)/g);
+  const groupNames = data.matchAll(/\/\/\s*MARK:\s+-\s+([A-z_0-9-]+)/g);
   if (groupNames) {
     for (const match of groupNames) {
       const groupName = match[1]
@@ -111,12 +115,14 @@ const stringsTranslation = (data: string, project: Project, languageName: string
   return insertValuesToProject(project, groups, languageName);
 }
 
+
+
 //.strings FILES == WHERE SINGULAR KEYS ARE DEFINED
 const stringsFile = async (content: File | string, project: Project, languageName: string): Promise<Project> => {
   if(typeof content === "string") {
     return stringsTranslation(content, project, languageName);
   } else {
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsText(content);
 
@@ -140,7 +146,7 @@ const stringsDictFile = async (content: File | string, project: Project, languag
   if (typeof content === "string") {
     return stringsDictTranslation(content, project, languageName, "");
   } else {
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsText(content);
 
@@ -159,15 +165,22 @@ const stringsDictFile = async (content: File | string, project: Project, languag
   }
 };
 
+
 export const importIOSStrings = async (project: Project, item: ImportItem): Promise<Project> => {
-  for (const content of (item.content as (ItemIOS | File)[])) {
+  const contents = item.content as (ItemIOS | File)[]
+
+  for (const content of contents) {
     const extension = item.fromTest ? (content as ItemIOS).extension : (content as File).name.split(".").pop();
 
     switch (extension) {
       case "strings":
-        return await stringsFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
+        project = await stringsFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
+        break;
       case "stringsdict":
-        return await stringsDictFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
+        project = await stringsDictFile(item.fromTest ? (content as ItemIOS).content : (content as File), project, item.language);
+        break;
     }
   }
+
+  return project;
 };
