@@ -77,7 +77,7 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
 const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem): Project => {
   const groups: KeyGroups = {};
 
-  const groupNames = data.matchAll(/<!--\s*([A-z_0-9]+)\s*-->/g);
+  const groupNames = data.matchAll(/<!--\s*([A-z_0-9-]+)\s*-->/g);
   groups[DEFAULT_GROUP_NAME] = [];
 
   for (const groupName of project.groups) {
