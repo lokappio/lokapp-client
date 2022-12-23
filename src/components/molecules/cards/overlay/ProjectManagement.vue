@@ -5,7 +5,7 @@
       <!-- Title -->
       <v-row no-gutters :style="{ 'height':'50px' }">
         <v-col cols="11" class="px-0">
-          <h2 class="title-h2">{{ this.isCreating ? this.$t("project_creation.title") : this.$t("project_manage.title") }}</h2>
+          <h2 class="title-h2">{{ isCreating ? $t("project_creation.title") : $t("project_manage.title") }}</h2>
         </v-col>
 
         <v-col cols="1" class="pr-0">
@@ -46,7 +46,7 @@
 
         <v-row no-gutters>
           <v-col :style="{ 'height':'50px' }" cols="3" class="pa-0">
-            <div class="current-project-color" :style="{ 'background-color':'#' + this.updatedProject.color }"></div>
+            <div class="current-project-color" :style="{ 'background-color':'#' + updatedProject.color }"></div>
           </v-col>
         </v-row>
 
@@ -236,15 +236,15 @@
 </template>
 
 <script lang="ts">
-import {projectNameRules} from "@/data/rules/ProjectRules";
-import {colorRules} from "@/data/rules/ColorRules";
-import Vue from "vue";
 import Project from "@/data/models/api/Project";
-import {languageNameRules} from "@/data/rules/LanguageRules";
-import ImportItem from "@/data/models/ImportItem";
+import { Platform, PlatformExtension, PlatformFileExpected } from "@/data/models/enums/project";
 import ImportError from "@/data/models/ImportError";
-import {Platform, PlatformExtension, PlatformFileExpected} from "@/data/models/enums/project";
-import {importRules, iOSImportRules} from "@/data/rules/ImportRules";
+import ImportItem from "@/data/models/ImportItem";
+import { colorRules } from "@/data/rules/ColorRules";
+import { importRules, iOSImportRules } from "@/data/rules/ImportRules";
+import { languageNameRules } from "@/data/rules/LanguageRules";
+import { projectNameRules } from "@/data/rules/ProjectRules";
+import Vue from "vue";
 
 export default Vue.extend({
   name: "project-management",
@@ -317,9 +317,9 @@ export default Vue.extend({
 
                   this.closeManageProject();
                   this.$router.push(`/projects/${id}`);
-                  window && window.location.reload();
+                  // window && window.location.reload();
                 })
-                .catch((e) => {
+                .catch((e: any) => {
                       console.error(e);
 
                       if (e instanceof ImportError) {
@@ -349,7 +349,7 @@ export default Vue.extend({
               this.$emit("projectUpdated", this.updatedProject);
               this.closeManageProject();
             })
-            .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
+            .catch((error: any) => this.$notify(this.$t(error).toString(), {color: "red"}))
             .finally(() => this.loading = false);
       }
     },
@@ -357,7 +357,7 @@ export default Vue.extend({
       if ((this.$refs.formChangeSettings as Vue & { validate: () => boolean }).validate() === true) {
         this.loading = true;
         this.$service.projects.createProject(this.updatedProject, [this.languageName.toLowerCase()])
-            .then((project) => {
+            .then((project: Project) => {
               this.loading = false;
               this.closeManageProject();
 

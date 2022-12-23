@@ -1,11 +1,11 @@
-import Project from "@/data/models/api/Project";
-import ImportItem from "@/data/models/ImportItem";
-import ImportError from "@/data/models/ImportError";
-import i18n from "@/i18n";
-import { descape, insertValuesToProject, KeyGroups } from "./utils";
 import { DEFAULT_GROUP_NAME } from "@/data/helpers/constants";
 import Key from "@/data/models/api/Key";
+import Project from "@/data/models/api/Project";
 import Value, { ValueQuantity } from "@/data/models/api/Value";
+import ImportError from "@/data/models/ImportError";
+import ImportItem from "@/data/models/ImportItem";
+import i18n from "@/i18n";
+import { descape, insertValuesToProject, KeyGroups } from "./utils";
 
 const insertValueToKeySingular = (items: HTMLCollectionOf<Element>, project: Project, language: string, groups: KeyGroups): Project => {
   for (let i = 0; i < items.length; i++) {
@@ -53,7 +53,7 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
 
       if (valueQuantity) {
         values.push(Value.map({
-          name: valueXml,
+          name: descape(valueXml),
           quantityString: valueQuantity,
           languageName: language,
         }));
@@ -94,12 +94,12 @@ const jsonTranslationFromXML = (data: string, project: Project, item: ImportItem
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(data, "text/xml");
 
-  const plurals = xmlDoc.getElementsByTagName("plural");
+  const plurals = xmlDoc.getElementsByTagName("plurals");
   const singular = xmlDoc.getElementsByTagName("string");
 
   project = insertValueToKeyPlural(plurals, project, item.language, groups);
   project = insertValueToKeySingular(singular, project, item.language, groups);
-
+   
   return project;
 };
 

@@ -46,14 +46,22 @@ export const insertValueToKey = (project: Project, values: string[], keyString: 
   } else {
     // MUTATE KEY
     key.isPlural = values.length > 1;
-    key.values = [...key.values,...values.map((valueString, i) =>
+    const newValues = values.map((valueString, i) =>
       Value.map({
         name: valueString.trim(),
         quantityString: values.length === 1 ? null : Object.values(ValueQuantity)[i],
         languageName: language,
         keyId: key.id || undefined,
       })
-    )];
+    )
+
+    newValues.forEach(nv => {
+      if (key.values.filter(v => v.name == nv.name && v.languageName == nv.languageName).length > 0) {
+        return;
+      }
+
+      key.values.push(nv)
+    })
 
     // MUTATE PROJECT
     const resGroups = project.groups.filter(group => group.name !== groupName);

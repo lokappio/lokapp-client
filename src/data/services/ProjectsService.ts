@@ -1,13 +1,13 @@
 import config from "@/config";
-import {AxiosResponse} from "axios";
-import ProjectUser from "../models/api/ProjectUser";
-import {Role} from "../models/roles/role.enum";
-import ApiService from "./ApiService";
-import Project from "@/data/models/api/Project";
 import Language from "@/data/models/api/Language";
+import Project from "@/data/models/api/Project";
+import { Platform } from "@/data/models/enums/project";
 import ImportItem from "@/data/models/ImportItem";
 import ImportService from "@/data/services/ImportService";
-import {Platform} from "@/data/models/enums/project";
+import { AxiosResponse } from "axios";
+import ProjectUser from "../models/api/ProjectUser";
+import { Role } from "../models/roles/role.enum";
+import ApiService from "./ApiService";
 
 class ProjectsService {
   static projectsUrl: string = config.baseUrl + "/projects";
@@ -26,11 +26,10 @@ class ProjectsService {
     project.languages = items.map((item) => Language.map({name: item.language}));
     project.groups = [];
 
-    const projectImport = await ImportService.importFromFiles(project, items, platform);
+    const generatedProject = await ImportService.generateProjectFromFiles(project, items, platform);
+    const createdProject = await this.createProject(generatedProject, items.map((item) => item.language));
 
-    const createdProject = await this.createProject(projectImport, items.map((item) => item.language));
-
-    localStorage.setItem(createdProject.id.toString(), JSON.stringify(projectImport.warnings));
+    localStorage.setItem(createdProject.id.toString(), JSON.stringify(generatedProject.warnings));
     return createdProject.id;
   }
 

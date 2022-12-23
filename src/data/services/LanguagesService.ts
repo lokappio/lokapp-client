@@ -1,14 +1,14 @@
 import config from "@/config";
+import Project from "@/data/models/api/Project";
+import Value from "@/data/models/api/Value";
+import { Platform } from "@/data/models/enums/project";
+import ImportItem from "@/data/models/ImportItem";
+import ImportService from "@/data/services/ImportService";
+import projectsService from "@/data/services/ProjectsService";
+import ValuesService from "@/data/services/ValuesService";
+import store from "@/store/index";
 import Language from "../models/api/Language";
 import ApiService from "./ApiService";
-import store from "@/store/index";
-import Value from "@/data/models/api/Value";
-import ValuesService from "@/data/services/ValuesService";
-import ImportService from "@/data/services/ImportService";
-import Project from "@/data/models/api/Project";
-import ImportItem from "@/data/models/ImportItem";
-import {Platform} from "@/data/models/enums/project";
-import projectsService from "@/data/services/ProjectsService";
 
 class LanguagesService {
   static languagesUrl: string = config.baseUrl + "/projects/";
@@ -28,7 +28,7 @@ class LanguagesService {
     const projectFromStore = Object.assign(Project.map({}), JSON.parse(JSON.stringify(project)));
     projectFromStore.languages.push(Language.map({name: item.language}));
 
-    const projectImport = await ImportService.importFromFiles(projectFromStore, [item], platform);
+    const projectImport = await ImportService.generateProjectFromFiles(projectFromStore, [item], platform);
     const values: Value[] = projectImport.groups.map((group) => {
       return group.keys.map((key) => {
         return key.values.filter((value) => (value.id === null || value.id === undefined) && (value.keyId !== undefined && value.keyId !== null));
