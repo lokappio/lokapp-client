@@ -14,6 +14,7 @@ export default class Key {
     key.name = data.name;
     key.isPlural = data['isPlural'];
     key.groupId = data['groupId'];
+    key.values = data['values'];
 
     return key;
   }

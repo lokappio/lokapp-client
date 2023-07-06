@@ -6,6 +6,13 @@ import Group from "@/data/models/api/Group";
 import GroupsService from "@/data/services/GroupsService";
 import ValuesService from "@/data/services/ValuesService";
 import store from "@/store/index";
+import Value from "@/data/models/api/Value";
+
+export interface KeyValues {
+  key: Key;
+  group: Group;
+  values: Value[];
+}
 
 class KeysService {
   static keysUrl: string = config.baseUrl + "/projects/";
@@ -23,15 +30,41 @@ class KeysService {
       });
   }
 
-  public static async createKey(key: Key, group: Group): Promise<Key> {
+  public static async createKeys(keyValues: KeyValues[], projectId: number = this.projectId): Promise<Key[]> {
+    const bodyParameters = keyValues.map((keyValue: KeyValues) => ({
+      name: keyValue.key.name,
+      groupId: keyValue.group.isNewGroup ? null : keyValue.group.id,
+      groupName: keyValue.group.name,
+      isPlural: keyValue.key.isPlural,
+      values: keyValue.values.map((value: Value) => {
+        return {
+          name: value.name,
+          languageId: value.languageId,
+          quantityString: value.quantityString
+        }
+      })
+    }));
+
+    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/keys", bodyParameters);
+    return result.data.map(Key.map);
+  }
+
+  public static async createKey(key: Key, group: Group, projectId: number = this.projectId, values: Value[] = []): Promise<Key> {
     const bodyParameters = {
       name: key.name,
       groupId: group.isNewGroup ? null : group.id,
       groupName: group.name,
-      isPlural: key.isPlural
+      isPlural: key.isPlural,
+      values: values.map((value: Value) => {
+        return {
+          name: value.name,
+          languageId: value.languageId,
+          quantityString: value.quantityString
+        }
+      })
     };
 
-    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + this.projectId + "/translations/", bodyParameters);
+    const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations", bodyParameters);
     return Key.map(result.data);
   }
 
@@ -47,6 +80,8 @@ class KeysService {
       }
       data.key = createdKey;
     } catch (error) {
+      console.error(error);
+
       if (error.response) {
         switch (error.response.status) {
           case 422:
@@ -65,6 +100,8 @@ class KeysService {
   public static deleteKey(keyId: number): Promise<any> {
     return ApiService.delAPI(KeysService.keysUrl + this.projectId + "/translations/" + keyId)
       .catch((error) => {
+        console.error(error);
+
         if (error.response) {
           switch (error.response.status) {
             case 404:
@@ -88,6 +125,8 @@ class KeysService {
       key.values = await ValuesService.getValuesByKeyId(key.id);
       return key;
     }).catch((error) => {
+      console.error(error);
+
       switch (error.response.status) {
         case 422:
           throw "errors.key_name_already_exists";

@@ -1,11 +1,12 @@
 import Key from "@/data/models/api/Key";
+import {DEFAULT_GROUP_NAME} from "@/data/helpers/constants";
 
 export default class Group {
   id: number;
   name: string;
   keys: Key[] = [];
 
-  get isDefault(): boolean { return this.name === "common"}
+  get isDefault(): boolean { return this.name === DEFAULT_GROUP_NAME}
   get isNewGroup(): boolean { return this.id === -1}
 
   public static map(data: Partial<Group>): Group {
@@ -13,6 +14,7 @@ export default class Group {
 
     group.id = data.id;
     group.name = data.name;
+    group.keys = data.keys;
 
     return group;
   }

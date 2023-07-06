@@ -4,6 +4,7 @@ import Key from "@/data/models/api/Key";
 import {KeyType} from "@/data/models/enums/project";
 import {groupBy} from "@/data/helpers/utils";
 import Value from "@/data/models/api/Value";
+import ImportError from "@/data/models/ImportError";
 
 export class Plural {
   other = "";
@@ -30,7 +31,9 @@ export default class Project {
   updatedAt: Date;
   description: string;
   languages: Language[] = [];
-  groups: Group[];
+  groups: Group[] = [];
+
+  warnings: ImportError[] = [];
 
   static map(data: Partial<Project>): Project {
     const project: Project = new Project();
@@ -41,6 +44,8 @@ export default class Project {
     project.description = data?.description ?? "";
     project.createdAt = data.createdAt;
     project.updatedAt = data.updatedAt;
+    project.languages = data.languages ?? [];
+    project.groups = data.groups ?? [];
 
     return project;
   }
@@ -172,6 +177,7 @@ export default class Project {
       name: this.name,
       color: this.color,
       description: this.description,
+      groups: this.groups,
     }
   }
 }

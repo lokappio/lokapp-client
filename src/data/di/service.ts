@@ -8,6 +8,7 @@ import ProjectsService from "../services/ProjectsService";
 import UserService from "../services/UserService";
 import ValuesService from "../services/ValuesService";
 import InvitationsService from "../services/InvitationsService";
+import ImportService from "@/data/services/ImportService";
 
 export function serviceInjection(Vue: typeof _Vue): void {
   Vue.prototype.$service = {
@@ -19,6 +20,7 @@ export function serviceInjection(Vue: typeof _Vue): void {
     values: ValuesService,
     groups: GroupsService,
     export: ExportService,
+    import: ImportService,
     invitations: InvitationsService
   };
 }
@@ -34,6 +36,7 @@ declare module "vue/types/vue" {
       values: typeof ValuesService;
       groups: typeof GroupsService;
       export: typeof ExportService;
+      import: typeof ImportService;
       invitations: typeof InvitationsService;
     };
   }

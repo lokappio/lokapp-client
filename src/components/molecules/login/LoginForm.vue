@@ -20,7 +20,7 @@
             <!-- LOGIN -->
             <v-tab-item :key="0" @keyup.enter="validateLogin()">
                 <v-form class="pt-10" ref="formLogin">
-                    <v-text-field v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
+                    <v-text-field v-model="email" name="email" type="email" :rules="emailRules" :label=mailLabel required></v-text-field>
                     <v-text-field class="mt-4 mb-5" v-model="passwordLogin" :rules="passwordLoginRules" type="password" :label=passwordLabel required></v-text-field>
                     <v-btn color="black" class="white--text" :loading="loading" :disabled="loading" @click="validateLogin" min-height="50" block>
                       <span class="font-weight-bold">{{ $t("connexion.login") }}</span>
@@ -34,7 +34,7 @@
             <v-tab-item :key="1" @keyup.enter="validateRegister()">
                 <v-form class="pt-10" ref="formRegister">
                     <v-text-field class="mb-2" v-model="pseudo" :label=pseudoLabel></v-text-field>
-                    <v-text-field class="mt-4 mb-2" v-model="email" :rules="emailRules" :label=mailLabel required></v-text-field>
+                    <v-text-field class="mt-4 mb-2" v-model="email" type="email" :rules="emailRules" :label=mailLabel required></v-text-field>
                     <v-text-field class="mt-4 mb-2" v-model="password" :rules="passwordRules" type="password" :label=passwordLabel required></v-text-field>
                     <v-text-field class="mt-4 mb-5" v-model="passwordCopy" :rules="passwordCopyRules" type="password" :label=passwordConfirmLabel required></v-text-field>
 

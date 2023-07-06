@@ -5,7 +5,7 @@ import { KeyType, Platform } from "@/data/models/enums/project";
 import { FileData } from "@/data/models/types/export";
 import xmlFormatter from "xml-formatter";
 
-const generateAndroidStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
+const generateAndroidStringFile = (language: Language, localizedProject: LocalizedGroup[], prefixWithGroup: boolean): FileData => {
     const platform = Platform.ANDROID;
 
     const xmlDoc = document.implementation.createDocument("", "", null);
@@ -24,12 +24,14 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
                   .replace(/'/g, '\\\'')
                   .replace(/%/g, '%%');
                 const stringEl = xmlDoc.createElement("string");
-                stringEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
+                const key = prefixWithGroup ? mixGroupAndKeyName(localizedGroup.name, localization.key) : localization.key;
+                stringEl.setAttribute("name", key);
                 stringEl.innerHTML = `"${replaceMarkers(value, platform)}"`;
                 resourcesEl.appendChild(stringEl);
             } else {
                 const pluralEl = xmlDoc.createElement("plurals");
-                pluralEl.setAttribute("name", mixGroupAndKeyName(localizedGroup.name, localization.key));
+                const key = prefixWithGroup ? mixGroupAndKeyName(localizedGroup.name, localization.key) : localization.key;
+                pluralEl.setAttribute("name", key);
 
                 const value: Plural = (localization[language.id] as Plural) ?? new Plural();
 
@@ -51,6 +53,6 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
     return { language: language.name.toLowerCase(), content: xmlFormatter(new XMLSerializer().serializeToString(xmlDoc), { collapseContent: true }) };
 };
 
-export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
-    return languages.map((language: Language) => generateAndroidStringFile(language, localizedObjects));
+export const generateAndroidStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[], prefixWithGroup: boolean): FileData[] => {
+    return languages.map((language: Language) => generateAndroidStringFile(language, localizedObjects, prefixWithGroup));
 };

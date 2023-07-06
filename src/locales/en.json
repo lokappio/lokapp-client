@@ -23,6 +23,7 @@
         "generate_files": "Generate files",
         "no_file_to_download": "No file to download",
         "platform_target": "Platform",
+        "prefix_keys_radio": "Prefix keys with group name",
         "title": "Export files"
     },
     "dropdown": {
@@ -105,7 +106,9 @@
         "confirm_button": "Add",
         "language_name_label": "Type language's name",
         "language_name_title": "Language's name",
-        "title": "Add language"
+        "title": "Add language",
+        "fromImport": "Import à language",
+        "newLanguage": "Create an empty language"
     },
     "language_delete": {
         "cancel_button": "Cancel",
@@ -139,9 +142,33 @@
         "description_title": "Description",
         "language_name_label": "Language",
         "language_name_title": "Default language",
+        "file_label": "Translation file xml, json",
+        "fromImport": "Import files",
+        "newProject": "New empty project",
         "project_name_label": "Project's name",
         "project_name_title": "Project's name",
         "title": "Create a project"
+    },
+    "imports": {
+        "expansion_title": "Expected file format",
+        "title_explanation": "If the format is incorrect, the import will not be done.",
+        "json_expected_content": "{\n\t\"groupName\" : {\n\t\t\"singularKey\": \"a singular value\",\n\t\t\"pluralKey\": \"zero value | one value | other values\"\n\t}, \n\t\"withoutGroup\": \"a key without group\",\n}",
+        "strings_file_expected": "Expected .strings \n // MARK: - GroupName OR // GroupName \n\"GroupName_keyName\" = \"a singular value\";",
+        "stringsdict_file_expected": "Expected .stringsdict \n<plist version=\"1.0\">\n<dict>\n\t<!-- MARK: - GroupName --> OR <!-- GroupName -->\n\t<key>GroupName_key</key>\n\t<dict>\n\t\t...\n\t\t<dict>\n\t\t\t...\n\t\t\t<key>other</key>\n\t\t\t<string>other value</string>\n\t\t\t<key>one</key>\n\t\t\t<string>one value</string>\n\t\t\t<key>zero</key>\n\t\t\t<string>zero value</string>\n\t\t\t...\n\t\t</dict>\n\t</dict>\n</dict>\n</plist>",
+        "xml_file_expected": "<resources>\n\t<!--groupName-->\n\t<plural name=\"groupName_pluralKey\">\n\t\t<item quantity=\"other\">other value</item>\n\t\t<item quantity=\"one\">one value</item>\n\t\t<item quantity=\"zero\">zero value</item>\n\t</plural>\n\t<string name=\"groupName_singularKey\">singular value</string>\n</ressources>"
+    },
+    "import_errors": {
+        "json_parse_error": "Error while reading \"{file}\" json file. Check the structure of your file.",
+        "stringsdict_parse_error": "Error while reading \"{file}\" stringsdict file. Check the structure of your file.",
+        "reading_file_error": "An error occurred while reading the file \"{file}\"",
+        "quantity_not_found": "The plural keys are not defined with correct quantities (\"other\", \"one\" ou \"zero\"). Received : \"{quantity}\" on key \"{key}\"",
+        "quantity_missing": "The plural key \"{key}\" doen't define all quantities (\"other\", \"one\" ou \"zero\")",
+        "quantity_not_found_json": "The plural keys are not defined with correct format. Expected : \"zero | one | other\", received : \"{value}\" on key \"{key}\". The key has not been inserted.",
+        "no_plural_tag": "No plural key has been found",
+        "no_singular_tag": "No singular key has been found",
+        "no_group_found": "No group has been found in the file. All keys has been set in \"common\" group.",
+        "no_group_found_for_key": "No group has been found for key \"{key}\". The keys has been set in \"common\" group.",
+        "no_values_found": "No values found for \"{key}\" in language \"{language}\". An empty value has been inserted."
     },
     "project_delete": {
         "cancel_button": "Cancel",
@@ -173,7 +200,8 @@
         "password_strong": "Password must contain at least one capitalized letter, one numeric character and a special character",
         "project_name_length": "Project's name must not be empty",
         "required": "Required",
-        "snake_case_only": "Snake case only"
+        "snake_case_only": "Snake case only",
+        "max_files" : "Max. 2 files (.strings and .stringsdict)"
     },
     "success": {
         "copy": "Copied",

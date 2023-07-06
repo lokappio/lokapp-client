@@ -1,9 +1,13 @@
 import config from "@/config";
-import {AxiosResponse} from "axios";
-import ProjectUser from "../models/api/ProjectUser";
-import {Role} from "../models/roles/role.enum";
-import ApiService from "./ApiService";
+import Language from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
+import { Platform } from "@/data/models/enums/project";
+import ImportItem from "@/data/models/ImportItem";
+import ImportService from "@/data/services/ImportService";
+import { AxiosResponse } from "axios";
+import ProjectUser from "../models/api/ProjectUser";
+import { Role } from "../models/roles/role.enum";
+import ApiService from "./ApiService";
 
 class ProjectsService {
   static projectsUrl: string = config.baseUrl + "/projects";
@@ -13,16 +17,26 @@ class ProjectsService {
       .then((response) => response.data.map((item: any) => Project.map(item)));
   }
 
-  public static async createProject(project: Project, language: string): Promise<Project> {
-    const result = await ApiService.postAPI(ProjectsService.projectsUrl, {...project.toCreate(), language});
+  public static async createProject(project: Project, languages: string[]): Promise<Project> {
+    const result = await ApiService.postAPI(ProjectsService.projectsUrl, {...project.toCreate(), languages});
     return Project.map(result.data);
+  }
+
+  public static async importProject(project: Project, items: ImportItem[], platform: Platform): Promise<number> {
+    project.languages = items.map((item) => Language.map({name: item.language}));
+    project.groups = [];
+
+    const generatedProject = await ImportService.generateProjectFromFiles(project, items, platform);
+    const createdProject = await this.createProject(generatedProject, items.map((item) => item.language));
+
+    localStorage.setItem(createdProject.id.toString(), JSON.stringify(generatedProject.warnings));
+    return createdProject.id;
   }
 
   public static async getEntireProjectById(projectId: number): Promise<Project> {
     return await ApiService.getAPI(`${ProjectsService.projectsUrl}/${projectId}/details`)
       .then((response) => Project.mapEntire(response.data));
   }
-
 
   public static changeProjectSettings(project: Project): Promise<Project | void> {
     const bodyParameters = {

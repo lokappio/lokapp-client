@@ -22,12 +22,12 @@ class GroupsService {
         .then((response) => Group.map(response.data));
     }
 
-    public static async createGroup(group: Group): Promise<Group> {
+    public static async createGroup(group: Group, projectId: number = this.projectId): Promise<Group> {
         const bodyParameters = {
             name: group.name
         };
 
-        const result: AxiosResponse = await ApiService.postAPI(GroupsService.groupsUrl + this.projectId + "/groups", bodyParameters);
+        const result: AxiosResponse = await ApiService.postAPI(GroupsService.groupsUrl + projectId + "/groups", bodyParameters);
         return Group.map(result.data);
     }
 

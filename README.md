@@ -42,6 +42,7 @@ Export your translations into specific files for Android, iOS or Web (JSON) proj
 #### Projects
 
 Create as many projects as you want, each one with its own languages, translations and users. 
+You can import a project from existing files you own.
 
 #### Roles and invitations
 
@@ -87,7 +88,11 @@ Build for production
 
 ### Environment Variables
 
-To run the web applicaiton, you need to add the following environment variables to your .env file (You can copy the .env.sample file and change the content):
+To run the web applicaiton, you need to add the following environment variables to your .env file (You can copy the .env.example file and change its content):
+
+```
+cp .env.example .env
+```
 
 * `VUE_APP_I18N_FALLBACK_LOCALE`: the default language of Lokapp. If the browser language isn't supported yet by Lokapp, this language will be used. Default: english.
 * `VUE_APP_BASE_URL`: the base URL of the Lokapp's API.
@@ -106,9 +111,6 @@ To run the web applicaiton, you need to add the following environment variables 
 
 Once the site is up and running, go to [http://localhost:8080/](http://localhost:8080/)
 
-### snake_case
-
-By default, all translation keys needs to be written in snake_case.
 
 ### Demo
 
