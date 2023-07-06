@@ -23,6 +23,7 @@
         "generate_files": "Generate files",
         "no_file_to_download": "No file to download",
         "platform_target": "Platform",
+        "prefix_keys_radio": "Prefix keys with group name",
         "title": "Export files"
     },
     "dropdown": {

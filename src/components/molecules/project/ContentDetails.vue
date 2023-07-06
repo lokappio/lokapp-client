@@ -137,7 +137,7 @@ export default Vue.extend({
       return this.$store.getters.actualLanguage;
     },
     headers(): DataTableHeader[] {
-      const languages: Language[] = this.$store.getters.currentProject.languages.filter((e) => e !== undefined);
+      const languages: Language[] = this.$store.getters.currentProject.languages.filter((e: Language) => e !== undefined);
 
       const headers: DataTableHeader[] = [
         {

@@ -23,6 +23,7 @@
     "generate_files": "Génerer les fichiers",
     "no_file_to_download": "Aucun fichier à télécharger",
     "platform_target": "Plateforme",
+    "prefix_keys_radio": "Préfixer les clés par le nom du groupe",
     "title": "Exporter des fichiers"
   },
   "dropdown": {

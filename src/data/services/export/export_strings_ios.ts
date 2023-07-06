@@ -5,7 +5,7 @@ import {KeyType, Platform} from "@/data/models/enums/project";
 import {FileData} from "@/data/models/types/export";
 import xmlFormatter from "xml-formatter";
 
-const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
+const generateIOSStringDictFile = (language: Language, localizedProject: LocalizedGroup[], prefixWithGroup: boolean): FileData => {
   const platform = Platform.IOS;
 
   const plistType = document.implementation.createDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
@@ -26,7 +26,7 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
       .filter((localization) => localization.type === KeyType.PLURAL)
       .forEach((localization) => {
         const keyEl = xmlDoc.createElement("key");
-        keyEl.innerHTML = mixGroupAndKeyName(localizedGroup.name, localization.key);
+        keyEl.innerHTML = prefixWithGroup ? mixGroupAndKeyName(localizedGroup.name, localization.key) : localization.key;
         dictEl.appendChild(keyEl);
 
         const dictEl2 = xmlDoc.createElement("dict");
@@ -89,7 +89,7 @@ const generateIOSStringDictFile = (language: Language, localizedProject: Localiz
   return {language: language.name.toLowerCase(), content: formattedXml, plural: true};
 };
 
-const generateIOSStringFile = (language: Language, localizedProject: LocalizedGroup[]): FileData => {
+const generateIOSStringFile = (language: Language, localizedProject: LocalizedGroup[], prefixWithGroup: boolean): FileData => {
   const platform = Platform.IOS;
   let exportedString = "";
 
@@ -105,17 +105,18 @@ const generateIOSStringFile = (language: Language, localizedProject: LocalizedGr
         const value = (localization[language.id]?.toString() ?? "")
         .replace(/"/g, "\\\"")
         .replace(/%/g, '%%');
-        exportedString += `"${mixGroupAndKeyName(localizedGroup.name, localization.key)}" = "${replaceMarkers(value, platform)}";\n`;
+        const key = prefixWithGroup ? mixGroupAndKeyName(localizedGroup.name, localization.key) : localization.key;
+        exportedString += `"${key}" = "${replaceMarkers(value, platform)}";\n`;
       });
   });
   return {language: language.name.toLowerCase(), content: exportedString, plural: false};
 };
 
-export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[]): FileData[] => {
+export const generateIOSStringFiles = (languages: Array<Language>, localizedObjects: LocalizedGroup[], prefixWithGroup: boolean): FileData[] => {
   const answer: any = [];
   languages.forEach((language: Language) => {
-    answer.push(generateIOSStringFile(language, localizedObjects));
-    answer.push(generateIOSStringDictFile(language, localizedObjects));
+    answer.push(generateIOSStringFile(language, localizedObjects, prefixWithGroup));
+    answer.push(generateIOSStringDictFile(language, localizedObjects, prefixWithGroup));
   });
   return answer;
 };

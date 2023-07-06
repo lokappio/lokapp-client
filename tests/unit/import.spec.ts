@@ -30,7 +30,7 @@ describe("imports", () => {
         "{\n\t\"groupName\" : {\n\t\t\"singularKey\": \"singular\",\n\t\t\"pluralKey\": \"zero_value | one_value | other_value\"\n\t}}"
       )];
 
-      const createdProject = await ImportService.importFromFiles(mockedEmptyProject, items, Platform.WEB);
+      const createdProject = await ImportService.generateProjectFromFiles(mockedEmptyProject, items, Platform.WEB);
       checkValues(createdProject);
     });
 
@@ -40,7 +40,7 @@ describe("imports", () => {
         "<resources>\n\t<!--groupName-->\n\t<plural name=\"groupName_pluralKey\">\n\t\t<item quantity=\"other\">other_value</item>\n\t\t<item quantity=\"one\">one_value</item>\n\t\t<item quantity=\"zero\">zero_value</item>\n\t</plural>\n\t<string name=\"groupName_singularKey\">singular</string>\n</ressources>"
       )];
 
-      const createdProject = await ImportService.importFromFiles(mockedEmptyProject, items, Platform.ANDROID);
+      const createdProject = await ImportService.generateProjectFromFiles(mockedEmptyProject, items, Platform.ANDROID);
       checkValues(createdProject);
     });
 
@@ -59,7 +59,7 @@ describe("imports", () => {
         ],
         true
       )];
-      const createdProject = await ImportService.importFromFiles(mockedEmptyProject, items, Platform.IOS);
+      const createdProject = await ImportService.generateProjectFromFiles(mockedEmptyProject, items, Platform.IOS);
       checkValues(createdProject);
     });
   });
@@ -93,7 +93,7 @@ describe("imports", () => {
         ),
       ];
 
-      const createdProject = await ImportService.importFromFiles(mockedEmptyProject, items, Platform.WEB);
+      const createdProject = await ImportService.generateProjectFromFiles(mockedEmptyProject, items, Platform.WEB);
 
       checkValues(createdProject)
     });
@@ -110,7 +110,7 @@ describe("imports", () => {
         ),
       ];
 
-      const createdProject = await ImportService.importFromFiles(mockedEmptyProject, items, Platform.ANDROID);
+      const createdProject = await ImportService.generateProjectFromFiles(mockedEmptyProject, items, Platform.ANDROID);
 
       checkValues(createdProject)
     });
@@ -147,7 +147,7 @@ describe("imports", () => {
         ),
       ];
 
-      const createdProject = await ImportService.importFromFiles(mockedEmptyProject, items, Platform.IOS);
+      const createdProject = await ImportService.generateProjectFromFiles(mockedEmptyProject, items, Platform.IOS);
       checkValues(createdProject)
     });
   });

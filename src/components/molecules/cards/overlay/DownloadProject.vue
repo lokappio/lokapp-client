@@ -49,6 +49,20 @@
                     </v-col>
                 </v-row>
 
+                <v-row v-if="shouldShowPrefixCheckbox() === true">
+                    <v-col cols="12" class="px-0 pt-0">
+                        <v-checkbox
+                            class="custom-checkbox"
+                            hide-details="true"
+                            v-model="prefixKeysWithGroupName">
+                            <template v-slot:label>
+                                <div>
+                                    <p class="my-0" style="font-size: 0.85em; padding-top: 0.15em">{{$t('download_project.prefix_keys_radio')}}</p>
+                                </div>
+                            </template>
+                        </v-checkbox>
+                    </v-col>
+                </v-row>
 
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
@@ -76,11 +90,16 @@ export default Vue.extend({
         return {
             isGenerated: false,
             selectedPlatform: Platform.ANDROID as Platform,
+            prefixKeysWithGroupName: true,
             files: [] as TranslationFile[]
         };
     },
     watch: {
         selectedPlatform: {
+            immediate: true,
+            handler: function() {this.generateFiles();}
+        },
+        prefixKeysWithGroupName: {
             immediate: true,
             handler: function() {this.generateFiles();}
         },
@@ -96,6 +115,9 @@ export default Vue.extend({
         }
     },
     computed: {
+        Platform() {
+            return Platform
+        },
         platforms(): { id: number; name: string }[] {
             return Object.values(Platform).map((platform, index) => {
                 return {id: index, name: platform};
@@ -104,7 +126,7 @@ export default Vue.extend({
     },
     methods: {
         generateFiles(): void {
-            const filesData: FileData[] = this.$service.export.exportDatas(this.selectedPlatform);
+            const filesData: FileData[] = this.$service.export.exportDatas(this.selectedPlatform, this.prefixKeysWithGroupName);
             this.isGenerated = true;
 
             switch (this.selectedPlatform) {
@@ -136,7 +158,13 @@ export default Vue.extend({
                     break;
             }
         },
+        shouldShowPrefixCheckbox(): boolean {
+            return this.selectedPlatform == Platform.IOS as Platform || this.selectedPlatform == Platform.ANDROID as Platform;
+        },
         copyFile(file: TranslationFile) {
+            console.log("Copying");
+            console.log(file.content);
+            console.log(navigator.clipboard);
             navigator.clipboard.writeText(file.content);
             this.$notify(this.$t("success.copy").toString(), {color: "primary"});
         },

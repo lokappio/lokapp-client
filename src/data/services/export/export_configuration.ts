@@ -89,12 +89,12 @@ export const mixGroupAndKeyName = (groupName: string, keyName: string) => {
     return groupName + "_" + keyName;
 }
 
-const generateStringFiles = (platform: string, languagesParsed: Language[], localizedObjects: LocalizedGroup[]): FileData[] => {
+const generateStringFiles = (platform: string, languagesParsed: Language[], localizedObjects: LocalizedGroup[], prefixWithGroup: boolean): FileData[] => {
     switch (platform) {
         case Platform.ANDROID:
-            return generateAndroidStringFiles(languagesParsed, localizedObjects);
+            return generateAndroidStringFiles(languagesParsed, localizedObjects, prefixWithGroup);
         case Platform.IOS:
-            return generateIOSStringFiles(languagesParsed, localizedObjects);
+            return generateIOSStringFiles(languagesParsed, localizedObjects, prefixWithGroup);
         case Platform.WEB:
             return generateWebStringFiles(languagesParsed, localizedObjects);
         default:
@@ -102,8 +102,8 @@ const generateStringFiles = (platform: string, languagesParsed: Language[], loca
     }
 }
 
-export const exportProject = (platform: string): FileData[] => {
+export const exportProject = (platform: string, prefixWithGroup: boolean): FileData[] => {
     const project: Project = store.getters.currentProject;
 
-    return generateStringFiles(platform, project.languages, project.toLocalizedProject);
+    return generateStringFiles(platform, project.languages, project.toLocalizedProject, prefixWithGroup);
 };
