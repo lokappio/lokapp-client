@@ -138,8 +138,8 @@
 <script lang="ts">
 import {languageNameRules} from "@/data/rules/LanguageRules";
 import Vue from "vue";
-import {Platform, PlatformExtension, PlatformFileExpected} from "@/data/models/enums/project.ts";
-import ImportItem from "@/data/models/ImportItem.ts";
+import {Platform, PlatformExtension, PlatformFileExpected} from "@/data/models/enums/project";
+import ImportItem from "@/data/models/ImportItem";
 import {importRules, iOSImportRules} from "@/data/rules/ImportRules";
 import ImportError from "@/data/models/ImportError";
 import Project from "@/data/models/api/Project";

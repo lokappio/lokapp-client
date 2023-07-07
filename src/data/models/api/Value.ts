@@ -10,7 +10,7 @@ export default class Value {
   languageName: string;
   keyId: number;
 
-  static map(data: Partial<Value>): Value {
+  public static map(data: Partial<Value>): Value {
     const value: Value = new Value();
 
     value.id = data.id;

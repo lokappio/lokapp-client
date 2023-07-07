@@ -79,7 +79,7 @@ class KeysService {
         data.group = await GroupsService.getGroupById(createdKey.groupId);
       }
       data.key = createdKey;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
 
       if (error.response) {

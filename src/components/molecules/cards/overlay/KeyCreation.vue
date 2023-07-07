@@ -177,7 +177,7 @@ export default Vue.extend({
           data = await this.$service.keys.createKeyWithGroup(this.currentGroup, this.newKey);
           this.$store.commit("ADD_PROJECT_KEY", data);
           this.closeKeyCreation();
-        } catch (e) {
+        } catch (e: any) {
           this.$notify(this.$t(e).toString(), {color: "red"});
         }
 

@@ -51,7 +51,7 @@ function ignore(data: string, index: number, newline: boolean): number {
   return curr;
 }
 
-function parseKeyVal(data: string, index: number): [Token, number] {
+function parseKeyVal(data: string, index: number): any {
   let subindex = 0;
 
   const part = data.slice(index, data.length);
