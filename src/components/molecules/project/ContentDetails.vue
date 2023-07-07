@@ -52,7 +52,7 @@
                     v-on:deleteKey="(value) => keyDeleted(value)"
                 />
 
-                <template-item-values
+                <TemplateItemValues
                     v-else
                     :key="`${item.key.id}_${item.languages[header.value]?.id}_${header.value}`"
                     :item="item"
@@ -241,7 +241,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-@import '~vuetify/src/styles/settings/_variables';
+@import '~vuetify/src/styles/settings/_variables.scss';
 
 .my-projects-container {
   border-top-left-radius: 20px;
