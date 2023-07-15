@@ -1,5 +1,5 @@
 import config from "@/config";
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 import ApiService from "./ApiService";
 import Key from "@/data/models/api/Key";
 import Group from "@/data/models/api/Group";
@@ -45,6 +45,12 @@ class KeysService {
       })
     }));
 
+    bodyParameters.forEach((bodyParameter: any) => {
+      if (bodyParameter.values.length === 0) {
+        delete bodyParameter.values;
+      }
+    });
+
     const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations/keys", bodyParameters);
     return result.data.map(Key.map);
   }
@@ -63,6 +69,10 @@ class KeysService {
         }
       })
     };
+
+    if (bodyParameters.values.length === 0) {
+      delete bodyParameters.values;
+    }
 
     const result: AxiosResponse = await ApiService.postAPI(KeysService.keysUrl + projectId + "/translations", bodyParameters);
     return Key.map(result.data);
