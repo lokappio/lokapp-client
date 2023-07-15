@@ -1,13 +1,9 @@
 # build environment
-FROM node:13-alpine as build-stage
+FROM node:18.16.1-alpine3.18 as build-stage
 WORKDIR /app
 COPY package.json /app/package.json
 
-RUN apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python2 && \
-  npm install --quiet node-gyp -g &&\
-  npm install --quiet && \
-  apk del native-deps
+RUN apk --no-cache add --virtual native-deps g++ gcc libgcc libstdc++ linux-headers make python3 py3-pip && npm install --quiet && apk del native-deps
 
 COPY . /app
 

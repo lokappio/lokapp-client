@@ -2,9 +2,6 @@
   "name": "lokapp-client",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": "16.14.0"
-  },
   "scripts": {
     "serve:dev": "vue-cli-service serve --mode development",
     "serve:prod": "vue-cli-service serve --mode production",
