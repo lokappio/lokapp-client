@@ -1,3 +1,5 @@
+const sass = require('sass');
+
 module.exports = {
   runtimeCompiler: true,
 
