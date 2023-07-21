@@ -143,13 +143,14 @@
     "description_2": "Vous ne pourrez pas le rejoindre à moins d'y être invité à nouveau.",
     "title": "Quitter le projet"
   },
-  "profile_manager": {
-    "disconnect_button": "Se déconnecter",
-    "email": "Email",
-    "reset_password": "Réinitialisation du mot de passe",
-    "title": "Profil utilisateur",
+  "preferences_management": {
+    "title": "Préférences",
     "username": "Pseudo",
-    "validate_profile_button": "Valider"
+    "email": "Email",
+    "language": "Langue",
+    "validate_profile_button": "Valider",
+    "disconnect_button": "Se déconnecter",
+    "reset_password": "Réinitialisation du mot de passe"
   },
   "project_creation": {
     "color_title": "Couleur",

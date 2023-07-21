@@ -11,39 +11,31 @@
         contain
     />
 
-    <div class="custom-select">
-      <v-select dark :items="items" :value="this.$i18n.locale" @change="(item) => switchLocale(item)" />
-    </div>
+    <v-btn fab small elevation="0" class="preferences-button" @click="() => this.preferencesModalOpened = true">
+      <v-icon color="white">mdi-cog</v-icon>
+    </v-btn>
+
+    <v-dialog v-model="preferencesModalOpened" max-width="500px">
+      <ProfileManager :dialog-opened="preferencesModalOpened" @close="() => this.preferencesModalOpened = false"/>
+    </v-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import {getLocales} from "@/data/enum/locales.enum";
+import ProfileManager from "@/components/molecules/cards/overlay/PreferencesManagement.vue";
 
 export default Vue.extend({
   name: "left-nav-bar",
+  components: {ProfileManager},
   data() {
     return {
-      items: getLocales(),
-      actual: null
+      preferencesModalOpened: false
     };
-  },
-  created() {
-    if (localStorage.locale) {
-      this.$i18n.locale = localStorage.locale;
-    }
-    this.actual = this.$i18n.locale;
   },
   methods: {
     redirectToDashboard() {
       this.$router.push("/dashboard");
-    },
-    switchLocale(locale: string) {
-      if (this.$i18n.locale !== locale) {
-        this.$i18n.locale = locale;
-        localStorage.locale = locale;
-      }
     }
   }
 });
@@ -55,7 +47,8 @@ export default Vue.extend({
   position: relative;
 }
 
-.custom-select {
+.preferences-button {
+  background-color: transparent !important;
   position: absolute;
   bottom: 0;
 }

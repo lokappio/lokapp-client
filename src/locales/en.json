@@ -128,13 +128,14 @@
         "description_2": "You won't be able to join it again without being invited.",
         "title": "Leave project"
     },
-    "profile_manager": {
-        "disconnect_button": "Log out",
-        "email": "Email",
-        "reset_password": "Reset password",
-        "title": "User profile",
+    "preferences_management": {
+        "title": "Preferences",
         "username": "Username",
-        "validate_profile_button": "Validate"
+        "email": "Email",
+        "language": "Language",
+        "validate_profile_button": "Validate",
+        "disconnect_button": "Log out",
+        "reset_password": "Reset password"
     },
     "project_creation": {
         "color_title": "Color",
