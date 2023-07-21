@@ -91,7 +91,7 @@
         <!-- LANGUAGE OR IMPORT -->
         <div v-if="isCreating">
           <v-row no-gutters v-if="!fromImport">
-            <v-col>
+            <v-col cols="12">
               <v-row no-gutters class="mt-2 mb-2 align-center">
                 <v-col class="pb-0 px-0">
                   <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
@@ -118,11 +118,11 @@
             </v-col>
           </v-row>
 
-          <v-row no-gutters v-else class="mt-0 pb-0">
+          <v-row no-gutters v-else>
             <v-col cols="12">
-              <v-row no-gutters class="align-center">
+              <v-row no-gutters class="mt-2 mb-2 align-center">
                 <v-col class="pb-0 px-0">
-                  <span class="title-h3">{{ $t("project_creation.language_name_title") }}</span>
+                  <span class="title-h3">{{ $t("project_creation.importFiles") }}</span>
                 </v-col>
 
                 <v-col cols="auto">
@@ -251,8 +251,8 @@ export default Vue.extend({
   props: {project: Project, dialogOpened: Boolean},
   data() {
     return {
-      fromImport: true,
-      selectedPlatform: Platform.IOS,
+      fromImport: false,
+      selectedPlatform: Platform.ANDROID,
       importItems: [new ImportItem("", null)] as ImportItem[],
       updatedProject: null as Project,
       writtenColor: "",

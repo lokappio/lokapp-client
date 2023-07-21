@@ -8,7 +8,7 @@
       <v-row no-gutters @click="openProjectView" class="fill-height">
         <v-col cols="3" class="set-cursor-pointer fill-height">
           <div class="div-text-center-container" :style="{ 'background-color':'#' + this.currProject.color }">
-            <div class="div-text-center-content">{{firstCharProjectName}}</div>
+            <div class="div-text-center-content project-letter">{{firstCharProjectName}}</div>
           </div>
         </v-col>
 
@@ -95,6 +95,10 @@ export default Vue.extend(
   font-weight: 500;
   color: white;
   font-size: 40px;
+}
+
+.project-letter {
+  padding-top: 0.2em;
 }
 
 .title-style {

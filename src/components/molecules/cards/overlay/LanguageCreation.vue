@@ -17,7 +17,7 @@
         <!-- Language name -->
         <v-row no-gutters class="mt-4 pb-0 mb-2 align-center">
           <v-col class="pb-0 px-0">
-            <span class="title-h3">{{ $t("language_creation.language_name_title") }}</span>
+            <span class="title-h3">{{ fromImport ? $t("language_creation.import_file_subtitle") : $t("language_creation.language_name_title") }}</span>
           </v-col>
 
           <v-col cols="auto">
@@ -83,7 +83,6 @@
           <v-row no-gutters align-content="center">
             <v-col cols="12">
               <v-text-field
-                  autofocus
                   :rules="languageNameRules"
                   class="custom-text-field"
                   background-color="inputBackground"
@@ -153,8 +152,8 @@ export default Vue.extend({
       languageName: "",
       languageNameRules: languageNameRules(),
       isBlockButton: true,
-      fromImport: true,
-      selectedPlatform: Platform.IOS,
+      fromImport: false,
+      selectedPlatform: Platform.ANDROID,
       importItem: new ImportItem("", null) as ImportItem,
       importError: null as ImportError
     };
@@ -164,6 +163,9 @@ export default Vue.extend({
       if (isOpened) {
         //ON RE-OPENED, RESET DATA
         this.languageName = "";
+        this.fromImport = false;
+        this.selectedPlatform = Platform.ANDROID;
+        this.importItem = new ImportItem("", null) as ImportItem;
         (this.$refs.formCreateLanguage as Vue & { resetValidation: () => any }).resetValidation();
       }
     }

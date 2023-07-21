@@ -122,6 +122,7 @@
     "language_name_label": "Nom de la langue",
     "language_name_title": "Nom de la langue",
     "title": "Ajouter une langue",
+    "import_file_subtitle": "Import de fichiers",
     "fromImport": "Importer une langue",
     "newLanguage": "Créer une langue vide"
   },
@@ -158,6 +159,7 @@
     "language_name_label": "Langue",
     "file_label": "Fichier de traduction xml, json",
     "language_name_title": "Langue par défaut",
+    "importFiles": "Import de fichiers",
     "fromImport": "Importer des fichiers",
     "newProject": "Créer un projet vide",
     "project_name_label": "Nom du projet",
