@@ -8,10 +8,6 @@
       <v-col>
         <v-card class="box card-style-content background-color-white fill-height px-0 pt-5">
           <template v-if="!loading">
-            <div class="row header">
-              <header-banner projectDetail/>
-            </div>
-
             <div class="row content">
               <languages-group/>
               <content-details/>
@@ -34,7 +30,6 @@
 <script lang="ts">
 import {Vue} from "vue-property-decorator";
 import LeftNavBar from "@/components/molecules/dashboard/LeftNavBar.vue";
-import HeaderBanner from "@/components/molecules/dashboard/HeaderWithBanner.vue";
 import LanguagesGroup from "@/components/molecules/project/LanguagesGroup.vue";
 import ContentDetails from "@/components/molecules/project/ContentDetails.vue";
 import {MetaInfo} from "vue-meta";
@@ -50,7 +45,6 @@ export default Vue.extend({
   },
   components: {
     LeftNavBar,
-    HeaderBanner,
     LanguagesGroup,
     ContentDetails
   },
@@ -107,28 +101,11 @@ export default Vue.extend({
   margin-left: 12px;
 }
 
-@mixin styling($base-height) {
-  .row.header {
-    height: $base-height;
-  }
-  .row.content {
-    position: absolute;
-    top: $base-height;
-    bottom: 0;
-    width: 100%;
-  }
-}
-
-@media #{map-get($display-breakpoints, 'xs-only')} {
-  @include styling($base-height: 270px);
-}
-
-@media #{map-get($display-breakpoints, 'sm-only')} {
-  @include styling($base-height: 200px);
-}
-
-@media #{map-get($display-breakpoints, 'md-and-up')} {
-  @include styling($base-height: 150px);
+.row.content {
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  width: 100%;
 }
 
 .card-style-content {
