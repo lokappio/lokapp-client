@@ -21,7 +21,6 @@ const generateAndroidStringFile = (language: Language, localizedProject: Localiz
             if (localization.type === KeyType.SINGULAR) {
                 const value = (localization[language.id]?.toString() ?? "")
                   .replace(/"/g, "\\\"")
-                  .replace(/'/g, '\\\'')
                   .replace(/%/g, '%%');
                 const stringEl = xmlDoc.createElement("string");
                 const key = prefixWithGroup ? mixGroupAndKeyName(localizedGroup.name, localization.key) : localization.key;
