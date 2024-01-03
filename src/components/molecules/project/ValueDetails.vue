@@ -7,7 +7,7 @@
         <div>
           <span class="text-caption">{{ dateToDateTimeString(value.updatedAt) }}</span>
           <span class="text-caption mx-2">|</span>
-          <span class="text-caption ">{{ value.status }}</span>
+          <span :class="getClass(value) + ' text-caption'">{{ value.status }}</span>
         </div>
       </div>
     </div>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import {Vue} from 'vue-property-decorator';
-import Value from "@/data/models/api/Value";
+import Value, {TranslationStatus} from "@/data/models/api/Value";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 import {dateToDateTimeString} from "@/helpers/date";
 
@@ -40,6 +40,15 @@ export default Vue.extend({
                 .filter(value => !item.key.isPlural || value.quantityString === item.quantity)
                 .sort((a, b) => (a.updatedAt > b.updatedAt) ? -1 : 1);
           });
+    },
+    getClass(value: Value): string {
+      if (value.status === TranslationStatus.VALIDATED) {
+        return "green--text";
+      } else if (value.status === TranslationStatus.INVALIDATED) {
+        return "red--text";
+      } else {
+        return "";
+      }
     }
   },
   data() {
