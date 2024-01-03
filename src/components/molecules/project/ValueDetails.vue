@@ -2,12 +2,29 @@
   <div>
     <span class="title-h2 primary--text">{{ selectedItem.group.name }}/{{ selectedItem.key.name }}</span>
     <div>
-      <div v-for="value in values" v-bind:key="value.id" class="my-4">
-        <div>{{ value.name || "--" }}</div>
-        <div>
-          <span class="text-caption">{{ dateToDateTimeString(value.updatedAt) }}</span>
-          <span class="text-caption mx-2">|</span>
-          <span :class="getClass(value) + ' text-caption'">{{ value.status }}</span>
+      <div v-for="(value, index) in values" v-bind:key="value.id" class="my-4">
+        <div v-if="index === 0">
+          <div class="title-h3">{{ value.name || "--" }}</div>
+          <div>
+            <span class="text-caption">{{ dateToDateTimeString(value.updatedAt) }}</span>
+            <span class="text-caption mx-2">|</span>
+            <span :class="getClass(value) + ' text-caption'">{{ $t('translation_status.' + value.status) }}</span>
+          </div>
+          <div v-if="canWriteStatus" class="align-center align-content-center">
+            <v-btn-toggle v-model="selectedStatus" color="primary" @change="toggleStatus">
+              <v-btn depressed>{{ $t('translation_details.invalidate_button') }}</v-btn>
+              <v-btn depressed>{{ $t('translation_details.validate_button') }}</v-btn>
+            </v-btn-toggle>
+          </div>
+          <v-divider class="mt-4"></v-divider>
+        </div>
+        <div v-else>
+          <div>{{ value.name || "--" }}</div>
+          <div>
+            <span class="text-caption">{{ dateToDateTimeString(value.updatedAt) }}</span>
+            <span class="text-caption mx-2">|</span>
+            <span :class="getClass(value) + ' text-caption'">{{ $t('translation_status.' + value.status) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -31,6 +48,7 @@ export default Vue.extend({
       this.values = item.key.values.filter(value => value.languageId === this.selectedLanguageId)
           .filter(value => !item.key.isPlural || value.quantityString === item.quantity)
           .sort((a, b) => (a.updatedAt > b.updatedAt) ? -1 : 1);
+      this.selectedStatus = this.values[0].status === TranslationStatus.VALIDATED ? 1 : this.values[0].status === TranslationStatus.INVALIDATED ? 0 : undefined;
 
       // Then, loading values from API in order to get the latest values
       this.$service.values.getValuesByKeyId(item.key.id)
@@ -49,12 +67,30 @@ export default Vue.extend({
       } else {
         return "";
       }
+    },
+    toggleStatus() {
+      const newStatus = this.selectedStatus === 1 ? TranslationStatus.VALIDATED : this.selectedStatus === 0 ? TranslationStatus.INVALIDATED : TranslationStatus.MODIFIED;
+      this.$service.values.updateValueStatus(this.values[0], newStatus)
+          .then(() => {
+            this.values[0].status = newStatus;
+            // We updated the store to apply status changed to the line in the table
+            this.$store.commit("UPDATE_PROJECT_VALUE", this.values[0]);
+          });
     }
   },
   data() {
     return {
-      values: [] as Value[]
+      values: [] as Value[],
+      selectedStatus: undefined as number | undefined,
     }
+  },
+  computed: {
+    TranslationStatus() {
+      return TranslationStatus
+    },
+    canWriteStatus(): boolean {
+      return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteStatus : false;
+    },
   },
   mounted() {
     this.getValues();

@@ -1,7 +1,7 @@
 import config from "@/config";
 import {AxiosResponse} from "axios";
 import ApiService from "./ApiService";
-import Value from "@/data/models/api/Value";
+import Value, {TranslationStatus} from "@/data/models/api/Value";
 import Language from "@/data/models/api/Language";
 import store from "@/store/index";
 
@@ -37,6 +37,13 @@ class ValuesService {
     public static getValuesByLanguageId(languageId: number, projectId = this.projectId): Promise<Value[]> {
         return ApiService.getAPI(`${ValuesService.valuesUrl}${projectId}/translations/values?languageId=${languageId}`)
         .then((response) => response.data.map((item: any) => Value.map(item)));
+    }
+
+    public static updateValueStatus(value: Value, newStatus: TranslationStatus, projectId = this.projectId): Promise<AxiosResponse> {
+        const bodyParameters = {
+            status: newStatus
+        };
+        return ApiService.patchAPI(ValuesService.valuesUrl + projectId + "/translations/" + value.keyId + "/values/" + value.id + "/status", bodyParameters);
     }
 }
 

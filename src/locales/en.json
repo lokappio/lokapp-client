@@ -221,6 +221,15 @@
         "project_updated": "Project updated",
         "user_delete": "The user has been removed from the project"
     },
+    "translation_details": {
+        "validate_button": "Validate",
+        "invalidate_button": "Invalidate"
+    },
+    "translation_status": {
+        "modified": "Modified",
+        "validated": "Validated",
+        "invalidated": "Invalidated"
+    },
     "user_delete": {
         "cancel_button": "Cancel",
         "confirm_button": "Delete",

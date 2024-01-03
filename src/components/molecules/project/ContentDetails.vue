@@ -5,7 +5,7 @@
 
       <Header class="header"/>
 
-      <v-row no-gutters v-if="getItems.length <= 0" align-content="start" justify="center">
+      <v-row no-gutters v-if="items.length <= 0" align-content="start" justify="center">
         <v-col cols="4">
           <action-button v-if="canUpdateKey" block :handler="() => isOpenCreation = true" :text="''" addIcon/>
         </v-col>
@@ -37,7 +37,7 @@
                 hide-default-footer
                 fixed-header
                 :headers="headers"
-                :items="getItems"
+                :items="items"
                 :loading="loading"
                 disable-pagination
                 group-by="group.id"
@@ -112,6 +112,7 @@ import {translationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
 import ImportError from "@/data/models/ImportError";
 import ValueDetails from "@/components/molecules/project/ValueDetails.vue";
+import { mapState } from 'vuex';
 
 export default Vue.extend({
   name: "content-details",
@@ -131,12 +132,15 @@ export default Vue.extend({
       isOpenCreation: false,
       selectedItem: {},
       selectedLanguageId: -1,
+      items: [],
     };
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
+    this.getItems();
   },
   computed: {
+    ...mapState(['currentProject']),
     projectWarnings(): ImportError[] {
       const value = localStorage.getItem(this.projectId.toString());
 
@@ -193,8 +197,16 @@ export default Vue.extend({
 
       return headers;
     },
-    getItems(): translationItem[] {
-      const currProject: Project = this.$store.state.currentProject;
+  },
+  watch: {
+    currentProject() {
+      // If current project is changed in the store, we must reload items
+      this.getItems();
+    },
+  },
+  methods: {
+    getItems() {
+      const currProject: Project = this.currentProject as Project;
       const items: any[] = [];
 
       currProject.groups?.forEach((group) => {
@@ -230,10 +242,8 @@ export default Vue.extend({
         });
       });
 
-      return items;
-    }
-  },
-  methods: {
+      this.items = items;
+    },
     keySaved(value: Key): void {
       //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
       this.$store.commit("UPDATE_PROJECT_KEY", value);

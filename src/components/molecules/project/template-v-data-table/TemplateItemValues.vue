@@ -22,7 +22,7 @@
         </v-text-field>
       </v-col>
       <v-col v-if="!isSourceLanguage()" cols="2" class="flex-grow-0 flex-shrink-0">
-        <v-chip small outlined :color="getStatusColor(updatedValue)">{{ updatedValue.status }}</v-chip>
+        <v-chip small outlined :color="getStatusColor(updatedValue)">{{ $t('translation_status.' + updatedValue.status) }}</v-chip>
       </v-col>
     </v-row>
   </v-container>
@@ -51,6 +51,12 @@ export default Vue.extend({
   mounted() {
     this.updatedValue = Object.assign(Value.map({}), this.getValue()); // Object assign to create a copy and avoid reference
   },
+  watch: {
+    // Item can be changed by parent component
+    item() {
+        this.updatedValue = Object.assign(Value.map({}), this.getValue()); // Object assign to create a copy and avoid reference
+    }
+  },
   computed: {
     inputId(): string {
       let id: string = (this.item as translationItem).key.id + (this.header as DataTableHeader).value.toString();
@@ -62,9 +68,6 @@ export default Vue.extend({
     },
     canWriteValue(): boolean {
       return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteValue : false;
-    },
-    readonly(): boolean {
-      return this.isSourceLanguage();
     }
   },
   methods: {
@@ -96,7 +99,8 @@ export default Vue.extend({
       }
     },
     isSourceLanguage(): boolean {
-      return (this.item as translationItem).languages[(this.header as DataTableHeader).value].languageAccess === LanguageAccess.source;
+      const value = (this.item as translationItem).languages[(this.header as DataTableHeader).value];
+      return value ? value.languageAccess === LanguageAccess.source : false;
     },
     saveValue(): Promise<any> {
       if (this.isSourceLanguage()) {
@@ -111,7 +115,6 @@ export default Vue.extend({
 
         return this.$service.values.updateValue(this.updatedValue)
             .then(() => {
-              console.log("Value updated");
               this.$emit("valueSaved", this.updatedValue);
               this.loading = false;
               this.inputIcon = "mdi-check";

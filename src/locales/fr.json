@@ -221,6 +221,15 @@
     "snake_case_only": "Uniquement la casse snake_case est autorisée",
     "max_files" : "Max. 2 fichiers (.strings et .stringsdict)"
   },
+  "translation_status": {
+    "modified": "Modifié",
+    "validated": "Accepté",
+    "invalidated": "Refusé"
+  },
+  "translation_details": {
+    "validate_button": "Accepter",
+    "invalidate_button": "Refuser"
+  },
   "user_delete": {
     "cancel_button": "Annuler",
     "confirm_button": "Supprimer",
