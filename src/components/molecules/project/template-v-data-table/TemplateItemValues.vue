@@ -4,6 +4,7 @@
       :id="inputId"
       class="my-3"
       v-if="canWriteValue"
+      :readonly="readonly"
       v-model="updatedValue.name"
       @blur="saveValue()"
       @keydown.enter="blurInput"
@@ -21,7 +22,7 @@
 <script lang="ts">
 import Vue from "vue";
 import {translationItem} from "@/data/models/types/TranslationTypes";
-import Value from "@/data/models/api/Value";
+import Value, {LanguageAccess} from "@/data/models/api/Value";
 import {DataTableHeader} from "vuetify";
 
 export default Vue.extend({
@@ -49,6 +50,9 @@ export default Vue.extend({
     },
     canWriteValue(): boolean {
       return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteValue : false;
+    },
+    readonly(): boolean {
+      return (this.item as translationItem).languages[(this.header as DataTableHeader).value].languageAccess === LanguageAccess.source;
     }
   },
   methods: {
@@ -58,7 +62,7 @@ export default Vue.extend({
     saveValue(): Promise<any> {
       const previousWasEmpty = (this.item as translationItem).languages[(this.header as DataTableHeader).value].name == "" ? this.updatedValue.name !== "" : true;
 
-      if(this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem).languages[(this.header as DataTableHeader).value].name) {
+      if (this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != (this.item as translationItem).languages[(this.header as DataTableHeader).value].name) {
         this.loading = true;
 
         return this.$service.values.updateValue(this.updatedValue)
