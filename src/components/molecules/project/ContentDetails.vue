@@ -12,7 +12,7 @@
       </v-row>
 
       <v-row no-gutters v-else class="content">
-        <v-col cols="12" class="fill-height">
+        <v-col cols="10" class="fill-height">
           <div class="content_wrapper">
             <v-alert
                 v-for="warning in projectWarnings"
@@ -22,11 +22,14 @@
                 dismissible
             >{{ warning.reason }}
               <template v-slot:close="{toggle}">
-                <v-btn icon><v-icon color="orange" @click="() =>{
+                <v-btn icon>
+                  <v-icon color="orange" @click="() =>{
                   removeWarning(warning);
                   toggle();
                 }"
-                >mdi-close</v-icon> </v-btn>
+                  >mdi-close
+                  </v-icon>
+                </v-btn>
               </template>
             </v-alert>
 
@@ -59,6 +62,7 @@
                     :header="header"
                     :projectId="projectId"
                     @valueSaved="valueSaved"
+                    @valueClicked="valueClicked"
                 />
               </template>
 
@@ -78,6 +82,13 @@
                 <template-group-footer :isOpen="isOpen" :groupId="group" :items="items"/>
               </template>
             </v-data-table>
+          </div>
+        </v-col>
+        <v-col cols="2" class="fill-height" v-if="selectedItem['key']">
+          <div>
+            <ValueDetails
+                :selectedItem="selectedItem"
+                :selectedLanguageId="selectedLanguageId"/>
           </div>
         </v-col>
       </v-row>
@@ -100,10 +111,12 @@ import Value, {ValueQuantity} from "@/data/models/api/Value";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
 import ImportError from "@/data/models/ImportError";
+import ValueDetails from "@/components/molecules/project/ValueDetails.vue";
 
 export default Vue.extend({
   name: "content-details",
   components: {
+    ValueDetails,
     TemplateItemValues,
     TemplateGroupHeader,
     TemplateGroupFooter,
@@ -115,7 +128,9 @@ export default Vue.extend({
     return {
       loading: false,
       projectId: -1,
-      isOpenCreation: false
+      isOpenCreation: false,
+      selectedItem: {},
+      selectedLanguageId: -1,
     };
   },
   mounted() {
@@ -189,8 +204,8 @@ export default Vue.extend({
               const item: translationItem = {
                 "key": key,
                 "group": group,
-                "quantity": quantity,
-                languages: {}
+                "quantity": quantity as ValueQuantity,
+                "languages": {}
               };
 
               key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
@@ -235,6 +250,10 @@ export default Vue.extend({
       this.projectWarnings.splice(index, 1)
 
       localStorage.setItem(this.projectId.toString(), JSON.stringify(this.projectWarnings));
+    },
+    valueClicked(item: translationItem, languageId: number) {
+      this.selectedItem = item;
+      this.selectedLanguageId = languageId;
     }
   }
 });

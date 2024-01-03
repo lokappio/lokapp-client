@@ -8,6 +8,12 @@ export enum LanguageAccess {
   target = "target"
 }
 
+export enum TranslationStatus {
+  MODIFIED = "modified",
+  VALIDATED = "validated",
+  INVALIDATED = "invalidated"
+}
+
 export default class Value {
   id: number
   name: string
@@ -16,6 +22,8 @@ export default class Value {
   languageName: string;
   languageAccess: LanguageAccess;
   keyId: number;
+  updatedAt: Date;
+  status: TranslationStatus;
 
   public static map(data: Partial<Value>): Value {
     const value: Value = new Value();
@@ -27,8 +35,9 @@ export default class Value {
     value.languageName = data['languageName'];
     value.languageAccess = data['languageAccess'];
     value.keyId = data['keyId'];
+    value.updatedAt = new Date(data['updatedAt']);
+    value.status = data['status'];
 
     return value;
   }
 }
-

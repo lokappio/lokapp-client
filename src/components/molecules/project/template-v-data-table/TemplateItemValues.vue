@@ -9,6 +9,7 @@
       @blur="saveValue()"
       @keydown.enter="blurInput"
       @keydown.tab="blurInput"
+      @click="onValueClicked()"
       single-line
       hide-details
   >
@@ -78,6 +79,9 @@ export default Vue.extend({
               this.$notify(this.$t("errors.update_value").toString(), {color: "red"});
             });
       }
+    },
+    onValueClicked(): void {
+      this.$emit("valueClicked", this.item, this.updatedValue.languageId);
     }
   }
 });
