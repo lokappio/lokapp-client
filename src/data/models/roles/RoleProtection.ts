@@ -8,6 +8,7 @@ export default class RoleProtection {
     canDeleteProject: boolean;
     canWriteValue: boolean;
     canWriteUser: boolean;
+    canWriteStatus: boolean;
 
     constructor() {
         this.canWriteGroup = false;
@@ -18,5 +19,6 @@ export default class RoleProtection {
         this.canDeleteProject = false;
         this.canWriteValue = false;
         this.canWriteUser = false;
+        this.canWriteStatus = false;
     }
 }

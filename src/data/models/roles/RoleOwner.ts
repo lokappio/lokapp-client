@@ -11,5 +11,6 @@ export default class RoleOwner extends RoleProtection {
         this.canDeleteProject = true;
         this.canWriteValue = true;
         this.canWriteUser = true;
+        this.canWriteStatus = true;
     }
 }
