@@ -78,7 +78,7 @@ Install dependencies
 
 Start locally
 ```bash
-  npm run serve
+  npm run serve:dev
 ```
 
 Build for production

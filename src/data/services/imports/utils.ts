@@ -30,7 +30,7 @@ export function descape(data: string): string {
   return res;
 }
 
-export type KeyGroups = { [grouName: string]: Key[] };
+export type KeyGroups = { [groupName: string]: Key[] };
 
 export const insertValueToKey = (project: Project, values: string[], keyString: string, groupName: string, language: string) => {
   const allKeys = project.groups.find(e => e.name === groupName).keys;
