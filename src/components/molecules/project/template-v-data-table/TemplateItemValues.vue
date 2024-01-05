@@ -2,8 +2,7 @@
   <v-text-field
       :id="inputId"
       class="my-3"
-      v-if="canWriteValue"
-      :readonly="isSourceLanguage"
+      :readonly="isSourceLanguage || !canWriteValue"
       v-model="updatedValue.name"
       @blur="saveValue()"
       @keydown.enter="blurInput"

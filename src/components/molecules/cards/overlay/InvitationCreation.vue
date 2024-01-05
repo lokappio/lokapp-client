@@ -46,7 +46,8 @@
                     <p>{{ $t("invitation_creation.description_owner") }}<br/>
                     {{ $t("invitation_creation.description_manager") }}<br/>
                     {{ $t("invitation_creation.description_editor") }}<br/>
-                    {{ $t("invitation_creation.description_translator") }}</p>
+                    {{ $t("invitation_creation.description_translator") }}<br/>
+                    {{ $t("invitation_creation.description_reviewer") }}</p>
                 </v-tooltip>
             </span>
           </v-col>
@@ -58,9 +59,35 @@
           </v-col>
         </v-row>
 
+          <!-- Source languages -->
+          <v-row class="mt-2 mb-1">
+              <v-col cols="12" class="pl-0 py-0">
+                <span class="title-h3">{{ $t("invitation_creation.source_languages_title") }}</span>
+              </v-col>
+          </v-row>
+          <v-row class="mt-0 mb-1">
+              <v-col cols="12" class="pb-0 pt-0 px-0">
+                  <v-select :label="$t('invitation_creation.source_languages_title')" light solo v-model="sourceLanguagesIds" :items="languages"
+                            item-text="text" item-value="value" multiple></v-select>
+              </v-col>
+          </v-row>
+
+          <!-- Target languages -->
+          <v-row class="mt-2 mb-1">
+              <v-col cols="12" class="pl-0 py-0">
+                  <span class="title-h3">{{ $t("invitation_creation.target_languages_title") }}</span>
+              </v-col>
+          </v-row>
+          <v-row class="mt-0 mb-1">
+              <v-col cols="12" class="pb-0 pt-0 px-0">
+                  <v-select :label="$t('invitation_creation.target_languages_title')" light solo v-model="targetLanguagesIds" :items="languages"
+                            item-text="text" item-value="value" multiple></v-select>
+              </v-col>
+          </v-row>
+
         <v-row class="mt-1 pb-0">
           <v-col cols="12" class="pb-0 px-0">
-            <action-button :text="$t('invitation_creation.confirm_button').toString()" :handler="inviteUser" block/>
+            <action-button :text="$t('invitation_creation.confirm_button')" :handler="inviteUser" block/>
           </v-col>
         </v-row>
       </v-form>
@@ -78,11 +105,13 @@ export default Vue.extend({
   props: {projectId: Number, dialogOpened: Boolean},
   data() {
     return {
-      email: "",
+      email: "" as string,
       emailRules: userEmailRules(),
       roles: [],
       role: null,
-      loading: false
+      loading: false,
+      sourceLanguagesIds: [],
+      targetLanguagesIds: []
     };
   },
   watch: {
@@ -94,10 +123,22 @@ export default Vue.extend({
           this.email = "";
           this.role = null;
           this.roles = this.constructRoles();
+          this.sourceLanguagesIds = [];
+          this.targetLanguagesIds = [];
         }
       }
     }
   },
+    computed: {
+        languages() {
+            return this.$store.getters.currentProject.languages.map((language: any) => {
+                return {
+                    text: language.name,
+                    value: language.id
+                }
+            });
+        }
+    },
   methods: {
     constructRoles(): any[] {
       const res: any[] = [];
@@ -121,7 +162,7 @@ export default Vue.extend({
           this.$notify(this.$t("errors.enter_role").toString(), {color: "red"});
         } else {
           this.loading = true;
-          this.$service.invitations.createInvitation(this.projectId, this.email, this.role)
+          this.$service.invitations.createInvitation(this.projectId, this.email, this.role, this.sourceLanguagesIds, this.targetLanguagesIds)
               .then(() => {
                 this.$notify(this.$t("success.invitation_created").toString(), {color: "primary"});
                 this.closeOverlay();

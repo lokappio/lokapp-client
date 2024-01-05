@@ -16,6 +16,7 @@
       <v-text-field
           v-model="updateKey.name"
           single-line
+          :readonly="!canUpdate"
           :rules="keyNameRules"
           @keydown.enter="saveKey"
           hide-details

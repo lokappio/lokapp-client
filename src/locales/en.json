@@ -73,7 +73,8 @@
         "description_editor": "Editor: can update the content, but not the settings or the users within the project.",
         "description_manager": "Manager: can do anything about the project, except deleting it.",
         "description_owner": "Owner: can do anything about the project, including its deletion.",
-        "description_translator": "Translator: can only update translations",
+        "description_translator": "Translator: can only update translations content.",
+        "description_reviewer": "Reviewer : can only update translations status.",
         "email_label": "Email of the user to invite",
         "email_title": "Email",
         "role_label": "Pick a role",
@@ -244,6 +245,7 @@
         "role_manager": "Manager",
         "role_owner": "Owner",
         "role_translator": "Translator",
+        "role_reviewer": "Reviewer",
         "title": "Users"
     }
 }

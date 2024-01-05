@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import Invitation from "../models/api/Invitation";
 import { Role } from "../models/roles/role.enum";
 import ApiService from "./ApiService";
+import Language from "@/data/models/api/Language";
 
 class InvitationsService {
     static invitationsUrl: string = config.baseUrl + "/invitations";
@@ -20,11 +21,13 @@ class InvitationsService {
         });
     }
 
-    public static createInvitation(projectId: number, email: string, role: Role): Promise<any> {
+    public static createInvitation(projectId: number, email: string, role: Role, sourceLanguagesIds: number[], targetLanguagesIds: number[]): Promise<any> {
         const bodyParameters = {
             "projectId": projectId,
             "email": email,
-            "role": role
+            "role": role,
+            sourceLanguagesIds : sourceLanguagesIds.join(","),
+            targetLanguagesIds: targetLanguagesIds.join(","),
         };
 
         return ApiService.postAPI(`${InvitationsService.invitationsUrl}`, bodyParameters)
