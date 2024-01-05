@@ -104,6 +104,7 @@ export default Vue.extend({
 
         return this.$service.values.updateValue(this.updatedValue)
             .then(() => {
+              this.updatedValue.status = TranslationStatus.MODIFIED;
               this.$emit("valueSaved", this.updatedValue);
               this.loading = false;
               this.inputIcon = "mdi-check";
