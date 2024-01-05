@@ -104,7 +104,7 @@ import TemplateGroupHeader from "@/components/molecules/project/template-v-data-
 import TemplateGroupFooter from "@/components/molecules/project/template-v-data-table/TemplateGroupFooter.vue";
 import Header from "@/components/molecules/project/DetailHeader.vue";
 import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
-import Language from "@/data/models/api/Language";
+import Language, {LanguageAccess} from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
@@ -112,7 +112,7 @@ import {translationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
 import ImportError from "@/data/models/ImportError";
 import ValueDetails from "@/components/molecules/project/ValueDetails.vue";
-import { mapState } from 'vuex';
+import {mapState} from 'vuex';
 
 export default Vue.extend({
   name: "content-details",
@@ -170,6 +170,7 @@ export default Vue.extend({
       ];
 
       if (!this.actualLanguage) {
+        // If there are no actual language selected, we show all languages
         languages.forEach((language) => {
           headers.push({
             text: language.name,
@@ -182,8 +183,22 @@ export default Vue.extend({
           });
         });
       } else {
-        const language: Language = languages.find((item) => item.id === this.actualLanguage);
+        // If there are source languages, we must show it first
+        const sourceLanguage: Language = languages.find((item) => item.access === LanguageAccess.source);
+        if (sourceLanguage) {
+          headers.push({
+            text: sourceLanguage.name,
+            align: "start",
+            value: sourceLanguage.id.toString(),
+            width: "400px",
+            sortable: false,
+            filterable: true,
+            groupable: false
+          });
+        }
 
+        // Then, we show the actual language
+        const language: Language = languages.find((item) => item.id === this.actualLanguage);
         headers.push({
           text: language.name,
           align: "start",

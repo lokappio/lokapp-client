@@ -51,7 +51,7 @@ const stringsDictTranslation = (data: string, project: Project, languageName: st
       translations.forEach((tag, index) => {
         if (tag.nodeName === "key") {
           const quantityString = tag.innerHTML;
-          const valueQuantity = Object.values(ValueQuantity).find(value => value === quantityString);
+          const valueQuantity: ValueQuantity = Object.values(ValueQuantity).find(value => value === quantityString) as ValueQuantity;
 
           if (valueQuantity) {
             values.push(Value.map({

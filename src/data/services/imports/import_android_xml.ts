@@ -49,7 +49,7 @@ const insertValueToKeyPlural = (items: HTMLCollectionOf<Element>, project: Proje
     for (let j = 0; j < valuesXml.length; j++) {
       const quantity = valuesXml[j].getAttribute("quantity");
       const valueXml = valuesXml[j].innerHTML;
-      const valueQuantity = Object.values(ValueQuantity).find(value => value === quantity);
+      const valueQuantity: ValueQuantity = Object.values(ValueQuantity).find(value => value === quantity) as ValueQuantity;
 
       if (valueQuantity) {
         values.push(Value.map({

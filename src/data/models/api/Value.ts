@@ -1,11 +1,7 @@
+import {LanguageAccess} from "@/data/models/api/Language";
+
 export enum ValueQuantity {
   zero = "zero", one = "one", other = "other"
-}
-
-export enum LanguageAccess {
-  all = "all",
-  source = "source",
-  target = "target"
 }
 
 export enum TranslationStatus {
