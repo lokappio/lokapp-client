@@ -140,14 +140,11 @@ export default Vue.extend({
     this.getItems();
   },
   computed: {
-    ...mapState(['currentProject']),
+    ...mapState(['currentProject', 'searchTranslation']),
     projectWarnings(): ImportError[] {
       const value = localStorage.getItem(this.projectId.toString());
 
       return value?.length > 0 ? JSON.parse(value) : [];
-    },
-    searchValue(): string {
-      return this.$store.state.searchTranslation;
     },
     canUpdateKey(): boolean {
       return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteKey : false;
@@ -218,6 +215,10 @@ export default Vue.extend({
       // If current project is changed in the store, we must reload items
       this.getItems();
     },
+    searchTranslation() {
+      // If search translation is changed in the store, we must reload items
+      this.getItems();
+    }
   },
   methods: {
     getItems() {
@@ -225,7 +226,7 @@ export default Vue.extend({
       const items: any[] = [];
 
       currProject.groups?.forEach((group) => {
-        group.keys?.filter((key) => key.name.includes(this.searchValue)).forEach((key) => {
+        group.keys?.filter((key) => key.name.includes(this.searchTranslation)).forEach((key) => {
           if (key.isPlural) {
             Object.values(ValueQuantity).forEach((quantity) => {
               const item: translationItem = {
