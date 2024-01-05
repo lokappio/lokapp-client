@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog v-model="dialogOpened" max-width="800px">
+    <v-dialog v-model="dialogOpened" max-width="900px">
       <user-management v-if="dialogOpenedUser" :dialog-opened="dialogOpenedUser" :project-id="project.id" @close="() => this.dialogOpenedUser = false"/>
 
       <language-management v-if="dialogOpenedLanguage" :dialog-opened="dialogOpenedLanguage" :project-id="project.id" @close="() => this.dialogOpenedLanguage = false"/>

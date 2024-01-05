@@ -246,6 +246,8 @@
         "role_owner": "Owner",
         "role_translator": "Translator",
         "role_reviewer": "Reviewer",
-        "title": "Users"
+        "title": "Users",
+        "source_languages": "Source languages",
+        "target_languages": "Target languages"
     }
 }

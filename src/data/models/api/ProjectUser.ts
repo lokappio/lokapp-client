@@ -1,5 +1,6 @@
 import {getRoleClass, getRoleEnum, Role} from "../roles/role.enum";
 import RoleProtection from "@/data/models/roles/RoleProtection";
+import Language from "@/data/models/api/Language";
 
 export default class ProjectUser {
     userId: string;
@@ -8,6 +9,10 @@ export default class ProjectUser {
     role: Role;
     pending: boolean;
     invitationId: number | null;
+    sourceLanguagesIds: number[] = [];
+    targetLanguagesIds: number[] = [];
+    sourceLanguages: Language[] = [];
+    targetLanguages: Language[] = [];
 
     get roleAbility(): RoleProtection {
         return getRoleClass(this.role);
@@ -26,6 +31,10 @@ export default class ProjectUser {
         user.role = getRoleEnum(data.role);
         user.pending = data.pending;
         user.invitationId = data.invitationId;
+        user.sourceLanguages = data.sourceLanguages ? data.sourceLanguages.map(d => Language.map(d)) : [];
+        user.targetLanguages= data.targetLanguages ? data.targetLanguages.map(d => Language.map(d)) : [];
+        user.sourceLanguagesIds = data.sourceLanguages ? data.sourceLanguages.map(d => d.id) : [];
+        user.targetLanguagesIds = data.targetLanguages ? data.targetLanguages.map(d => d.id) : [];
 
         return user;
     }

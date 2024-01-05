@@ -1,9 +1,8 @@
 import config from "@/config";
-import { AxiosResponse } from "axios";
+import {AxiosResponse} from "axios";
 import Invitation from "../models/api/Invitation";
-import { Role } from "../models/roles/role.enum";
+import {Role} from "../models/roles/role.enum";
 import ApiService from "./ApiService";
-import Language from "@/data/models/api/Language";
 
 class InvitationsService {
     static invitationsUrl: string = config.baseUrl + "/invitations";

@@ -60,12 +60,12 @@
         </v-row>
 
           <!-- Source languages -->
-          <v-row class="mt-2 mb-1">
+          <v-row class="mt-2 mb-1" v-if="canShowSourceAndTargetLanguages">
               <v-col cols="12" class="pl-0 py-0">
                 <span class="title-h3">{{ $t("invitation_creation.source_languages_title") }}</span>
               </v-col>
           </v-row>
-          <v-row class="mt-0 mb-1">
+          <v-row class="mt-0 mb-1" v-if="canShowSourceAndTargetLanguages">
               <v-col cols="12" class="pb-0 pt-0 px-0">
                   <v-select :label="$t('invitation_creation.source_languages_title')" light solo v-model="sourceLanguagesIds" :items="languages"
                             item-text="text" item-value="value" multiple></v-select>
@@ -73,12 +73,12 @@
           </v-row>
 
           <!-- Target languages -->
-          <v-row class="mt-2 mb-1">
+          <v-row class="mt-2 mb-1" v-if="canShowSourceAndTargetLanguages">
               <v-col cols="12" class="pl-0 py-0">
                   <span class="title-h3">{{ $t("invitation_creation.target_languages_title") }}</span>
               </v-col>
           </v-row>
-          <v-row class="mt-0 mb-1">
+          <v-row class="mt-0 mb-1" v-if="canShowSourceAndTargetLanguages">
               <v-col cols="12" class="pb-0 pt-0 px-0">
                   <v-select :label="$t('invitation_creation.target_languages_title')" light solo v-model="targetLanguagesIds" :items="languages"
                             item-text="text" item-value="value" multiple></v-select>
@@ -114,6 +114,19 @@ export default Vue.extend({
       targetLanguagesIds: []
     };
   },
+  computed: {
+    languages(): any[] {
+      return this.$store.getters.currentProject.languages.map((language: any) => {
+        return {
+          text: language.name,
+          value: language.id
+        }
+      });
+    },
+    canShowSourceAndTargetLanguages(): boolean {
+      return this.role === Role.TRANSLATOR || this.role === Role.REVIEWER;
+    }
+  },
   watch: {
     dialogOpened: {
       immediate: true,
@@ -129,16 +142,6 @@ export default Vue.extend({
       }
     }
   },
-    computed: {
-        languages() {
-            return this.$store.getters.currentProject.languages.map((language: any) => {
-                return {
-                    text: language.name,
-                    value: language.id
-                }
-            });
-        }
-    },
   methods: {
     constructRoles(): any[] {
       const res: any[] = [];
@@ -162,6 +165,11 @@ export default Vue.extend({
           this.$notify(this.$t("errors.enter_role").toString(), {color: "red"});
         } else {
           this.loading = true;
+          if (!this.canShowSourceAndTargetLanguages) {
+              this.sourceLanguagesIds = [];
+              this.targetLanguagesIds = [];
+          }
+
           this.$service.invitations.createInvitation(this.projectId, this.email, this.role, this.sourceLanguagesIds, this.targetLanguagesIds)
               .then(() => {
                 this.$notify(this.$t("success.invitation_created").toString(), {color: "primary"});
@@ -177,6 +185,7 @@ export default Vue.extend({
         }
       }
     }
-  }
+  },
+
 });
 </script>

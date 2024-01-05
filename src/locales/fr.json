@@ -250,6 +250,8 @@
     "role_owner": "Propriétaire",
     "role_translator": "Traducteur",
     "role_reviewer": "Relecteur",
-    "title": "Utilisateurs"
+    "title": "Utilisateurs",
+    "source_languages": "Langues sources",
+    "target_languages": "Langues cibles"
   }
 }
