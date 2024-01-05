@@ -24,6 +24,7 @@
     "no_file_to_download": "Aucun fichier à télécharger",
     "platform_target": "Plateforme",
     "prefix_keys_radio": "Préfixer les clés par le nom du groupe",
+    "download_only_validated": "Télécharger uniquement les traductions validées",
     "title": "Exporter des fichiers"
   },
   "dropdown": {

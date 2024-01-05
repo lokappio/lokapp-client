@@ -24,6 +24,7 @@
         "no_file_to_download": "No file to download",
         "platform_target": "Platform",
         "prefix_keys_radio": "Prefix keys with group name",
+        "download_only_validated": "Download only validated translations",
         "title": "Export files"
     },
     "dropdown": {

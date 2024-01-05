@@ -3,7 +3,7 @@ import Language from "@/data/models/api/Language";
 import Key from "@/data/models/api/Key";
 import {KeyType} from "@/data/models/enums/project";
 import {groupBy} from "@/data/helpers/utils";
-import Value from "@/data/models/api/Value";
+import Value, {TranslationStatus} from "@/data/models/api/Value";
 import ImportError from "@/data/models/ImportError";
 
 export class Plural {
@@ -69,7 +69,7 @@ export default class Project {
     return project;
   }
 
-  get toLocalizedProject(): LocalizedGroup[] {
+  toLocalizedProject(onlyValidatedValues: boolean): LocalizedGroup[] {
     const localized: LocalizedGroup[] = [];
 
     this.groups.forEach((group) => {
@@ -81,8 +81,10 @@ export default class Project {
         localization.key = key.name;
         localization.type = key.isPlural ? KeyType.PLURAL : KeyType.SINGULAR;
 
-        if(key.isPlural) {
-          Object.entries(groupBy<Value[]>(key.values, 'languageId')).forEach((value) => {
+        const valuesToExport = key.values.filter(value => !onlyValidatedValues || value.status == TranslationStatus.VALIDATED)
+
+        if (key.isPlural) {
+          Object.entries(groupBy<Value[]>(valuesToExport, 'languageId')).forEach((value) => {
             const pluralValue = new Plural();
 
             value[1].forEach((value) => {
@@ -92,7 +94,7 @@ export default class Project {
             localization[parseInt(value[0])] = pluralValue;
           })
         } else {
-          key.values.forEach((value) => {
+          valuesToExport.forEach((value) => {
             localization[value.languageId] = value.name;
           })
         }

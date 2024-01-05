@@ -19,7 +19,7 @@
             </v-row>
 
             <v-row>
-                <v-col cols="12" class="pb-0 pt-0 px-0">
+                <v-col cols="12" class="py-0 px-0 m-0">
                     <v-select
                         solo
                         background-color="primary"
@@ -32,13 +32,46 @@
             </v-row>
 
             <template v-if="isGenerated">
+                <v-row v-if="shouldShowPrefixCheckbox() === true">
+                    <v-col cols="12" class="px-0 py-0 my-0">
+                        <v-checkbox
+                            class="custom-checkbox"
+                            hide-details="true"
+                            v-model="prefixKeysWithGroupName">
+                            <template v-slot:label>
+                                <div>
+                                    <p class="my-0" style="font-size: 0.85em; padding-top: 0.15em">
+                                        {{ $t('download_project.prefix_keys_radio') }}</p>
+                                </div>
+                            </template>
+                        </v-checkbox>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col cols="12" class="px-0 pt-0">
+                        <v-checkbox
+                            class="custom-checkbox"
+                            hide-details="true"
+                            v-model="downloadOnlyValidatedValues">
+                            <template v-slot:label>
+                                <div>
+                                    <p class="my-0" style="font-size: 0.85em; padding-top: 0.15em">
+                                        {{ $t('download_project.download_only_validated') }}</p>
+                                </div>
+                            </template>
+                        </v-checkbox>
+                    </v-col>
+                </v-row>
+
                 <v-row v-if="files.length === 0" class="mt-4 pb-0 mb-0">
                     <v-col cols="12" class="pb-0 px-0">
                         <p class="title-h3">{{ $t("download_project.no_file_to_download") }}</p>
                     </v-col>
                 </v-row>
 
-                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name" class="mt-1 pt-0">
+                <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name"
+                       class="mt-1 pt-0">
                     <v-col cols="auto" class="py-0 px-0">
                         <span class="text-2">{{ file.name }}</span>
                     </v-col>
@@ -49,24 +82,10 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-if="shouldShowPrefixCheckbox() === true">
-                    <v-col cols="12" class="px-0 pt-0">
-                        <v-checkbox
-                            class="custom-checkbox"
-                            hide-details="true"
-                            v-model="prefixKeysWithGroupName">
-                            <template v-slot:label>
-                                <div>
-                                    <p class="my-0" style="font-size: 0.85em; padding-top: 0.15em">{{$t('download_project.prefix_keys_radio')}}</p>
-                                </div>
-                            </template>
-                        </v-checkbox>
-                    </v-col>
-                </v-row>
-
                 <v-row class="mt-2 pb-0">
                     <v-col cols="12" class="pb-0 px-0">
-                        <action-button block :handler="downloadEverything" :text="$t('download_project.download_everything').toString()"/>
+                        <action-button block :handler="downloadEverything"
+                                       :text="$t('download_project.download_everything')"/>
                     </v-col>
                 </v-row>
             </template>
@@ -91,17 +110,28 @@ export default Vue.extend({
             isGenerated: false,
             selectedPlatform: Platform.ANDROID as Platform,
             prefixKeysWithGroupName: true,
+            downloadOnlyValidatedValues: true,
             files: [] as TranslationFile[]
         };
     },
     watch: {
         selectedPlatform: {
             immediate: true,
-            handler: function() {this.generateFiles();}
+            handler: function () {
+                this.generateFiles();
+            }
         },
         prefixKeysWithGroupName: {
             immediate: true,
-            handler: function() {this.generateFiles();}
+            handler: function () {
+                this.generateFiles();
+            }
+        },
+        downloadOnlyValidatedValues: {
+            immediate: true,
+            handler: function () {
+                this.generateFiles();
+            }
         },
         dialogOpened(isOpened) {
             if (isOpened) {
@@ -126,7 +156,7 @@ export default Vue.extend({
     },
     methods: {
         generateFiles(): void {
-            const filesData: FileData[] = this.$service.export.exportDatas(this.selectedPlatform, this.prefixKeysWithGroupName);
+            const filesData: FileData[] = this.$service.export.exportDatas(this.selectedPlatform, this.prefixKeysWithGroupName, this.downloadOnlyValidatedValues);
             this.isGenerated = true;
 
             switch (this.selectedPlatform) {

@@ -102,8 +102,8 @@ const generateStringFiles = (platform: string, languagesParsed: Language[], loca
     }
 }
 
-export const exportProject = (platform: string, prefixWithGroup: boolean): FileData[] => {
+export const exportProject = (platform: string, prefixWithGroup: boolean, onlyValidatedValues: boolean): FileData[] => {
     const project: Project = store.getters.currentProject;
 
-    return generateStringFiles(platform, project.languages, project.toLocalizedProject, prefixWithGroup);
+    return generateStringFiles(platform, project.languages, project.toLocalizedProject(onlyValidatedValues), prefixWithGroup);
 };
