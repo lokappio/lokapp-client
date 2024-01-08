@@ -82,7 +82,7 @@ export default Vue.extend({
       if (this.isSourceLanguage) {
         // If it's a source language, we must show a validated values to the user
         return (item.key.values.filter(value => value.languageId == languageId)
-            .filter(value => value.status === TranslationStatus.VALIDATED))[0] || Value.map({
+            .filter(value => value.status === TranslationStatus.VALIDATED && (!item.key.isPlural || value.quantityString === item.quantity)))[0] || Value.map({
           languageId: languageId,
           name: "",
           id: item.languages[languageId].id,
