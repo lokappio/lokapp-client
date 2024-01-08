@@ -36,6 +36,7 @@ import {Vue} from 'vue-property-decorator';
 import Value, {TranslationStatus} from "@/data/models/api/Value";
 import {translationItem} from "@/data/models/types/TranslationTypes";
 import {dateToDateTimeString} from "@/helpers/date";
+import {LanguageAccess} from "@/data/models/api/Language";
 
 export default Vue.extend({
   name: "value-details",
@@ -85,11 +86,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    TranslationStatus() {
-      return TranslationStatus
-    },
     canWriteStatus(): boolean {
-      return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteStatus : false;
+      const item = this.selectedItem as translationItem;
+      const isSourceLanguage = item.key.values.find(value => value.languageId === this.selectedLanguageId).languageAccess == LanguageAccess.source
+      // Can't change the status if the language is a source language or if the user doesn't have the right to write status
+      return !isSourceLanguage && (this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteStatus : false);
     },
   },
   mounted() {

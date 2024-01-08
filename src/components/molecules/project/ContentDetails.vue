@@ -208,7 +208,7 @@ export default Vue.extend({
       }
 
       return headers;
-    },
+    }
   },
   watch: {
     currentProject() {
