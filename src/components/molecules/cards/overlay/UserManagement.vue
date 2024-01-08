@@ -33,12 +33,11 @@
 
                               <v-col cols="2" v-if="canShowSourceAndTargetLanguages(user)">
                                 <v-select
+                                    class="mb-3"
                                     hide-details="true"
                                     :disabled="isUserUpdateRoleDisabled(user)"
-                                    solo
                                     multiple
-                                    :hint="$t('users_manage.source_languages')"
-                                    persistent-hint
+                                    :label="$t('users_manage.source_languages')"
                                     v-model="user.sourceLanguagesIds"
                                     :items="languages"
                                     @change="updateRole(user)"
@@ -47,12 +46,11 @@
 
                               <v-col cols="2" v-if="canShowSourceAndTargetLanguages(user)">
                                 <v-select
+                                    class="mb-3"
                                     hide-details="true"
                                     :disabled="isUserUpdateRoleDisabled(user)"
-                                    solo
                                     multiple
-                                    :hint="$t('users_manage.target_languages')"
-                                    persistent-hint
+                                    :label="$t('users_manage.target_languages')"
                                     v-model="user.targetLanguagesIds"
                                     :items="languages"
                                     @change="updateRole(user)"
@@ -63,8 +61,7 @@
                                     <v-select
                                         hide-details="true"
                                         :disabled="isUserUpdateRoleDisabled(user)"
-                                        light
-                                        solo
+                                        :label="$t('users_manage.role')"
                                         v-model="user.role"
                                         :items="roles"
                                         @change="updateRole(user)"

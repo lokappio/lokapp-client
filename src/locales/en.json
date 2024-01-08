@@ -248,6 +248,7 @@
         "role_reviewer": "Reviewer",
         "title": "Users",
         "source_languages": "Source languages",
-        "target_languages": "Target languages"
+        "target_languages": "Target languages",
+        "role": "Role"
     }
 }

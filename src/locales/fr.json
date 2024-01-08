@@ -252,6 +252,7 @@
     "role_reviewer": "Relecteur",
     "title": "Utilisateurs",
     "source_languages": "Langues sources",
-    "target_languages": "Langues cibles"
+    "target_languages": "Langues cibles",
+    "role": "Rôle"
   }
 }
