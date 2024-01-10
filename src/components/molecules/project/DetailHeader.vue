@@ -10,9 +10,18 @@
         <v-row no-gutters align="center">
           <span class="title-h2 primary--text">{{ currentProject.name }}</span>
           <project-settings-button class="d-inline ml-1" :project="currentProject" :from-store="true"/>
+          <v-select
+              v-if="shouldShowSourceLanguage"
+              :value="selectedSourceLanguageId"
+              class="ml-8 source-language-select"
+              hide-details
+              :label="$t('project_detail.source_language')"
+              :items="sourceLanguages"
+              @change="(newId) => this.$emit('source-language-id-changed', newId)"/>
         </v-row>
-
+        <v-row class="mt-2" no-gutters align="center">
           <p class="text-2 description-style">{{ currentProject.description }}</p>
+        </v-row>
       </v-col>
 
       <!-- RightPart -->
@@ -36,10 +45,15 @@ import ProjectSettingsButton from "@/components/molecules/buttons/ProjectSetting
 import Vue from "vue";
 import Project from "@/data/models/api/Project";
 import DownloadProjectCard from "@/components/molecules/cards/overlay/DownloadProject.vue";
+import Language, {LanguageAccess} from "@/data/models/api/Language";
 
 export default Vue.extend({
   name: "detail-header",
   components: {DownloadProjectCard, ProjectSettingsButton},
+  props: {
+    selectedTargetLanguageId: Number,
+    selectedSourceLanguageId: Number
+  },
   data() {
     return {
       dialogOpened: false,
@@ -57,6 +71,17 @@ export default Vue.extend({
   computed: {
     currentProject(): Project {
       return this.$store.getters.currentProject;
+    },
+    sourceLanguages(): { text: string; value: number }[] {
+      return this.$store.getters.currentProject.languages.filter((e: Language) => e.access === LanguageAccess.source).map((e: Language) => {
+        return {
+          text: e.name,
+          value: e.id
+        };
+      });
+    },
+    shouldShowSourceLanguage(): boolean {
+      return this.sourceLanguages.length > 1 && this.selectedTargetLanguageId !== null;
     }
   }
 });
@@ -67,5 +92,10 @@ export default Vue.extend({
   text-overflow: ellipsis;
   overflow: hidden;
   max-height: 50%;
+}
+
+.source-language-select {
+  width: 200px;
+  flex: none;
 }
 </style>

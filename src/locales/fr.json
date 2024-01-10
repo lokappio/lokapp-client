@@ -205,7 +205,8 @@
     "all_languages": "Toutes les langues",
     "keys": "Clés",
     "plural_key": "Pluriel",
-    "simple_key": "Singulier"
+    "simple_key": "Singulier",
+    "source_language": "Langue source"
   },
   "project_manage": {
     "change_settings_button": "Modifier",

@@ -186,7 +186,8 @@
         "all_languages": "All languages",
         "keys": "Keys",
         "plural_key": "Plural",
-        "simple_key": "Singular"
+        "simple_key": "Singular",
+        "source_language": "Source language"
     },
     "project_manage": {
         "change_settings_button": "Update",

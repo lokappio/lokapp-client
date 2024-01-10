@@ -3,7 +3,10 @@
     <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => isOpenCreation = false"></key-creation>
     <v-container fluid>
 
-      <Header class="header"/>
+      <DetailHeader class="header"
+                    :selected-target-language-id="this.actualLanguage"
+                    :selected-source-language-id="this.selectedSourceLanguageId"
+      @source-language-id-changed="onSelectedSourceLanguageIdChanged"/>
 
       <v-row no-gutters v-if="items.length <= 0" align-content="start" justify="center">
         <v-col cols="4">
@@ -88,7 +91,7 @@
           <div>
             <ValueDetails
                 :selectedItem="selectedItem"
-                :selectedLanguageId="selectedLanguageId"/>
+                :selectedLanguageId="selectedTargetLanguageId"/>
           </div>
         </v-col>
       </v-row>
@@ -102,7 +105,7 @@ import TemplateItemValues from "@/components/molecules/project/template-v-data-t
 import TemplateItemKeys from "@/components/molecules/project/template-v-data-table/TemplateItemKeys.vue";
 import TemplateGroupHeader from "@/components/molecules/project/template-v-data-table/TemplateGroupHeader.vue";
 import TemplateGroupFooter from "@/components/molecules/project/template-v-data-table/TemplateGroupFooter.vue";
-import Header from "@/components/molecules/project/DetailHeader.vue";
+import DetailHeader from "@/components/molecules/project/DetailHeader.vue";
 import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
 import Language, {LanguageAccess} from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
@@ -122,7 +125,7 @@ export default Vue.extend({
     TemplateGroupHeader,
     TemplateGroupFooter,
     TemplateItemKeys,
-    Header,
+    DetailHeader,
     KeyCreation
   },
   data() {
@@ -131,9 +134,14 @@ export default Vue.extend({
       projectId: -1,
       isOpenCreation: false,
       selectedItem: {},
-      selectedLanguageId: -1,
+      selectedTargetLanguageId: -1,
+      selectedSourceLanguageId: -1,
       items: [],
     };
+  },
+  created() {
+    const selectedSourceLanguage =  this.$store.getters.currentProject.languages.find((e: Language) => e.access === LanguageAccess.source)
+    this.selectedSourceLanguageId = selectedSourceLanguage ? selectedSourceLanguage.id : -1;
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
@@ -181,7 +189,7 @@ export default Vue.extend({
         });
       } else {
         // If there are source languages, we must show it first
-        const sourceLanguage: Language = languages.find((item) => item.access === LanguageAccess.source);
+        const sourceLanguage: Language = languages.find((item) => item.id === this.selectedSourceLanguageId);
         if (sourceLanguage) {
           headers.push({
             text: sourceLanguage.name,
@@ -221,6 +229,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    onSelectedSourceLanguageIdChanged(newId: number) {
+      this.selectedSourceLanguageId = newId;
+    },
     getItems() {
       const currProject: Project = this.currentProject as Project;
       const items: any[] = [];
@@ -279,7 +290,7 @@ export default Vue.extend({
     },
     valueClicked(item: translationItem, languageId: number) {
       this.selectedItem = item;
-      this.selectedLanguageId = languageId;
+      this.selectedTargetLanguageId = languageId;
     }
   }
 });
