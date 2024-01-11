@@ -111,7 +111,8 @@
         "title": "Add language",
         "import_file_subtitle": "Files import",
         "fromImport": "Import à language",
-        "newLanguage": "Create an empty language"
+        "newLanguage": "Create an empty language",
+        "replace_existing_keys": "Replace values of already existing keys"
     },
     "language_delete": {
         "cancel_button": "Cancel",

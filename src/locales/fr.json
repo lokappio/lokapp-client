@@ -130,7 +130,8 @@
     "title": "Ajouter une langue",
     "import_file_subtitle": "Import de fichiers",
     "fromImport": "Importer une langue",
-    "newLanguage": "Créer une langue vide"
+    "newLanguage": "Créer une langue vide",
+    "replace_existing_keys": "Remplacer les valeurs des clés déjà existantes"
   },
   "language_delete": {
     "cancel_button": "Annuler",

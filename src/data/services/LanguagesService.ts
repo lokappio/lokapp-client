@@ -25,22 +25,23 @@ class LanguagesService {
       });
   }
 
-  public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform) {
+  public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform, replaceExistingKeys?: boolean) {
     const projectFromStore = Object.assign(Project.map({}), JSON.parse(JSON.stringify(project)));
     projectFromStore.languages.push(Language.map({name: item.language}));
 
     const projectImport = await ImportService.generateProjectFromFiles(projectFromStore, [item], platform);
 
     const groups: Group[] = projectImport.groups
-    await this.createLanguage(item.language, groups);
+    await this.createLanguage(item.language, groups, replaceExistingKeys);
 
     return await projectsService.getEntireProjectById(projectImport.id);
   }
 
-  public static createLanguage(languageName: string, groups?: Group[]): Promise<{ language: Language; values: Value[] } | void> {
+  public static createLanguage(languageName: string, groups?: Group[], replaceExistingKeys?: boolean): Promise<{ language: Language; values: Value[] } | void> {
     const bodyParameters = {
       name: languageName,
-      groups: groups
+      groups: groups,
+      replaceExistingKeys: replaceExistingKeys || false
     };
 
     return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)

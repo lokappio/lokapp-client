@@ -120,6 +120,23 @@
               </v-file-input>
             </v-col>
           </v-row>
+
+          <!-- Checkbox option for Replace existing keys -->
+          <v-row no-gutters align-content="center" class="mb-4">
+            <v-col cols="12">
+              <v-checkbox
+                  class="custom-checkbox"
+                  hide-details="true"
+                  v-model="replaceExistingKeys">
+                <template v-slot:label>
+                  <div>
+                    <p class="my-0" style="font-size: 0.85em; padding-top: 0.15em">
+                      {{ $t('language_creation.replace_existing_keys') }}</p>
+                  </div>
+                </template>
+              </v-checkbox>
+            </v-col>
+          </v-row>
         </div>
 
         <!-- ValidateButton -->
@@ -155,7 +172,8 @@ export default Vue.extend({
       fromImport: false,
       selectedPlatform: Platform.ANDROID,
       importItem: new ImportItem("", null) as ImportItem,
-      importError: null as ImportError
+      importError: null as ImportError,
+      replaceExistingKeys: false,
     };
   },
   watch: {
@@ -202,7 +220,7 @@ export default Vue.extend({
     createNewLanguageFromImport() {
       this.loading = true;
 
-      this.$service.languages.createLanguageFromImport(this.$store.getters.currentProject, this.importItem, this.selectedPlatform)
+      this.$service.languages.createLanguageFromImport(this.$store.getters.currentProject, this.importItem, this.selectedPlatform, this.replaceExistingKeys)
           .then((result: Project) => {
             this.loading = false;
             this.$store.commit("SET_CURRENT_PROJECT", result);
