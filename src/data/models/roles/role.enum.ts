@@ -12,23 +12,8 @@ export enum Role {
   TRANSLATOR = "translator",
   REVIEWER = "reviewer",
 }
-
-export const getRoleEnum = (role: string): Role => {
-  switch (role) {
-    case Role.OWNER:
-      return Role.OWNER;
-    case Role.MANAGER:
-      return Role.MANAGER;
-    case Role.EDITOR:
-      return Role.EDITOR;
-    case Role.TRANSLATOR:
-      return Role.TRANSLATOR;
-    case Role.REVIEWER:
-      return Role.REVIEWER;
-    default:
-      break;
-  }
-  return undefined;
+export const getRoleEnum = (role: string): Role|undefined => {
+  return Object.values(Role).includes(role as Role) ? role as Role : undefined;
 }
 
 export const getRoleClass = (role: Role): RoleProtection => {

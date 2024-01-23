@@ -32,7 +32,7 @@
             </v-row>
 
             <template v-if="isGenerated">
-                <v-row v-if="shouldShowPrefixCheckbox() === true">
+                <v-row v-if="shouldShowPrefixCheckbox">
                     <v-col cols="12" class="px-0 py-0 my-0">
                         <v-checkbox
                             class="custom-checkbox"
@@ -152,7 +152,10 @@ export default Vue.extend({
             return Object.values(Platform).map((platform, index) => {
                 return {id: index, name: platform};
             });
-        }
+        },
+        shouldShowPrefixCheckbox(): boolean {
+            return (this.selectedPlatform == Platform.IOS as Platform || this.selectedPlatform == Platform.ANDROID as Platform) === true;
+        },
     },
     methods: {
         generateFiles(): void {
@@ -187,9 +190,6 @@ export default Vue.extend({
                 default:
                     break;
             }
-        },
-        shouldShowPrefixCheckbox(): boolean {
-            return this.selectedPlatform == Platform.IOS as Platform || this.selectedPlatform == Platform.ANDROID as Platform;
         },
         copyFile(file: TranslationFile) {
             console.log("Copying");
