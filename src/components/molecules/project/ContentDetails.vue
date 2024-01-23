@@ -136,7 +136,6 @@ export default Vue.extend({
       selectedItem: {},
       selectedTargetLanguageId: -1,
       selectedSourceLanguageId: -1,
-      items: [],
     };
   },
   created() {
@@ -145,7 +144,6 @@ export default Vue.extend({
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
-    this.getItems();
   },
   computed: {
     ...mapState(['currentProject', 'searchTranslation']),
@@ -216,23 +214,8 @@ export default Vue.extend({
       }
 
       return headers;
-    }
-  },
-  watch: {
-    currentProject() {
-      // If current project is changed in the store, we must reload items
-      this.getItems();
     },
-    searchTranslation() {
-      // If search translation is changed in the store, we must reload items
-      this.getItems();
-    }
-  },
-  methods: {
-    onSelectedSourceLanguageIdChanged(newId: number) {
-      this.selectedSourceLanguageId = newId;
-    },
-    getItems() {
+    items(): any[] {
       const currProject: Project = this.currentProject as Project;
       const items: any[] = [];
 
@@ -268,8 +251,12 @@ export default Vue.extend({
           }
         });
       });
-
-      this.items = items;
+      return items;
+    }
+  },
+  methods: {
+    onSelectedSourceLanguageIdChanged(newId: number) {
+      this.selectedSourceLanguageId = newId;
     },
     keySaved(value: Key): void {
       //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL

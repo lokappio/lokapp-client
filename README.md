@@ -88,7 +88,7 @@ Build for production
 
 ### Environment Variables
 
-To run the web applicaiton, you need to add the following environment variables to your .env file (You can copy the .env.example file and change its content):
+To run the web application, you need to add the following environment variables to your .env file (You can copy the .env.example file and change its content):
 
 ```
 cp .env.example .env
