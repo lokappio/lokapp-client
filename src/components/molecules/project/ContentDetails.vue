@@ -111,7 +111,7 @@ import Language, {LanguageAccess} from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
 import ImportError from "@/data/models/ImportError";
 import ValueDetails from "@/components/molecules/project/ValueDetails.vue";
@@ -215,15 +215,15 @@ export default Vue.extend({
 
       return headers;
     },
-    items(): any[] {
+    items(): TranslationItem[] {
       const currProject: Project = this.currentProject as Project;
-      const items: any[] = [];
+      const items: TranslationItem[] = [];
 
       currProject.groups?.forEach((group) => {
         group.keys?.filter((key) => key.name.includes(this.searchTranslation)).forEach((key) => {
           if (key.isPlural) {
             Object.values(ValueQuantity).forEach((quantity) => {
-              const item: translationItem = {
+              const item: TranslationItem = {
                 "key": key,
                 "group": group,
                 "quantity": quantity as ValueQuantity,
@@ -237,10 +237,10 @@ export default Vue.extend({
               items.push(item);
             });
           } else {
-            const item: translationItem = {
+            const item: TranslationItem = {
               "key": key,
               "group": group,
-              languages: {}
+              "languages": {}
             };
 
             key.values?.forEach((value) => {
@@ -275,7 +275,7 @@ export default Vue.extend({
 
       localStorage.setItem(this.projectId.toString(), JSON.stringify(this.projectWarnings));
     },
-    valueClicked(item: translationItem, languageId: number) {
+    valueClicked(item: TranslationItem, languageId: number) {
       this.selectedItem = item;
       this.selectedTargetLanguageId = languageId;
     }

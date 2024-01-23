@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import Value, {TranslationStatus} from "@/data/models/api/Value";
 import {DataTableHeader} from "vuetify";
 import {LanguageAccess} from "@/data/models/api/Language";
@@ -51,9 +51,9 @@ export default Vue.extend({
   },
   computed: {
     inputId(): string {
-      let id: string = (this.item as translationItem).key.id + (this.header as DataTableHeader).value.toString();
-      if ((this.item as translationItem).quantity) {
-        id += (this.item as translationItem).quantity;
+      let id: string = (this.item as TranslationItem).key.id + (this.header as DataTableHeader).value.toString();
+      if ((this.item as TranslationItem).quantity) {
+        id += (this.item as TranslationItem).quantity;
       }
 
       return id;
@@ -68,7 +68,7 @@ export default Vue.extend({
       return this.updatedValue.status === TranslationStatus.VALIDATED ? "green" : this.updatedValue.status === TranslationStatus.INVALIDATED ? "red" : "";
     },
     isSourceLanguage(): boolean {
-      const value = (this.item as translationItem).languages[(this.header as DataTableHeader).value];
+      const value = (this.item as TranslationItem).languages[(this.header as DataTableHeader).value];
       return value ? value.languageAccess === LanguageAccess.source : false;
     },
   },
@@ -77,7 +77,7 @@ export default Vue.extend({
       document.getElementById(this.inputId).blur();
     },
     getValue(): Value {
-      const item = this.item as translationItem;
+      const item = this.item as TranslationItem;
       const languageId = parseInt((this.header as DataTableHeader).value);
       if (this.isSourceLanguage) {
         // If it's a source language, we must show a validated values to the user
@@ -96,7 +96,7 @@ export default Vue.extend({
         return Promise.resolve();
       }
 
-      const previousValue = (this.item as translationItem).languages[(this.header as DataTableHeader).value]
+      const previousValue = (this.item as TranslationItem).languages[(this.header as DataTableHeader).value]
       const previousWasEmpty = previousValue.name == "" ? this.updatedValue.name !== "" : true;
 
       if (this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != previousValue.name) {
@@ -111,7 +111,7 @@ export default Vue.extend({
               setTimeout(() => this.inputIcon = "", 1000);
             })
             .catch(() => {
-              this.updatedValue = Object.assign(Value.map({}), (this.item as translationItem).languages[(this.header as DataTableHeader).value]);
+              this.updatedValue = Object.assign(Value.map({}), (this.item as TranslationItem).languages[(this.header as DataTableHeader).value]);
               this.loading = false;
               this.$notify(this.$t("errors.update_value").toString(), {color: "red"});
             });
