@@ -22,6 +22,6 @@ export default class Invitation {
     }
 
     public static map(json: any): Invitation {
-        return new this(getRoleEnum(json.role), json.id, json.owner_email, json.owner_username, json.project_name);
+        return new this(getRoleEnum(json.role), json.id, json.ownerEmail, json.ownerUsername, json.projectName);
     }
 }
