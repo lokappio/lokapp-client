@@ -1,22 +1,23 @@
 <template>
-  <v-text-field
+  <v-textarea
       :id="inputId"
       class="my-3"
       :readonly="isSourceLanguage || !canWriteValue"
       v-model="updatedValue.name"
       @blur="saveValue()"
-      @keydown.enter="blurInput"
       @keydown.tab="blurInput"
       @click="onValueClicked()"
-      single-line
+      rows="1"
       hide-details
+      auto-grow
+      :append-inner-icon="(!loading && inputIcon === '' && !isSourceLanguage) ? statusIcon : inputIcon"
   >
     <template v-slot:append>
       <v-progress-circular v-if="loading" size="20" indeterminate color="primary"></v-progress-circular>
       <v-icon v-else color="primary" size="20">{{ inputIcon }}</v-icon>
-      <v-icon v-if="!loading && inputIcon === ''&& !isSourceLanguage" :color="statusColor">{{ statusIcon }}</v-icon>
+      <v-icon v-if="!loading && inputIcon === '' && !isSourceLanguage" :color="statusColor">{{ statusIcon }}</v-icon>
     </template>
-  </v-text-field>
+  </v-textarea>
 </template>
 
 <script lang="ts">

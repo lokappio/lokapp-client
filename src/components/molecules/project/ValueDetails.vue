@@ -61,10 +61,8 @@ export default Vue.extend({
                 .filter(value => value.languageId === this.selectedLanguageId)
                 .filter(value => !item.key.isPlural || value.quantityString === item.quantity)
                 .sort((a, b) => (a.updatedAt > b.updatedAt) ? -1 : 1).map(value => {
-                  return {
-                      ...value,
-                      languageName: language.name,
-                  }
+                    value.languageName = language.name;
+                    return value;
                 });
           });
     },

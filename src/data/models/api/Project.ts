@@ -135,7 +135,11 @@ export default class Project {
         const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
         const associatedValueIndex = associatedKey.values.findIndex((valueProject) => valueProject.id === value.id);
 
-        associatedKey.values[associatedValueIndex] = Object.assign(Value.map({}), value);
+        if (associatedValueIndex != -1) {
+          associatedKey.values[associatedValueIndex] = Object.assign(Value.map({}), value);
+        } else {
+          associatedKey.values.push(value);
+        }
       }
     })
   }
