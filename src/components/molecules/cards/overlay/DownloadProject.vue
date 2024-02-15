@@ -73,7 +73,7 @@
                 <v-row v-else v-for="file in files" justify="space-between" align="center" :key="file.name"
                        class="mt-1 pt-0">
                     <v-col cols="auto" class="py-0 px-0">
-                        <span class="text-2">{{ file.name }}</span>
+                        <span class="text-2">{{ file.name }} ({{ validatedValuesCount.get(file.language) }})</span>
                     </v-col>
 
                     <v-col cols="auto">
@@ -99,6 +99,8 @@ import Vue from "vue";
 import {FileData, TranslationFile} from "@/data/models/types/export";
 import {Platform} from "@/data/models/enums/project";
 import Export from "@/data/helpers/export";
+import store from "@/store";
+import {TranslationStatus} from "@/data/models/api/Value";
 
 export default Vue.extend({
     name: "download-project-card",
@@ -156,6 +158,16 @@ export default Vue.extend({
         shouldShowPrefixCheckbox(): boolean {
             return (this.selectedPlatform == Platform.IOS as Platform || this.selectedPlatform == Platform.ANDROID as Platform) === true;
         },
+        validatedValuesCount(): Map<string, string> {
+            const valueStatuses: Map<string, Map<TranslationStatus, number>> = store.getters.currentProject.valueStatuses()
+            const valuesCount: number = store.getters.currentProject.valuesCount()
+            const invalidatedValuesCount = new Map<string, string>()
+            valueStatuses.forEach((statuses, language) => {
+                const invalidatedValues = `${this.$t('translation_status.' + TranslationStatus.VALIDATED)} ${statuses.get(TranslationStatus.VALIDATED) ?? 0}/${valuesCount ?? 0}`
+                invalidatedValuesCount.set(language, invalidatedValues)
+            });
+            return invalidatedValuesCount;
+        }
     },
     methods: {
         generateFiles(): void {
@@ -167,6 +179,7 @@ export default Vue.extend({
                     this.files = filesData.map((file) => {
                         return {
                             name: `strings_${file.language}.xml`,
+                            language: file.language,
                             content: file.content
                         };
                     });
@@ -175,6 +188,7 @@ export default Vue.extend({
                     this.files = filesData.map((file) => {
                         return {
                             name: file.plural ? `localizable_${file.language}.stringsdict` : `localizable_${file.language}.strings`,
+                            language: file.language,
                             content: file.content
                         };
                     });
@@ -183,6 +197,7 @@ export default Vue.extend({
                     this.files = filesData.map((file) => {
                         return {
                             name: `${file.language}.json`,
+                            language: file.language,
                             content: file.content
                         };
                     });
@@ -192,9 +207,6 @@ export default Vue.extend({
             }
         },
         copyFile(file: TranslationFile) {
-            console.log("Copying");
-            console.log(file.content);
-            console.log(navigator.clipboard);
             navigator.clipboard.writeText(file.content);
             this.$notify(this.$t("success.copy").toString(), {color: "primary"});
         },

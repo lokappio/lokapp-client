@@ -111,7 +111,7 @@ export default class Project {
   addKey(group: Group | null, key: Key): void {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
 
-    if(currGroupIndex != -1) {
+    if (currGroupIndex != -1) {
       this.groups[currGroupIndex].keys.push(key);
     } else {
       this.groups.push(group);
@@ -131,7 +131,7 @@ export default class Project {
       const associatedGroupIndex = index;
       const associatedKeyIndex = group.keys.findIndex((key) => key.id == value.keyId);
 
-      if(associatedKeyIndex != -1) {
+      if (associatedKeyIndex != -1) {
         const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
         const associatedValueIndex = associatedKey.values.findIndex((valueProject) => valueProject.id === value.id);
 
@@ -148,7 +148,7 @@ export default class Project {
         const associatedGroupIndex = index;
         const associatedKeyIndex = group.keys.findIndex((key) => key.id == value.keyId);
 
-        if(associatedKeyIndex != -1) {
+        if (associatedKeyIndex != -1) {
           const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
           associatedKey.values.push(value);
         }
@@ -172,6 +172,27 @@ export default class Project {
         key.values = key.values.filter((value) => value.languageId != language.id);
       });
     });
+  }
+
+  valueStatuses(): Map<string, Map<TranslationStatus, number>> {
+    return this.groups.reduce((acc, curr) => {
+      const groupStatuses = curr.valueStatuses();
+      groupStatuses.forEach((value, key) => {
+        if (!acc.has(key)) {
+          acc.set(key, value);
+        } else {
+          const languageMap = acc.get(key);
+          value.forEach((value, key) => {
+            languageMap.set(key, (languageMap.get(key) ?? 0) + value);
+          });
+        }
+      });
+      return acc;
+    }, new Map<string, Map<TranslationStatus, number>>());
+  }
+
+  valuesCount(): number {
+    return this.groups.reduce((acc, curr) => acc + curr.valuesCount(), 0);
   }
 
   toCreate(): {} {

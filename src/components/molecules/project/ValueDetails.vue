@@ -36,7 +36,8 @@ import {Vue} from 'vue-property-decorator';
 import Value, {TranslationStatus} from "@/data/models/api/Value";
 import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import {dateToDateTimeString} from "@/helpers/date";
-import {LanguageAccess} from "@/data/models/api/Language";
+import Language, {LanguageAccess} from "@/data/models/api/Language";
+import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
   name: "value-details",
@@ -44,6 +45,8 @@ export default Vue.extend({
     dateToDateTimeString,
     getValues() {
       const item = this.selectedItem as TranslationItem;
+      const project: Project = this.$store.state.currentProject;
+      const language: Language = project.languages.find(language => language.id === this.selectedLanguageId);
 
       // Loading values from props first
       this.values = item.key.values.filter(value => value.languageId === this.selectedLanguageId)
@@ -57,7 +60,12 @@ export default Vue.extend({
             this.values = values
                 .filter(value => value.languageId === this.selectedLanguageId)
                 .filter(value => !item.key.isPlural || value.quantityString === item.quantity)
-                .sort((a, b) => (a.updatedAt > b.updatedAt) ? -1 : 1);
+                .sort((a, b) => (a.updatedAt > b.updatedAt) ? -1 : 1).map(value => {
+                  return {
+                      ...value,
+                      languageName: language.name,
+                  }
+                });
           });
     },
     getClass(value: Value): string {

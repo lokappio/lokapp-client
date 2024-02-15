@@ -83,6 +83,7 @@ export default Vue.extend({
         // If it's a source language, we must show a validated values to the user
         return (item.key.values.filter(value => value.languageId == languageId)
             .filter(value => value.status === TranslationStatus.VALIDATED && (!item.key.isPlural || value.quantityString === item.quantity)))[0] || Value.map({
+          languageName: item.languages[languageId].name,
           languageId: languageId,
           name: "",
           id: item.languages[languageId].id,
@@ -91,30 +92,29 @@ export default Vue.extend({
         return item.languages[languageId];
       }
     },
-    saveValue(): Promise<any> {
+    async saveValue(): Promise<void> {
       if (this.isSourceLanguage) {
-        return Promise.resolve();
+          return Promise.resolve();
       }
 
       const previousValue = (this.item as TranslationItem).languages[(this.header as DataTableHeader).value]
       const previousWasEmpty = previousValue.name == "" ? this.updatedValue.name !== "" : true;
 
       if (this.updatedValue.name != null && previousWasEmpty && this.updatedValue.name != previousValue.name) {
-        this.loading = true;
+          this.loading = true;
 
-        return this.$service.values.updateValue(this.updatedValue)
-            .then(() => {
+          try {
+              await this.$service.values.updateValue(this.updatedValue);
               this.updatedValue.status = TranslationStatus.MODIFIED;
               this.$emit("valueSaved", this.updatedValue);
               this.loading = false;
               this.inputIcon = "mdi-check";
               setTimeout(() => this.inputIcon = "", 1000);
-            })
-            .catch(() => {
+          } catch (e) {
               this.updatedValue = Object.assign(Value.map({}), (this.item as TranslationItem).languages[(this.header as DataTableHeader).value]);
               this.loading = false;
               this.$notify(this.$t("errors.update_value").toString(), {color: "red"});
-            });
+          }
       }
     },
     onValueClicked(): void {
