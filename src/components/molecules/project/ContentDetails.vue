@@ -220,7 +220,9 @@ export default Vue.extend({
       const items: TranslationItem[] = [];
 
       currProject.groups?.forEach((group) => {
-        group.keys?.filter((key) => key.name.includes(this.searchTranslation)).forEach((key) => {
+        group.keys?.filter((key) => {
+            return key.name.includes(this.searchTranslation) || key.values.some((value) => value.name.toLowerCase().includes(this.searchTranslation.toLowerCase()))
+        }).forEach((key) => {
           if (key.isPlural) {
             Object.values(ValueQuantity).forEach((quantity) => {
               const item: TranslationItem = {
