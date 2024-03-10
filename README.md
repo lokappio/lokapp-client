@@ -23,7 +23,6 @@ Webapp using our [API](https://github.com/lokappio/lokapp-api) to help you manag
 
 This webapp provides you a friendly interface for our <a href="https://github.com/lokappio/lokapp-api">Lokapp API</a> to easily manage the translations of your projects.
 
-
 ### Built with
 
 Here are some tools this project has been built with:
@@ -31,7 +30,6 @@ Here are some tools this project has been built with:
 * [Vue.js](https://vuejs.org/)  
 * [Vuetify](https://vuetifyjs.com/)  
 * [Firebase Authentication](https://firebase.google.com/products/auth)
-
 
 ### Features
 
@@ -68,6 +66,14 @@ See the [Plural](documentation/plurals.md) documentation to learn more about how
 
 
 ## Getting Started
+
+### Pre-requisites
+
+If you use pnpm, you have to install `node-gyp` globally before installing the dependencies.
+
+```bash
+pnpm i --global node-gyp
+```
 
 ### Installation
 
