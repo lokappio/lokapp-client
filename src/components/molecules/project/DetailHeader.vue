@@ -28,7 +28,7 @@
       <v-col cols="12" md="6">
         <v-row no-gutters justify="space-between">
           <v-col cols="9">
-            <v-text-field clearable solo v-model="searchValue" height="50" :label="$t('common.search_label')"></v-text-field>
+            <v-text-field clearable solo v-model="searchValue" :loading="isLoading" height="50" :label="$t('common.search_label')"></v-text-field>
           </v-col>
 
           <v-col cols="auto" class="mr-4">
@@ -57,7 +57,9 @@ export default Vue.extend({
   data() {
     return {
       dialogOpened: false,
-      searchValue: ""
+      searchValue: "",
+      debounceTimeout: null,
+      isLoading: false
     };
   },
   destroyed() {
@@ -65,7 +67,21 @@ export default Vue.extend({
   },
   watch: {
     searchValue(value) {
-      this.$store.commit("SET_SEARCH_TRANSLATION", value ?? "");
+      if(!value || value.length < 3) {
+        this.$store.commit("SET_SEARCH_TRANSLATION", "");
+        this.isLoading = false;
+        return;
+      }
+
+      this.isLoading = true;
+      if(this.debounceTimeout) {
+        clearTimeout(this.debounceTimeout);
+      }
+
+      this.debounceTimeout = setTimeout(() => {
+        this.$store.commit("SET_SEARCH_TRANSLATION", value ?? "");
+        this.isLoading = false;
+      }, 200);
     }
   },
   computed: {

@@ -6,7 +6,7 @@
       <DetailHeader class="header"
                     :selected-target-language-id="this.actualLanguage"
                     :selected-source-language-id="this.selectedSourceLanguageId"
-      @source-language-id-changed="onSelectedSourceLanguageIdChanged"/>
+                    @source-language-id-changed="onSelectedSourceLanguageIdChanged"/>
 
       <v-row no-gutters v-if="items.length <= 0" align-content="start" justify="center">
         <v-col cols="4">
@@ -37,14 +37,14 @@
             </v-alert>
 
             <v-data-table
-                hide-default-footer
                 fixed-header
                 :headers="headers"
                 :items="items"
                 :loading="loading"
-                disable-pagination
                 group-by="group.id"
                 elevation="0"
+                :footer-props="{'items-per-page-options': [30, 50, 100, 200, -1] }"
+                :items-per-page="50"
                 class="my-custom-table">
 
               <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
@@ -139,7 +139,7 @@ export default Vue.extend({
     };
   },
   created() {
-    const selectedSourceLanguage =  this.$store.getters.currentProject.languages.find((e: Language) => e.access === LanguageAccess.source)
+    const selectedSourceLanguage = this.$store.getters.currentProject.languages.find((e: Language) => e.access === LanguageAccess.source)
     this.selectedSourceLanguageId = selectedSourceLanguage ? selectedSourceLanguage.id : -1;
   },
   mounted() {
@@ -215,45 +215,25 @@ export default Vue.extend({
 
       return headers;
     },
-    items(): TranslationItem[] {
-      const currProject: Project = this.currentProject as Project;
-      const items: TranslationItem[] = [];
-
-      currProject.groups?.forEach((group) => {
-        group.keys?.filter((key) => {
-            return key.name.includes(this.searchTranslation) || key.values.some((value) => value.name.toLowerCase().includes(this.searchTranslation.toLowerCase()))
-        }).forEach((key) => {
-          if (key.isPlural) {
-            Object.values(ValueQuantity).forEach((quantity) => {
-              const item: TranslationItem = {
-                "key": key,
-                "group": group,
-                "quantity": quantity as ValueQuantity,
-                "languages": {}
-              };
-
-              key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
-                item.languages[value.languageId] = value;
-              });
-
-              items.push(item);
+    items: function (): TranslationItem[] {
+      return (this.currentProject as Project).groups?.map((group) => {
+        return group.keys?.filter((key) => key.matchSearch(this.searchTranslation))
+            .map((key) => {
+              if (key.isPlural) {
+                return Object.values(ValueQuantity).map((quantity) => ({
+                  key, group,
+                  quantity: quantity as ValueQuantity,
+                  languages: key.values?.filter(value => value.quantityString === quantity)
+                      .reduce((acc, value) => ({...acc, [value.languageId]: value}), {})
+                }))
+              } else {
+                return {
+                  key, group,
+                  languages: key.values?.reduce((acc, value) => ({...acc, [value.languageId]: value}), {})
+                };
+              }
             });
-          } else {
-            const item: TranslationItem = {
-              "key": key,
-              "group": group,
-              "languages": {}
-            };
-
-            key.values?.forEach((value) => {
-              item.languages[value.languageId] = value;
-            });
-
-            items.push(item);
-          }
-        });
-      });
-      return items;
+      }).flat(2).filter((item) => item);
     }
   },
   methods: {

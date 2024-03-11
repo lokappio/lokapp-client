@@ -84,4 +84,8 @@ export default class Key {
   valuesCount(): number {
     return this.isPlural ? 3 : 1;
   }
+
+  matchSearch(search: string): boolean {
+    return this.name.toLowerCase().includes(search.toLowerCase()) || this.values.some(value => value.name.toLowerCase().includes(search.toLowerCase()));
+  }
 }
