@@ -70,6 +70,7 @@ export default Vue.extend({
       if(!value || value.length < 3) {
         this.$store.commit("SET_SEARCH_TRANSLATION", "");
         this.isLoading = false;
+        clearTimeout(this.debounceTimeout);
         return;
       }
 
