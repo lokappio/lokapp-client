@@ -1,9 +1,9 @@
 <template>
-  <div class="my-projects-container">
+  <div class="my-projects-container" id="project-container">
     <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => isOpenCreation = false"></key-creation>
     <v-container fluid>
 
-      <DetailHeader class="header"
+      <DetailHeader class="header" id="header"
                     :selected-target-language-id="this.actualLanguage"
                     :selected-source-language-id="this.selectedSourceLanguageId"
                     @source-language-id-changed="onSelectedSourceLanguageIdChanged"/>
@@ -15,8 +15,8 @@
       </v-row>
 
       <v-row no-gutters v-else class="content">
-        <v-col cols="10" class="fill-height">
-          <div class="content_wrapper">
+        <v-col :cols="selectedItem['key'] ? 10 : 12" class="fill-height">
+          <div class="content_wrapper" id="content_wrapper">
             <v-alert
                 v-for="warning in projectWarnings"
                 :key="warning.reason"
@@ -26,26 +26,15 @@
             >{{ warning.reason }}
               <template v-slot:close="{toggle}">
                 <v-btn icon>
-                  <v-icon color="orange" @click="() =>{
-                  removeWarning(warning);
-                  toggle();
-                }"
+                  <v-icon color="orange" @click="() =>{removeWarning(warning);toggle();}"
                   >mdi-close
                   </v-icon>
                 </v-btn>
               </template>
             </v-alert>
 
-            <v-data-table
-                fixed-header
-                :headers="headers"
-                :items="items"
-                :loading="loading"
-                group-by="group.id"
-                elevation="0"
-                :footer-props="{'items-per-page-options': [30, 50, 100, 200, -1] }"
-                :items-per-page="50"
-                class="my-custom-table">
+            <v-data-table fixed-header :headers="headers" :items="items" :loading="loading" group-by="group.id"
+                          elevation="0" :footer-props="{'items-per-page-options': [30, 50, 100, 200, -1] }" :items-per-page="50" class="my-custom-table">
 
               <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
                 <template-item-keys
@@ -144,6 +133,11 @@ export default Vue.extend({
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
+    window.addEventListener('resize', this.resizeContent);
+    this.$nextTick(() => this.resizeContent());
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.resizeContent);
   },
   computed: {
     ...mapState(['currentProject', 'searchTranslation']),
@@ -237,6 +231,11 @@ export default Vue.extend({
     }
   },
   methods: {
+    resizeContent(){
+      const elementHeight = document.getElementById('project-container').clientHeight;
+      const headerHeight = document.getElementById('header').clientHeight;
+      document.getElementById("content_wrapper").style.height = `${elementHeight - headerHeight - 40}px`;
+    },
     onSelectedSourceLanguageIdChanged(newId: number) {
       this.selectedSourceLanguageId = newId;
     },
@@ -276,27 +275,6 @@ export default Vue.extend({
   width: 100%;
 }
 
-@mixin styling($base-height) {
-  .header {
-    margin-top: 20px;
-    height: $base-height;
-  }
-  .content {
-    position: absolute;
-    top: calc(#{$base-height} + 20px);
-    bottom: 0;
-    width: 100%;
-  }
-}
-
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-  @include styling($base-height: 220px);
-}
-
-@media #{map-get($display-breakpoints, 'md-and-up')} {
-  @include styling($base-height: 140px);
-}
-
 .no-data-button {
   margin-left: 45%;
 }
@@ -306,7 +284,8 @@ export default Vue.extend({
 }
 
 .content_wrapper {
-  height: 100% !important;
+  transition: height 0.5s;
+  min-height: 80vh !important;
   margin-right: 30px !important;
   overflow-y: scroll;
 }

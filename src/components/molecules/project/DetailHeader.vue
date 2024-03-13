@@ -25,16 +25,11 @@
       </v-col>
 
       <!-- RightPart -->
-      <v-col cols="12" md="6">
-        <v-row no-gutters justify="space-between">
-          <v-col cols="9">
-            <v-text-field clearable solo v-model="searchValue" :loading="isLoading" height="50" :label="$t('common.search_label')"></v-text-field>
-          </v-col>
-
-          <v-col cols="auto" class="mr-4">
-            <v-btn @click="() => this.dialogOpened = true" depressed height="50" color="primary"><v-icon color="white">mdi-download</v-icon></v-btn>
-          </v-col>
-        </v-row>
+      <v-col cols="12" md="6" class="pr-7 d-flex">
+        <v-text-field clearable solo v-model="searchValue" :loading="isLoading" height="50" :label="$t('common.search_label')" hide-details></v-text-field>
+        <v-btn @click="() => this.dialogOpened = true" depressed height="50" color="primary">
+          <v-icon color="white">mdi-download</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
   </div>
@@ -67,7 +62,7 @@ export default Vue.extend({
   },
   watch: {
     searchValue(value) {
-      if(!value || value.length < 3) {
+      if (!value || value.length < 3) {
         this.$store.commit("SET_SEARCH_TRANSLATION", "");
         this.isLoading = false;
         clearTimeout(this.debounceTimeout);
@@ -75,7 +70,7 @@ export default Vue.extend({
       }
 
       this.isLoading = true;
-      if(this.debounceTimeout) {
+      if (this.debounceTimeout) {
         clearTimeout(this.debounceTimeout);
       }
 
