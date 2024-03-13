@@ -33,8 +33,8 @@
               </template>
             </v-alert>
 
-            <v-data-table fixed-header :headers="headers" :items="items" :loading="loading" group-by="group.id"
-                          elevation="0" :footer-props="{'items-per-page-options': [30, 50, 100, 200, -1] }" :items-per-page="50" class="my-custom-table">
+            <v-data-table fixed-header :headers="headers" :items="items" :loading="loading" group-by="group.id" :page.sync="page"
+                          elevation="0" :footer-props="{'items-per-page-options': [30, 50, 100, 200, -1] }" :items-per-page.sync="itemsPerPage" class="my-custom-table">
 
               <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
                 <template-item-keys
@@ -125,19 +125,32 @@ export default Vue.extend({
       selectedItem: {},
       selectedTargetLanguageId: -1,
       selectedSourceLanguageId: -1,
+      page: 1,
+      itemsPerPage: 50,
+      observer: null
     };
   },
+
   created() {
     const selectedSourceLanguage = this.$store.getters.currentProject.languages.find((e: Language) => e.access === LanguageAccess.source)
     this.selectedSourceLanguageId = selectedSourceLanguage ? selectedSourceLanguage.id : -1;
+    this.$nextTick(() => this.resizeContent());
+
+    this.$nextTick(() => {
+      this.observer = new MutationObserver(() => {
+        this.$nextTick(() => this.resizeContent());
+      });
+
+      this.observer.observe(document.getElementById('project-container'), { childList: true, subtree: true, attributes: true});
+    });
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
-    window.addEventListener('resize', this.resizeContent);
-    this.$nextTick(() => this.resizeContent());
   },
   destroyed() {
-    window.removeEventListener('resize', this.resizeContent);
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   },
   computed: {
     ...mapState(['currentProject', 'searchTranslation']),
@@ -231,10 +244,13 @@ export default Vue.extend({
     }
   },
   methods: {
-    resizeContent(){
-      const elementHeight = document.getElementById('project-container').clientHeight;
+    resizeContent() {
+      console.log(`resizeContent ${window.innerHeight}`);
       const headerHeight = document.getElementById('header').clientHeight;
-      document.getElementById("content_wrapper").style.height = `${elementHeight - headerHeight - 40}px`;
+      const target = document.querySelector(".my-custom-table > div") as HTMLElement;
+      if (target) {
+        target.style.height = `${window.innerHeight - headerHeight - 180}px`;
+      }
     },
     onSelectedSourceLanguageIdChanged(newId: number) {
       this.selectedSourceLanguageId = newId;
@@ -284,10 +300,8 @@ export default Vue.extend({
 }
 
 .content_wrapper {
-  transition: height 0.5s;
   min-height: 80vh !important;
   margin-right: 30px !important;
-  overflow-y: scroll;
 }
 
 .my-custom-table {
