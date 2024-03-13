@@ -138,7 +138,7 @@ export default Vue.extend({
 
     this.$nextTick(() => {
       this.observer = new MutationObserver(() => {
-        this.$nextTick(() => this.resizeContent());
+        this.resizeContent();
       });
 
       this.observer.observe(document.getElementById('project-container'), { childList: true, subtree: true, attributes: true});
@@ -146,11 +146,14 @@ export default Vue.extend({
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
+    window.addEventListener('resize', this.resizeContent);
   },
   destroyed() {
     if (this.observer) {
       this.observer.disconnect();
     }
+
+    window.removeEventListener('resize', this.resizeContent);
   },
   computed: {
     ...mapState(['currentProject', 'searchTranslation']),
@@ -245,12 +248,13 @@ export default Vue.extend({
   },
   methods: {
     resizeContent() {
-      console.log(`resizeContent ${window.innerHeight}`);
-      const headerHeight = document.getElementById('header').clientHeight;
-      const target = document.querySelector(".my-custom-table > div") as HTMLElement;
-      if (target) {
-        target.style.height = `${window.innerHeight - headerHeight - 180}px`;
-      }
+      this.$nextTick(() => {
+        const headerHeight = document.getElementById('header').clientHeight;
+        const target = document.querySelector(".my-custom-table > div") as HTMLElement;
+        if (target) {
+          target.style.height = `${window.innerHeight - headerHeight - 180}px`;
+        }
+      });
     },
     onSelectedSourceLanguageIdChanged(newId: number) {
       this.selectedSourceLanguageId = newId;
