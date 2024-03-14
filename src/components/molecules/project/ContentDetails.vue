@@ -141,7 +141,7 @@ export default Vue.extend({
         this.resizeContent();
       });
 
-      this.observer.observe(document.getElementById('project-container'), { childList: true, subtree: true, attributes: true});
+      this.observer.observe(document.querySelector('.my-custom-table'), { childList: true, subtree: true, attributes: true});
     });
   },
   mounted() {
@@ -248,12 +248,10 @@ export default Vue.extend({
   },
   methods: {
     resizeContent() {
+      const r = document.querySelector(':root') as HTMLElement;
       this.$nextTick(() => {
         const headerHeight = document.getElementById('header').clientHeight;
-        const target = document.querySelector(".my-custom-table > div") as HTMLElement;
-        if (target) {
-          target.style.height = `${window.innerHeight - headerHeight - 180}px`;
-        }
+        r.style.setProperty('--tableHeight', `${window.innerHeight - headerHeight - 180}px`);
       });
     },
     onSelectedSourceLanguageIdChanged(newId: number) {
@@ -311,6 +309,10 @@ export default Vue.extend({
 .my-custom-table {
   background-color: transparent !important;
   height: 100% !important;
+
+  .v-data-table__wrapper {
+    height: var(--tableHeight) !important;
+  }
 
   table {
     border-spacing: 0 0 !important;
