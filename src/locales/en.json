@@ -24,6 +24,7 @@
         "no_file_to_download": "No file to download",
         "platform_target": "Platform",
         "prefix_keys_radio": "Prefix keys with group name",
+        "download_only_validated": "Download only validated translations",
         "title": "Export files"
     },
     "dropdown": {
@@ -72,7 +73,8 @@
         "description_editor": "Editor: can update the content, but not the settings or the users within the project.",
         "description_manager": "Manager: can do anything about the project, except deleting it.",
         "description_owner": "Owner: can do anything about the project, including its deletion.",
-        "description_translator": "Translator: can only update translations",
+        "description_translator": "Translator: can only update translations content.",
+        "description_reviewer": "Reviewer : can only update translations status.",
         "email_label": "Email of the user to invite",
         "email_title": "Email",
         "role_label": "Pick a role",
@@ -109,7 +111,8 @@
         "title": "Add language",
         "import_file_subtitle": "Files import",
         "fromImport": "Import à language",
-        "newLanguage": "Create an empty language"
+        "newLanguage": "Create an empty language",
+        "replace_existing_keys": "Replace values of already existing keys"
     },
     "language_delete": {
         "cancel_button": "Cancel",
@@ -184,7 +187,8 @@
         "all_languages": "All languages",
         "keys": "Keys",
         "plural_key": "Plural",
-        "simple_key": "Singular"
+        "simple_key": "Singular",
+        "source_language": "Source language"
     },
     "project_manage": {
         "change_settings_button": "Update",
@@ -221,6 +225,15 @@
         "project_updated": "Project updated",
         "user_delete": "The user has been removed from the project"
     },
+    "translation_details": {
+        "validate_button": "Validate",
+        "invalidate_button": "Invalidate"
+    },
+    "translation_status": {
+        "modified": "Modified",
+        "validated": "Validated",
+        "invalidated": "Invalidated"
+    },
     "user_delete": {
         "cancel_button": "Cancel",
         "confirm_button": "Delete",
@@ -234,6 +247,10 @@
         "role_manager": "Manager",
         "role_owner": "Owner",
         "role_translator": "Translator",
-        "title": "Users"
+        "role_reviewer": "Reviewer",
+        "title": "Users",
+        "source_languages": "Source languages",
+        "target_languages": "Target languages",
+        "role": "Role"
     }
 }

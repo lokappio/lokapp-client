@@ -7,5 +7,6 @@ export default class RoleEditor extends RoleProtection {
         this.canWriteKey = true;
         this.canWriteLanguage = true;
         this.canWriteValue = true;
+        this.canWriteStatus = true;
     }
 }

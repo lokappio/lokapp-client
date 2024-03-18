@@ -8,7 +8,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
-    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
+    "token:get": "node scripts/getToken.js"
   },
   "dependencies": {
     "@mdi/js": "5.9.55",
@@ -17,15 +18,17 @@
     "file-saver": "2.0.5",
     "firebase": "8.10.0",
     "jszip": "3.8.0",
-    "vue": "2.7.10",
+    "vue": "2.7.16",
     "vue-class-component": "7.2.6",
     "vue-i18n": "8.25.1",
     "vue-meta": "2.4.0",
     "vue-property-decorator": "9.1.2",
     "vue-router": "3.5.2",
-    "vuetify": "2.6.10",
+    "vuetify": "2.7.1",
     "vuex": "3.6.2",
-    "xml-formatter": "2.6.0"
+    "xml-formatter": "2.6.0",
+    "@vueuse/core": "10.9.0",
+    "@vueuse/components": "10.9.0"
   },
   "devDependencies": {
     "@types/file-saver": "2.0.4",
@@ -49,7 +52,7 @@
     "typescript": "4.4.4",
     "vue-cli-plugin-i18n": "2.0.3",
     "vue-cli-plugin-vuetify": "2.2.2",
-    "vue-template-compiler": "2.7.10",
+    "vue-template-compiler": "2.7.16",
     "vuetify-loader": "1.7.3"
   }
 }

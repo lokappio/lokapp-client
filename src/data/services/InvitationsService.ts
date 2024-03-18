@@ -1,7 +1,7 @@
 import config from "@/config";
-import { AxiosResponse } from "axios";
+import {AxiosResponse} from "axios";
 import Invitation from "../models/api/Invitation";
-import { Role } from "../models/roles/role.enum";
+import {Role} from "../models/roles/role.enum";
 import ApiService from "./ApiService";
 
 class InvitationsService {
@@ -20,11 +20,13 @@ class InvitationsService {
         });
     }
 
-    public static createInvitation(projectId: number, email: string, role: Role): Promise<any> {
+    public static createInvitation(projectId: number, email: string, role: Role, sourceLanguagesIds: number[], targetLanguagesIds: number[]): Promise<any> {
         const bodyParameters = {
             "projectId": projectId,
             "email": email,
-            "role": role
+            "role": role,
+            sourceLanguagesIds : sourceLanguagesIds.join(","),
+            targetLanguagesIds: targetLanguagesIds.join(","),
         };
 
         return ApiService.postAPI(`${InvitationsService.invitationsUrl}`, bodyParameters)

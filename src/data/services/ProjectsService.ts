@@ -70,9 +70,11 @@ class ProjectsService {
       .then((response) => response.data.map((item: any) => ProjectUser.map(item)));
   }
 
-  public static updateRoleOfUser(projectId: number, targetId: string, role: Role): Promise<ProjectUser | void> {
+  public static updateRoleOfUser(projectId: number, targetId: string, role: Role, sourceLanguages: Language[], targetLanguages: Language[]): Promise<ProjectUser | void> {
     const bodyParameters = {
-      "role": role as string
+      "role": role as string,
+      "sourceLanguagesIds": sourceLanguages.map((language) => language.id).join(","),
+      "targetLanguagesIds": targetLanguages.map((language) => language.id).join(",")
     };
     return ApiService.patchAPI(`${ProjectsService.projectsUrl}/${projectId}/users/${targetId}`, bodyParameters)
       .then((response) => ProjectUser.map(response.data))

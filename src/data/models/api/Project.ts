@@ -3,7 +3,7 @@ import Language from "@/data/models/api/Language";
 import Key from "@/data/models/api/Key";
 import {KeyType} from "@/data/models/enums/project";
 import {groupBy} from "@/data/helpers/utils";
-import Value from "@/data/models/api/Value";
+import Value, {TranslationStatus} from "@/data/models/api/Value";
 import ImportError from "@/data/models/ImportError";
 
 export class Plural {
@@ -69,7 +69,7 @@ export default class Project {
     return project;
   }
 
-  get toLocalizedProject(): LocalizedGroup[] {
+  toLocalizedProject(onlyValidatedValues: boolean): LocalizedGroup[] {
     const localized: LocalizedGroup[] = [];
 
     this.groups.forEach((group) => {
@@ -81,8 +81,10 @@ export default class Project {
         localization.key = key.name;
         localization.type = key.isPlural ? KeyType.PLURAL : KeyType.SINGULAR;
 
-        if(key.isPlural) {
-          Object.entries(groupBy<Value[]>(key.values, 'languageId')).forEach((value) => {
+        const valuesToExport = key.values.filter(value => !onlyValidatedValues || value.status == TranslationStatus.VALIDATED)
+
+        if (key.isPlural) {
+          Object.entries(groupBy<Value[]>(valuesToExport, 'languageId')).forEach((value) => {
             const pluralValue = new Plural();
 
             value[1].forEach((value) => {
@@ -92,7 +94,7 @@ export default class Project {
             localization[parseInt(value[0])] = pluralValue;
           })
         } else {
-          key.values.forEach((value) => {
+          valuesToExport.forEach((value) => {
             localization[value.languageId] = value.name;
           })
         }
@@ -109,7 +111,7 @@ export default class Project {
   addKey(group: Group | null, key: Key): void {
     const currGroupIndex: number = this.groups.findIndex((group) => group.id === key.groupId);
 
-    if(currGroupIndex != -1) {
+    if (currGroupIndex != -1) {
       this.groups[currGroupIndex].keys.push(key);
     } else {
       this.groups.push(group);
@@ -129,11 +131,15 @@ export default class Project {
       const associatedGroupIndex = index;
       const associatedKeyIndex = group.keys.findIndex((key) => key.id == value.keyId);
 
-      if(associatedKeyIndex != -1) {
+      if (associatedKeyIndex != -1) {
         const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
         const associatedValueIndex = associatedKey.values.findIndex((valueProject) => valueProject.id === value.id);
 
-        associatedKey.values[associatedValueIndex] = Object.assign(Value.map({}), value);
+        if (associatedValueIndex != -1) {
+          associatedKey.values[associatedValueIndex] = Object.assign(Value.map({}), value);
+        } else {
+          associatedKey.values.push(value);
+        }
       }
     })
   }
@@ -146,7 +152,7 @@ export default class Project {
         const associatedGroupIndex = index;
         const associatedKeyIndex = group.keys.findIndex((key) => key.id == value.keyId);
 
-        if(associatedKeyIndex != -1) {
+        if (associatedKeyIndex != -1) {
           const associatedKey = this.groups[associatedGroupIndex].keys[associatedKeyIndex];
           associatedKey.values.push(value);
         }
@@ -170,6 +176,27 @@ export default class Project {
         key.values = key.values.filter((value) => value.languageId != language.id);
       });
     });
+  }
+
+  valueStatuses(): Map<string, Map<TranslationStatus, number>> {
+    return this.groups.reduce((acc, curr) => {
+      const groupStatuses = curr.valueStatuses();
+      groupStatuses.forEach((value, key) => {
+        if (!acc.has(key)) {
+          acc.set(key, value);
+        } else {
+          const languageMap = acc.get(key);
+          value.forEach((value, key) => {
+            languageMap.set(key, (languageMap.get(key) ?? 0) + value);
+          });
+        }
+      });
+      return acc;
+    }, new Map<string, Map<TranslationStatus, number>>());
+  }
+
+  valuesCount(): number {
+    return this.groups.reduce((acc, curr) => acc + curr.valuesCount(), 0);
   }
 
   toCreate(): {} {

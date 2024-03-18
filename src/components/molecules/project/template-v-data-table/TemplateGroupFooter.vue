@@ -8,7 +8,7 @@
 <script lang="ts">
 import Vue from "vue";
 import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import Group from "@/data/models/api/Group";
 
 export default Vue.extend({
@@ -26,7 +26,7 @@ export default Vue.extend({
     },
     computed: {
       currGroup(): Group {
-        return (this.items as translationItem[])[0].group;
+        return (this.items as TranslationItem[])[0].group;
       }
     },
     methods: {

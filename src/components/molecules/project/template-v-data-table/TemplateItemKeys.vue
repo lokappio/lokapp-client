@@ -16,6 +16,7 @@
       <v-text-field
           v-model="updateKey.name"
           single-line
+          :readonly="!canUpdate"
           :rules="keyNameRules"
           @keydown.enter="saveKey"
           hide-details
@@ -35,7 +36,7 @@
 <script lang="ts">
 import {keyNameRules} from "@/data/rules/KeyRules";
 import Vue from "vue";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import Key from "@/data/models/api/Key";
 import DeleteKey from "@/components/molecules/cards/overlay/DeleteKey.vue";
 
@@ -50,7 +51,7 @@ export default Vue.extend({
   data() {
     return {
       dialogOpenedDelete: false,
-      updateKey: Object.assign(Key.map({}), (this.item as translationItem).key),
+      updateKey: Object.assign(Key.map({}), (this.item as TranslationItem).key),
       loading: false,
       inputIcon: "",
       keyNameRules: keyNameRules()
@@ -59,13 +60,13 @@ export default Vue.extend({
   watch: {
     item: {
       handler: function () {
-        this.updateKey = Object.assign(Key.map({}), (this.item as translationItem).key);
+        this.updateKey = Object.assign(Key.map({}), (this.item as TranslationItem).key);
       }
     }
   },
   computed: {
     keyQuantityName(): string {
-      return (this.item as translationItem)?.quantity ? `[${(this.item as translationItem).quantity}]` : "";
+      return (this.item as TranslationItem)?.quantity ? `[${(this.item as TranslationItem).quantity}]` : "";
     }
   },
   methods: {

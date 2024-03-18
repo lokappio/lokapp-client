@@ -24,6 +24,7 @@
     "no_file_to_download": "Aucun fichier à télécharger",
     "platform_target": "Plateforme",
     "prefix_keys_radio": "Préfixer les clés par le nom du groupe",
+    "download_only_validated": "Télécharger uniquement les traductions acceptées",
     "title": "Exporter des fichiers"
   },
   "dropdown": {
@@ -88,10 +89,15 @@
     "description_manager": "Manager : dispose de tous les droits sur le projet mais ne peut pas le supprimer.",
     "description_owner": "Propriétaire : dispose de tous les droits sur le projet, y compris sa suppression.",
     "description_translator": "Traducteur : peut uniquement modifier les valeurs des traductions.",
+    "description_reviewer": "Relecteur : peut uniquement modifier les statuts des traductions.",
     "email_label": "Email de l'utilisateur à inviter",
     "email_title": "Email",
     "role_label": "Sélectionner un rôle",
     "role_title": "Rôle",
+    "source_languages_label": "Sélectionner des langues sources",
+    "source_languages_title": "Langues sources",
+    "target_languages_label": "Sélectionner des langues cibles",
+    "target_languages_title": "Langues cibles",
     "title": "Inviter au sein du projet"
   },
   "invitations": {
@@ -124,7 +130,8 @@
     "title": "Ajouter une langue",
     "import_file_subtitle": "Import de fichiers",
     "fromImport": "Importer une langue",
-    "newLanguage": "Créer une langue vide"
+    "newLanguage": "Créer une langue vide",
+    "replace_existing_keys": "Remplacer les valeurs des clés déjà existantes"
   },
   "language_delete": {
     "cancel_button": "Annuler",
@@ -199,7 +206,8 @@
     "all_languages": "Toutes les langues",
     "keys": "Clés",
     "plural_key": "Pluriel",
-    "simple_key": "Singulier"
+    "simple_key": "Singulier",
+    "source_language": "Langue source"
   },
   "project_manage": {
     "change_settings_button": "Modifier",
@@ -221,6 +229,15 @@
     "snake_case_only": "Uniquement la casse snake_case est autorisée",
     "max_files" : "Max. 2 fichiers (.strings et .stringsdict)"
   },
+  "translation_status": {
+    "modified": "Modifié",
+    "validated": "Accepté",
+    "invalidated": "Refusé"
+  },
+  "translation_details": {
+    "validate_button": "Accepter",
+    "invalidate_button": "Refuser"
+  },
   "user_delete": {
     "cancel_button": "Annuler",
     "confirm_button": "Supprimer",
@@ -234,6 +251,10 @@
     "role_manager": "Manager",
     "role_owner": "Propriétaire",
     "role_translator": "Traducteur",
-    "title": "Utilisateurs"
+    "role_reviewer": "Relecteur",
+    "title": "Utilisateurs",
+    "source_languages": "Langues sources",
+    "target_languages": "Langues cibles",
+    "role": "Rôle"
   }
 }

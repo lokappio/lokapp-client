@@ -9,6 +9,7 @@ import ValuesService from "@/data/services/ValuesService";
 import store from "@/store/index";
 import Language from "../models/api/Language";
 import ApiService from "./ApiService";
+import Group from "@/data/models/api/Group";
 
 class LanguagesService {
   static languagesUrl: string = config.baseUrl + "/projects/";
@@ -24,33 +25,23 @@ class LanguagesService {
       });
   }
 
-  public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform) {
+  public static async createLanguageFromImport(project: Project, item: ImportItem, platform: Platform, replaceExistingKeys?: boolean) {
     const projectFromStore = Object.assign(Project.map({}), JSON.parse(JSON.stringify(project)));
     projectFromStore.languages.push(Language.map({name: item.language}));
 
     const projectImport = await ImportService.generateProjectFromFiles(projectFromStore, [item], platform);
-    const values: Value[] = projectImport.groups.map((group) => {
-      return group.keys.map((key) => {
-        return key.values.filter((value) => (value.id === null || value.id === undefined) && (value.keyId !== undefined && value.keyId !== null));
-      });
-    }).flat(2);
-    await this.createLanguage(item.language, values);
 
-    //TODO: IMPORT KEYS WHICH DO NOT EXIST CURRENTLY BUT HAS BEEN FOUND IN THE IMPORTED FILE
+    const groups: Group[] = projectImport.groups
+    await this.createLanguage(item.language, groups, replaceExistingKeys);
+
     return await projectsService.getEntireProjectById(projectImport.id);
   }
 
-  public static createLanguage(languageName: string, values?: Value[]): Promise<{ language: Language; values: Value[] } | void> {
+  public static createLanguage(languageName: string, groups?: Group[], replaceExistingKeys?: boolean): Promise<{ language: Language; values: Value[] } | void> {
     const bodyParameters = {
       name: languageName,
-      values: (values ?? []).map((value: Value) => {
-        return {
-          name: value.name,
-          keyId: value.keyId,
-          languageId: value.languageId,
-          quantityString: value.quantityString
-        }
-      })
+      groups: groups,
+      replaceExistingKeys: replaceExistingKeys || false
     };
 
     return ApiService.postAPI(LanguagesService.languagesUrl + this.projectId + "/languages", bodyParameters)

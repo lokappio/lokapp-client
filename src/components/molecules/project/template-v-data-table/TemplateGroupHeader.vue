@@ -33,7 +33,7 @@
 <script lang="ts">
 import {groupNameRules} from "@/data/rules/GroupRules";
 import Vue from "vue";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import Group from "@/data/models/api/Group";
 
 export default Vue.extend({
@@ -54,7 +54,7 @@ export default Vue.extend({
   },
   computed: {
     currGroup(): Group {
-      return (this.items as translationItem[])[0].group;
+      return (this.items as TranslationItem[])[0].group;
     }
   },
   watch: {
@@ -72,7 +72,7 @@ export default Vue.extend({
     updateGroup() {
       this.currGroup.name = this.updateName;
 
-      this.items.forEach((item) => (item as translationItem).group.name = this.currGroup.name);
+      this.items.forEach((item) => (item as TranslationItem).group.name = this.currGroup.name);
       this.isActive = false;
     },
     cancelUpdates() {

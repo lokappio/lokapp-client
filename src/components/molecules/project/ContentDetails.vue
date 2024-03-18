@@ -1,19 +1,22 @@
 <template>
-  <div class="my-projects-container">
+  <div class="my-projects-container" id="project-container">
     <key-creation :is-open="isOpenCreation" v-on:closeCreation="() => isOpenCreation = false"></key-creation>
     <v-container fluid>
 
-      <Header class="header"/>
+      <DetailHeader class="header" id="header"
+                    :selected-target-language-id="this.actualLanguage"
+                    :selected-source-language-id="this.selectedSourceLanguageId"
+                    @source-language-id-changed="onSelectedSourceLanguageIdChanged"/>
 
-      <v-row no-gutters v-if="getItems.length <= 0" align-content="start" justify="center">
+      <v-row no-gutters v-if="items.length <= 0" align-content="start" justify="center">
         <v-col cols="4">
           <action-button v-if="canUpdateKey" block :handler="() => isOpenCreation = true" :text="''" addIcon/>
         </v-col>
       </v-row>
 
       <v-row no-gutters v-else class="content">
-        <v-col cols="12" class="fill-height">
-          <div class="content_wrapper">
+        <v-col :cols="selectedItem['key'] ? 10 : 12" class="fill-height">
+          <div class="content_wrapper" id="content_wrapper">
             <v-alert
                 v-for="warning in projectWarnings"
                 :key="warning.reason"
@@ -22,24 +25,16 @@
                 dismissible
             >{{ warning.reason }}
               <template v-slot:close="{toggle}">
-                <v-btn icon><v-icon color="orange" @click="() =>{
-                  removeWarning(warning);
-                  toggle();
-                }"
-                >mdi-close</v-icon> </v-btn>
+                <v-btn icon>
+                  <v-icon color="orange" @click="() =>{removeWarning(warning);toggle();}"
+                  >mdi-close
+                  </v-icon>
+                </v-btn>
               </template>
             </v-alert>
 
-            <v-data-table
-                hide-default-footer
-                fixed-header
-                :headers="headers"
-                :items="getItems"
-                :loading="loading"
-                disable-pagination
-                group-by="group.id"
-                elevation="0"
-                class="my-custom-table">
+            <v-data-table fixed-header :headers="headers" :items="items" :loading="loading" group-by="group.id" :page.sync="page"
+                          elevation="0" :footer-props="{'items-per-page-options': [30, 50, 100, 200, -1] }" :items-per-page.sync="itemsPerPage" class="my-custom-table">
 
               <template v-for="header in headers" v-slot:[`item.${header.value}`]="{ item }">
                 <template-item-keys
@@ -59,6 +54,7 @@
                     :header="header"
                     :projectId="projectId"
                     @valueSaved="valueSaved"
+                    @valueClicked="valueClicked"
                 />
               </template>
 
@@ -80,6 +76,13 @@
             </v-data-table>
           </div>
         </v-col>
+        <v-col cols="2" class="fill-height" v-if="selectedItem['key']">
+          <div>
+            <ValueDetails
+                :selectedItem="selectedItem"
+                :selectedLanguageId="selectedTargetLanguageId"/>
+          </div>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -91,44 +94,73 @@ import TemplateItemValues from "@/components/molecules/project/template-v-data-t
 import TemplateItemKeys from "@/components/molecules/project/template-v-data-table/TemplateItemKeys.vue";
 import TemplateGroupHeader from "@/components/molecules/project/template-v-data-table/TemplateGroupHeader.vue";
 import TemplateGroupFooter from "@/components/molecules/project/template-v-data-table/TemplateGroupFooter.vue";
-import Header from "@/components/molecules/project/DetailHeader.vue";
+import DetailHeader from "@/components/molecules/project/DetailHeader.vue";
 import KeyCreation from "@/components/molecules/cards/overlay/KeyCreation.vue";
-import Language from "@/data/models/api/Language";
+import Language, {LanguageAccess} from "@/data/models/api/Language";
 import Project from "@/data/models/api/Project";
 import Key from "@/data/models/api/Key";
 import Value, {ValueQuantity} from "@/data/models/api/Value";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 import {DataTableHeader} from "vuetify";
 import ImportError from "@/data/models/ImportError";
+import ValueDetails from "@/components/molecules/project/ValueDetails.vue";
+import {mapState} from 'vuex';
 
 export default Vue.extend({
   name: "content-details",
   components: {
+    ValueDetails,
     TemplateItemValues,
     TemplateGroupHeader,
     TemplateGroupFooter,
     TemplateItemKeys,
-    Header,
+    DetailHeader,
     KeyCreation
   },
   data() {
     return {
       loading: false,
       projectId: -1,
-      isOpenCreation: false
+      isOpenCreation: false,
+      selectedItem: {},
+      selectedTargetLanguageId: -1,
+      selectedSourceLanguageId: -1,
+      page: 1,
+      itemsPerPage: 50,
+      observer: null
     };
+  },
+
+  created() {
+    const selectedSourceLanguage = this.$store.getters.currentProject.languages.find((e: Language) => e.access === LanguageAccess.source)
+    this.selectedSourceLanguageId = selectedSourceLanguage ? selectedSourceLanguage.id : -1;
+    this.$nextTick(() => this.resizeContent());
+
+    this.$nextTick(() => {
+      this.observer = new MutationObserver(() => {
+        this.resizeContent();
+      });
+
+      this.observer.observe(document.querySelector('.my-custom-table'), { childList: true, subtree: true, attributes: true});
+    });
   },
   mounted() {
     this.projectId = this.$store.getters.currentProject.id;
+    window.addEventListener('resize', this.resizeContent);
+  },
+  destroyed() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+
+    window.removeEventListener('resize', this.resizeContent);
   },
   computed: {
+    ...mapState(['currentProject', 'searchTranslation']),
     projectWarnings(): ImportError[] {
       const value = localStorage.getItem(this.projectId.toString());
 
       return value?.length > 0 ? JSON.parse(value) : [];
-    },
-    searchValue(): string {
-      return this.$store.state.searchTranslation;
     },
     canUpdateKey(): boolean {
       return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteKey : false;
@@ -151,6 +183,7 @@ export default Vue.extend({
       ];
 
       if (!this.actualLanguage) {
+        // If there are no actual language selected, we show all languages
         languages.forEach((language) => {
           headers.push({
             text: language.name,
@@ -163,8 +196,22 @@ export default Vue.extend({
           });
         });
       } else {
-        const language: Language = languages.find((item) => item.id === this.actualLanguage);
+        // If there are source languages, we must show it first
+        const sourceLanguage: Language = languages.find((item) => item.id === this.selectedSourceLanguageId);
+        if (sourceLanguage) {
+          headers.push({
+            text: sourceLanguage.name,
+            align: "start",
+            value: sourceLanguage.id.toString(),
+            width: "400px",
+            sortable: false,
+            filterable: true,
+            groupable: false
+          });
+        }
 
+        // Then, we show the actual language
+        const language: Language = languages.find((item) => item.id === this.actualLanguage);
         headers.push({
           text: language.name,
           align: "start",
@@ -178,47 +225,38 @@ export default Vue.extend({
 
       return headers;
     },
-    getItems(): translationItem[] {
-      const currProject: Project = this.$store.state.currentProject;
-      const items: any[] = [];
-
-      currProject.groups?.forEach((group) => {
-        group.keys?.filter((key) => key.name.includes(this.searchValue)).forEach((key) => {
-          if (key.isPlural) {
-            Object.values(ValueQuantity).forEach((quantity) => {
-              const item: translationItem = {
-                "key": key,
-                "group": group,
-                "quantity": quantity,
-                languages: {}
-              };
-
-              key.values?.filter((value) => value.quantityString === quantity).forEach((value) => {
-                item.languages[value.languageId] = value;
-              });
-
-              items.push(item);
+    items: function (): TranslationItem[] {
+      return (this.currentProject as Project).groups?.map((group) => {
+        return group.keys?.filter((key) => key.matchSearch(this.searchTranslation))
+            .map((key) => {
+              if (key.isPlural) {
+                return Object.values(ValueQuantity).map((quantity) => ({
+                  key, group,
+                  quantity: quantity as ValueQuantity,
+                  languages: key.values?.filter(value => value.quantityString === quantity)
+                      .reduce((acc, value) => ({...acc, [value.languageId]: value}), {})
+                }))
+              } else {
+                return {
+                  key, group,
+                  languages: key.values?.reduce((acc, value) => ({...acc, [value.languageId]: value}), {})
+                };
+              }
             });
-          } else {
-            const item: translationItem = {
-              "key": key,
-              "group": group,
-              languages: {}
-            };
-
-            key.values?.forEach((value) => {
-              item.languages[value.languageId] = value;
-            });
-
-            items.push(item);
-          }
-        });
-      });
-
-      return items;
+      }).flat(2).filter((item) => item);
     }
   },
   methods: {
+    resizeContent() {
+      const r = document.querySelector(':root') as HTMLElement;
+      this.$nextTick(() => {
+        const headerHeight = document.getElementById('header').clientHeight;
+        r.style.setProperty('--tableHeight', `${window.innerHeight - headerHeight - 180}px`);
+      });
+    },
+    onSelectedSourceLanguageIdChanged(newId: number) {
+      this.selectedSourceLanguageId = newId;
+    },
     keySaved(value: Key): void {
       //USED TO REFRESH ITEMS, WITHOUT RELOADING ALL PROJECT WITH API CALL
       this.$store.commit("UPDATE_PROJECT_KEY", value);
@@ -235,6 +273,10 @@ export default Vue.extend({
       this.projectWarnings.splice(index, 1)
 
       localStorage.setItem(this.projectId.toString(), JSON.stringify(this.projectWarnings));
+    },
+    valueClicked(item: TranslationItem, languageId: number) {
+      this.selectedItem = item;
+      this.selectedTargetLanguageId = languageId;
     }
   }
 });
@@ -251,27 +293,6 @@ export default Vue.extend({
   width: 100%;
 }
 
-@mixin styling($base-height) {
-  .header {
-    margin-top: 20px;
-    height: $base-height;
-  }
-  .content {
-    position: absolute;
-    top: calc(#{$base-height} + 20px);
-    bottom: 0;
-    width: 100%;
-  }
-}
-
-@media #{map-get($display-breakpoints, 'sm-and-down')} {
-  @include styling($base-height: 220px);
-}
-
-@media #{map-get($display-breakpoints, 'md-and-up')} {
-  @include styling($base-height: 140px);
-}
-
 .no-data-button {
   margin-left: 45%;
 }
@@ -281,14 +302,17 @@ export default Vue.extend({
 }
 
 .content_wrapper {
-  height: 100% !important;
+  min-height: 80vh !important;
   margin-right: 30px !important;
-  overflow-y: scroll;
 }
 
 .my-custom-table {
   background-color: transparent !important;
   height: 100% !important;
+
+  .v-data-table__wrapper {
+    height: var(--tableHeight) !important;
+  }
 
   table {
     border-spacing: 0 0 !important;

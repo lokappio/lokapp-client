@@ -1,5 +1,13 @@
+import {LanguageAccess} from "@/data/models/api/Language";
+
 export enum ValueQuantity {
   zero = "zero", one = "one", other = "other"
+}
+
+export enum TranslationStatus {
+  MODIFIED = "modified",
+  VALIDATED = "validated",
+  INVALIDATED = "invalidated"
 }
 
 export default class Value {
@@ -8,7 +16,10 @@ export default class Value {
   quantityString: ValueQuantity;
   languageId: number;
   languageName: string;
+  languageAccess: LanguageAccess;
   keyId: number;
+  updatedAt: Date;
+  status: TranslationStatus;
 
   public static map(data: Partial<Value>): Value {
     const value: Value = new Value();
@@ -18,9 +29,11 @@ export default class Value {
     value.quantityString = data['quantityString'] != null ? ValueQuantity[data['quantityString']] : null ;
     value.languageId = data['languageId'];
     value.languageName = data['languageName'];
+    value.languageAccess = data['languageAccess'];
     value.keyId = data['keyId'];
+    value.updatedAt = new Date(data['updatedAt']);
+    value.status = data['status'];
 
     return value;
   }
 }
-

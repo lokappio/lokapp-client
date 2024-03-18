@@ -16,7 +16,8 @@
 <script lang="ts">
 import Vue from "vue";
 import LanguageCreation from "@/components/molecules/cards/overlay/LanguageCreation.vue";
-import Language from "@/data/models/api/Language";
+import Language, {LanguageAccess} from "@/data/models/api/Language";
+import Project from "@/data/models/api/Project";
 
 export default Vue.extend({
     name: "languages-group",
@@ -35,7 +36,7 @@ export default Vue.extend({
         return this.$store.getters.appUser.roleAbility ? this.$store.getters.appUser.roleAbility.canWriteLanguage : false;
       },
       languages(): Language[] {
-        return this.$store.getters.currentProject.languages;
+        return (this.$store.getters.currentProject as Project).languages.filter(language => language.access !== LanguageAccess.source);
       }
     },
     methods: {

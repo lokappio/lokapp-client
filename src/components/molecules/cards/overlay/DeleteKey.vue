@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {translationItem} from "@/data/models/types/TranslationTypes";
+import {TranslationItem} from "@/data/models/types/TranslationTypes";
 
 export default Vue.extend({
   name: "DeleteKey",
@@ -49,7 +49,7 @@ export default Vue.extend({
     deleteKey() {
       this.loading = true;
 
-      this.$service.keys.deleteKey((this.item as translationItem).key.id)
+      this.$service.keys.deleteKey((this.item as TranslationItem).key.id)
           .then(() => this.$emit("deletedKey"))
           .catch((error) => this.$notify(this.$t(error).toString(), {color: "red"}))
           .finally(() => this.loading = false);

@@ -31,16 +31,39 @@
                                     <v-list-item-subtitle v-if="user.username" v-text="user.username"></v-list-item-subtitle>
                                 </v-col>
 
-                                <v-col cols="5">
+                              <v-col cols="2" v-if="canShowSourceAndTargetLanguages(user)">
+                                <v-select
+                                    class="mb-3"
+                                    hide-details="true"
+                                    :disabled="isUserUpdateRoleDisabled(user)"
+                                    multiple
+                                    :label="$t('users_manage.source_languages')"
+                                    v-model="user.sourceLanguagesIds"
+                                    :items="languages"
+                                    @change="updateRole(user)"
+                                />
+                              </v-col>
+
+                              <v-col cols="2" v-if="canShowSourceAndTargetLanguages(user)">
+                                <v-select
+                                    class="mb-3"
+                                    hide-details="true"
+                                    :disabled="isUserUpdateRoleDisabled(user)"
+                                    multiple
+                                    :label="$t('users_manage.target_languages')"
+                                    v-model="user.targetLanguagesIds"
+                                    :items="languages"
+                                    @change="updateRole(user)"
+                                />
+                              </v-col>
+
+                                <v-col cols="3">
                                     <v-select
                                         hide-details="true"
                                         :disabled="isUserUpdateRoleDisabled(user)"
-                                        light
-                                        solo
+                                        :label="$t('users_manage.role')"
                                         v-model="user.role"
                                         :items="roles"
-                                        item-text="text"
-                                        item-value="value"
                                         @change="updateRole(user)"
                                     >
                                         <template v-slot:[`append-outer`]>
@@ -90,6 +113,7 @@ import { getRoleEnum, Role} from "@/data/models/roles/role.enum";
 import Vue from "vue";
 import InvitationCreation from "@/components/molecules/cards/overlay/InvitationCreation.vue";
 import UserDelete from "@/components/molecules/cards/overlay/UserDelete.vue";
+import Language from "@/data/models/api/Language";
 
 export default Vue.extend({
     name: "user-management",
@@ -101,7 +125,7 @@ export default Vue.extend({
             invitations: [],
             userToDelete: null,
             openDialogInvitation: false,
-            openDialogDelete: false,
+            openDialogDelete: false
         };
     },
     watch: {
@@ -129,6 +153,14 @@ export default Vue.extend({
       },
       canCreateInvitation(): boolean {
         return this.me.role ? this.me.roleAbility.canWriteInvitation : false;
+      },
+      languages(): any[] {
+        return this.$store.getters.currentProject.languages.map((language: any) => {
+          return {
+            text: language.name,
+            value: language.id
+          }
+        });
       },
     },
     methods: {
@@ -181,7 +213,10 @@ export default Vue.extend({
             this.getEveryUsersOfProject();
         },
         updateRole(user: ProjectUser) {
-            this.$service.projects.updateRoleOfUser(this.projectId, user.userId, user.role)
+            const languages: Language[] = this.$store.getters.currentProject.languages;
+            const sourceLanguages = languages.filter((language) => user.sourceLanguagesIds.includes(language.id));
+            const targetLanguages = languages.filter((language) => user.targetLanguagesIds.includes(language.id));
+            this.$service.projects.updateRoleOfUser(this.projectId, user.userId, user.role, sourceLanguages, targetLanguages)
                 .then((userUpdated) => {
                     user = userUpdated as ProjectUser;
                     if (this.me.role === Role.OWNER && user.role === Role.OWNER) {
@@ -197,7 +232,10 @@ export default Vue.extend({
         closeDelete() {
           this.openDialogDelete = false;
           this.refresh();
-        }
+        },
+      canShowSourceAndTargetLanguages(user: ProjectUser): boolean {
+        return user.role === Role.TRANSLATOR || user.role === Role.REVIEWER;
+      }
     }
 });
 </script>

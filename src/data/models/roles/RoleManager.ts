@@ -10,5 +10,6 @@ export default class RoleManager extends RoleProtection {
         this.canWriteProject = true;
         this.canWriteValue = true;
         this.canWriteUser = true;
+        this.canWriteStatus = true;
     }
 }

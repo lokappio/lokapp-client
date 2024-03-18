@@ -92,11 +92,6 @@ export default Vue.extend({
   margin-top: 30px;
   height: 50px;
 }
-.content {
-  position: absolute;
-  top: 80px;
-  bottom: 0;
-}
 
 .projects-container-style {
   height: 100%;
