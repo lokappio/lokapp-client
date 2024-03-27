@@ -178,6 +178,7 @@ export default Vue.extend({
           this.$store.commit("ADD_PROJECT_KEY", data);
           this.closeKeyCreation();
         } catch (e: any) {
+          console.error(e);
           this.$notify(this.$t(e).toString(), {color: "red"});
         }
 

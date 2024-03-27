@@ -115,6 +115,9 @@ export default class Project {
       this.groups[currGroupIndex].keys.push(key);
     } else {
       this.groups.push(group);
+      if (!this.groups[this.groups.length - 1].keys) {
+        this.groups[this.groups.length - 1].keys = [];
+      }
       this.groups[this.groups.length - 1].keys.push(key);
     }
   }
