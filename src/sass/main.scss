@@ -82,6 +82,9 @@
     caret-color: black !important;
     color: black !important;
 }
+textarea, input[type="text"], .text-key, .text-value {
+    font-family: "Graphik", sans-serif;
+}
 
 //CUSTOM PADDING ON EXPANSION PANEL CONTENT
 .v-expansion-panel-content__wrap {

@@ -1,14 +1,14 @@
 <template>
   <div>
-    <span class="title-h2 primary--text">{{ selectedItem.group.name }}/{{ selectedItem.key.name }}</span>
+    <span class="title-h2 primary--text text-key">{{ selectedItem.group.name }}/{{ selectedItem.key.name }}</span>
     <div>
       <div v-for="(value, index) in values" v-bind:key="value.id" class="my-4">
         <div v-if="index === 0">
-          <div class="title-h3">{{ value.name || "--" }}</div>
+          <div class="title-h3 text-value">{{ value.name || "--" }}</div>
           <div>
             <span class="text-caption">{{ dateToDateTimeString(value.updatedAt) }}</span>
             <span class="text-caption mx-2">|</span>
-            <span :class="getClass(value) + ' text-caption'">{{ $t('translation_status.' + value.status) }}</span>
+            <span :class="getClass(value) + ' text-caption text-value'">{{ $t('translation_status.' + value.status) }}</span>
           </div>
           <div v-if="canWriteStatus" class="align-center align-content-center">
             <v-btn-toggle v-model="selectedStatus" color="primary" @change="toggleStatus">
@@ -19,7 +19,7 @@
           <v-divider class="mt-4"></v-divider>
         </div>
         <div v-else>
-          <div>{{ value.name || "--" }}</div>
+          <div class="text-value">{{ value.name || "--" }}</div>
           <div>
             <span class="text-caption">{{ dateToDateTimeString(value.updatedAt) }}</span>
             <span class="text-caption mx-2">|</span>
